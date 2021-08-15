@@ -1,5 +1,5 @@
 {
-  "name": "drupal-state",
+  "name": "@gdwc/drupal-state",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
