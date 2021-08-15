@@ -1,12 +1,18 @@
 {
   "name": "@gdwc/drupal-state",
   "version": "0.0.0",
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "proseWrap": "always"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview"
   },
   "devDependencies": {
+    "prettier": "2.3.2",
     "typescript": "^4.3.2",
     "vite": "^2.4.4"
   },
