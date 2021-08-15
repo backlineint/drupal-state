@@ -31,3 +31,10 @@ on save in your project.
 
 Formatting on save is highly recommended as it should resolve most formatting
 issues before the pre-commit hook runs.
+
+Formatting and linting can also be run manually using the following commands:
+
+- `npm run eslint` - checks linting
+- `npm run eslint:fix` - attempts to fix any linting issues
+- `npm run prettier` - checks formatting
+- `npm run prettier:fix` - attempts to fix any formatting issues
