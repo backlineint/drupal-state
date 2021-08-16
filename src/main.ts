@@ -15,6 +15,6 @@ blueState.setState({ response });
 // This is a Zustand store, and you an also add your own custom state.
 blueState.setState({ custom: 'custom state' });
 
-blueState.getObject('custom');
+blueState.getObject('articles');
 
 app.innerHTML = `<pre>${JSON.stringify(blueState.getState(), null, 2)}</pre>`;

@@ -8,6 +8,8 @@ import create, {
   PartialState,
 } from 'zustand/vanilla';
 
+import fetchApiIndex from './fetch/fetchApiIndex';
+
 interface DrupalStateConfig {
   apiRoot: string;
 }
@@ -39,9 +41,6 @@ class drupalState {
   /**
    * getObject
    * ** If no local state, fetch it.
-   * * Check state for dsApiIndex
-   * ** Returns local state if it exists
-   * ** If it doesn't, fetch apiIndex and store in state
    * * Get link from apiIndex
    * * Fetch that link
    * * Store in state
@@ -50,20 +49,42 @@ class drupalState {
    */
 
   /**
+   * Get the contents of the root API from local state if it exists, or fetch
+   * it from Drupal if it doesn't exist in local state.
+   * @returns an index of api links
+   */
+  private async getApiIndex(): Promise<PartialState<State>> {
+    // TODO: fix type warning.
+    const dsApiIndex = this.getState().dsApiIndex as PartialState<State>;
+    if (!dsApiIndex) {
+      // Fetch the API index from Drupal
+      const dsApiIndexData = await fetchApiIndex(this.apiRoot);
+      this.setState({ dsApiIndex: dsApiIndexData });
+      return this.getState().dsApiIndex;
+    }
+
+    return dsApiIndex;
+  }
+
+  /**
    * Get an object from local state if it exists, or fetch it from Drupal if
    * it doesn't exist in local state.
    * @param objectName Name of object to retrieve. Ex: node--article
+   * @returns JSON:Api data for the requested object
    */
-  getObject(objectName: string): PartialState<State> {
+  async getObject(objectName: string): Promise<PartialState<State>> {
+    // TODO: fix type warning.
     const objectState = this.getState()[objectName] as PartialState<State>;
     if (!objectState) {
-      console.log('No match');
-      // Pick up - fetch the requested object from Drupal
-      // Check for a dsApiIndex...
+      const dsApiIndex = await this.getApiIndex();
+      console.log("dsApiIndex", dsApiIndex);
+      // Pick up - getApiPath function
+      // Fetch the requested object from Drupal using API Path
     }
 
     return objectState;
   }
+
 }
 
 export default drupalState;
