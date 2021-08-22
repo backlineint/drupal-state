@@ -1,6 +1,51 @@
 # Drupal State
 
-A simple data store to manage application state sourced from Drupal.
+A simple data store to manage application state sourced from Drupal's JSON:API.
+
+## Usage
+
+Create a new instance of Drupal State:
+
+```js
+import drupalState from './drupalState';
+
+const store = new drupalState({
+  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+});
+```
+
+Use the {@link drupalState.default.getObject | getObject method} to retrieve an
+object (think collection or resource in JSON:API terms) from your Drupal API:
+
+```js
+// If the object doesn't exist in local state, it will be fetched from the API,
+// and then added to the store
+const recipesFromApi = await blueState.getObject('recipes');
+
+// If the object does exist in local state, it will be returned from the store
+// without requiring a fetch from the API
+const recipesFromStore = await blueState.getObject('recipes');
+```
+
+Drupal Store extends [Zustand](https://github.com/pmndrs/zustand), so you also
+have access to
+[Zustand's Vanilla JS API](https://github.com/pmndrs/zustand#using-zustand-without-react)
+if needed:
+
+```js
+store.setState({ custom: 'My custom state' });
+const myCustomState = store.getState().custom; // Returns 'My custom state'
+```
+
+### Utilities
+
+Drupal State also exposes a few utility functions that can be used to interact
+with JSON:API endpoints even if you'd prefer to use an alternative state
+management solution.
+
+- {@link fetch/fetchApiIndex}: Retrieves index of resource links for the API
+- {@link fetch/fetchCollection}: Retrieves a collection of resources from the
+  API
 
 ## Contributing
 
@@ -16,6 +61,12 @@ checklist:
 1. Run `nvm use` to switch to the expected version of npm. Run `nvm install` if
    you need to update your npm.
 2. Run `npm i` to install dependencies.
+
+### Running A Local Development Server
+
+The npm run dev script can be run for local development. It will watch for
+changes and launch index.html at http://localhost:3000. index.html loads
+src/main.ts which can be used for demonstration purposes and local development.
 
 ### Formatting and Linting
 
@@ -38,3 +89,20 @@ Formatting and linting can also be run manually using the following commands:
 - `npm run eslint:fix` - attempts to fix any linting issues
 - `npm run prettier` - checks formatting
 - `npm run prettier:fix` - attempts to fix any formatting issues
+
+## Documentation
+
+All new code should be documented. Documentation is provided by
+[TypeDoc](https://typedoc.org/).
+
+To generate documentation run `npm run typedoc` The result will be in the `docs`
+folder.
+
+## FAQ
+
+- **Why use the term 'object' instead of 'resource' or 'collection'?** This is
+  partially an effort to abstract away things that may be Drupal or JSON:API
+  specific in order to make this API friendlier to JS developers who may not be
+  familiar with these concepts. It is also driven by a long term desire to for
+  this library to support other query languages like GraphQL for which the
+  concept of collections or resources may not apply.
