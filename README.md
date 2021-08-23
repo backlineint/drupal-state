@@ -90,6 +90,15 @@ Formatting and linting can also be run manually using the following commands:
 - `npm run prettier` - checks formatting
 - `npm run prettier:fix` - attempts to fix any formatting issues
 
+## Testing
+
+This project is configured to run [Jest](https://facebook.github.io/jest/) tests
+via `npm run test`. All new code is expected to be covered by tests and these
+tests will run as part of our CI process.
+
+Tests should be added in a `__tests__` directory adjacent to the file they are
+testing and the files should be named `<fileName>.test.ts`.
+
 ## Documentation
 
 All new code should be documented. Documentation is provided by

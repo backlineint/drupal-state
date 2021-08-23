@@ -9,3 +9,6 @@ dist-ssr
 
 # TypeDocs
 docs
+
+# Jest
+junit.xml 

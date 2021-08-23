@@ -11,6 +11,7 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "typedoc": "typedoc",
+    "test": "jest",
     "eslint": "eslint --ext .js,.ts src --ignore-path .gitignore",
     "eslint:fix": "eslint --ext .js,.ts src --fix --ignore-path .gitignore",
     "prettier": "prettier \"**/*.{js,ts}\" --check --ignore-path .gitignore",
@@ -27,6 +28,10 @@
     "vite": "^2.4.4"
   },
   "dependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.0.6",
+    "jest-junit": "^12.2.0",
+    "ts-jest": "^27.0.5",
     "zustand": "^3.5.7"
   }
 }
