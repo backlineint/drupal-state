@@ -9,10 +9,8 @@ import { GenericIndex, ApiIndexResponse } from '../types/interfaces';
 const fetchApiIndex = (apiRoot: string): Promise<void | GenericIndex> => {
   const apiIndex = fetch(apiRoot)
     .then(response => response.json() as Promise<ApiIndexResponse>)
-    // TODO - improve error handling and return something other than undefined
-    // if data.links does not exist
     .then(data => data.links || false)
-    .catch(error => console.error(error));
+    .catch(error => console.error('API index fetch failed', error));
   return apiIndex as Promise<GenericIndex>;
 };
 

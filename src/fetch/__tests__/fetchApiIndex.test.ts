@@ -29,5 +29,15 @@ describe('fetchApiIndex', () => {
       await fetchApiIndex('https://live-contentacms.pantheonsite.io/api')
     ).toEqual(false);
   });
-  // TODO - Test for fetch failure
+  // TODO - would be nice to test the error message as well
+  test('A fetch failure returns undefined', async () => {
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api',
+      { throws: new Error('fetch failed') },
+      { overwriteRoutes: true }
+    );
+    expect(
+      await fetchApiIndex('https://live-contentacms.pantheonsite.io/api')
+    ).toEqual(undefined);
+  });
 });

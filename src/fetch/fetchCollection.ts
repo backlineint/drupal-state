@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-fetch';
 import { CollectionResponse } from '../types/interfaces';
 
 /**
@@ -11,7 +12,7 @@ const fetchCollection = (
   const collection = fetch(apiUrl)
     .then(response => response.json() as Promise<CollectionResponse>)
     .then(data => data)
-    .catch(error => console.error(error));
+    .catch(error => console.error('Collection fetch failed', error));
   return collection;
 };
 
