@@ -11,7 +11,7 @@ const fetchApiIndex = (apiRoot: string): Promise<void | GenericIndex> => {
     .then(response => response.json() as Promise<ApiIndexResponse>)
     // TODO - improve error handling and return something other than undefined
     // if data.links does not exist
-    .then(data => data.links)
+    .then(data => data.links || false)
     .catch(error => console.error(error));
   return apiIndex as Promise<GenericIndex>;
 };

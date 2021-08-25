@@ -27,7 +27,7 @@ describe('fetchApiIndex', () => {
     );
     expect(
       await fetchApiIndex('https://live-contentacms.pantheonsite.io/api')
-    ).toEqual(undefined);
+    ).toEqual(false);
   });
   // TODO - Test for fetch failure
 });
