@@ -28,7 +28,7 @@ class drupalState {
   destroy: Destroy;
 
   constructor({ apiRoot }: DrupalStateConfig) {
-    this.apiRoot = apiRoot ? apiRoot : '';
+    this.apiRoot = apiRoot;
 
     this.store = create(() => ({}));
     const { getState, setState, subscribe, destroy } = this.store;
@@ -39,7 +39,6 @@ class drupalState {
     this.destroy = destroy;
   }
 
-  // Todo - Tests
   // Todo - Various error handling
   /**
    * Get the contents of the root API from local state if it exists, or fetch

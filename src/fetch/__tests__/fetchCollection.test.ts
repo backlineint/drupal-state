@@ -5,7 +5,7 @@ fetchMock.config.overwriteRoutes = true;
 import fetchCollection from '../fetchCollection';
 import response from './data/collection.json';
 
-describe('fetchApiIndex', () => {
+describe('fetchCollection', () => {
   test('A valid collection response returns data', async () => {
     fetchMock.mock('https://live-contentacms.pantheonsite.io/api/recipes', {
       status: 200,
