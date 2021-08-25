@@ -70,6 +70,8 @@ src/main.ts which can be used for demonstration purposes and local development.
 
 ### Formatting and Linting
 
+Linting and formatting will run for all staged files as a pre-commit hook.
+
 VSCode users can format code on save using the
 [Eslint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 and
