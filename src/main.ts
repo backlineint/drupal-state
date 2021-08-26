@@ -3,15 +3,18 @@ import './style.css';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
-const blueState: any = new drupalState({
+const store: any = new drupalState({
   apiRoot: 'https://live-contentacms.pantheonsite.io/api',
 });
 
-blueState.setState({ custom: 'custom state' });
+store.setState({ custom: 'custom state' });
 
 // The first getObject below will fetch from JSON:API but the second will
 // retrieve from local state.
-await blueState.getObject('recipes');
-await blueState.getObject('recipes');
+await store.getObject('recipes');
+await store.getObject('recipes');
+console.log(
+  await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
+);
 
-app.innerHTML = `<pre>${JSON.stringify(blueState.getState(), null, 2)}</pre>`;
+app.innerHTML = `<pre>${JSON.stringify(store.getState(), null, 2)}</pre>`;

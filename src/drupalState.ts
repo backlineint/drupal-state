@@ -69,24 +69,35 @@ class drupalState {
    * @param objectName Name of object to retrieve. Ex: node--article
    * @returns a promise containing JSON:Api data for the requested object
    */
-  async getObject(objectName: string): Promise<PartialState<State>> {
+  async getObject(
+    objectName: string,
+    id?: string
+  ): Promise<PartialState<State>> {
     const state = this.getState() as DsState;
-    const objectState = state[objectName]?.data as PartialState<State>;
+    // Check for collection in the store
+    const collectionState = state[objectName]?.data as PartialState<State>;
 
-    if (!objectState) {
+    if (collectionState && id) {
+      const resourceState = collectionState.filter(item => {
+        return item.id === id;
+      }) as CollectionState;
+      console.log('Resource State', resourceState);
+    }
+
+    if (!collectionState) {
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint = dsApiIndex[objectName];
-      const objectData = await fetchCollection(endpoint);
+      const collectionData = await fetchCollection(endpoint);
 
-      const objectState = {} as CollectionState;
-      objectState[objectName] = objectData as CollectionResponse;
+      const fetchedCollectionState = {} as CollectionState;
+      fetchedCollectionState[objectName] = collectionData as CollectionResponse;
 
-      this.setState(objectState);
+      this.setState(fetchedCollectionState);
       const updatedState = this.getState() as CollectionState;
       return updatedState[objectName].data;
     }
 
-    return objectState;
+    return collectionState;
   }
 }
 
