@@ -14,7 +14,7 @@ export interface DrupalStateConfig {
  */
 export interface DsState {
   [key: string]: {
-    data?: [];
+    data?: CollectionData;
   };
 }
 
@@ -35,7 +35,18 @@ export interface ApiIndexResponse {
   links: GenericIndex;
 }
 
-// Collection Interfaces
+// Object Interfaces
+/**
+ * Represents the data contained within a resource object.
+ */
+export interface ResourceData {
+  type: string;
+  id: string;
+  attributes: Record<string, unknown>;
+  relationships: Record<string, unknown>;
+  links: Record<string, unknown>;
+}
+
 /**
  * Describes the shape of a JSON:API collection response. See
  * {@link fetch/fetchCollection}
@@ -52,8 +63,16 @@ export interface CollectionResponse {
 }
 
 /**
- * Represents the shape of a state object containing data for a collection.
+ * Describes a partial state object for a collection. Used with setState.
  */
 export interface CollectionState {
   [key: string]: CollectionResponse;
+}
+
+/**
+ * Represents the data contained within a collection object.
+ */
+export interface CollectionData {
+  filter(isMatch: (item: ResourceData) => boolean): ResourceData;
+  [key: number]: ResourceData;
 }

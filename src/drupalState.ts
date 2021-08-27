@@ -14,6 +14,7 @@ import {
   CollectionState,
   GenericIndex,
   CollectionResponse,
+  CollectionData,
 } from './types/interfaces';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
@@ -75,26 +76,27 @@ class drupalState {
   ): Promise<PartialState<State>> {
     const state = this.getState() as DsState;
     // Check for collection in the store
-    const collectionState = state[objectName]?.data as PartialState<State>;
+    const collectionState = state[objectName]?.data as CollectionData;
 
     if (collectionState && id) {
       const resourceState = collectionState.filter(item => {
-        return item.id === id;
-      }) as CollectionState;
-      console.log('Resource State', resourceState);
+        return item['id'] === id;
+      });
     }
 
     if (!collectionState) {
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-      const endpoint = dsApiIndex[objectName];
-      const collectionData = await fetchCollection(endpoint);
+      const endpoint: string = dsApiIndex[objectName];
+      const collectionData = (await fetchCollection(
+        endpoint
+      )) as CollectionResponse;
 
       const fetchedCollectionState = {} as CollectionState;
-      fetchedCollectionState[objectName] = collectionData as CollectionResponse;
+      fetchedCollectionState[objectName] = collectionData;
 
       this.setState(fetchedCollectionState);
-      const updatedState = this.getState() as CollectionState;
-      return updatedState[objectName].data;
+      const updatedState = this.getState() as DsState;
+      return updatedState[objectName].data as CollectionData;
     }
 
     return collectionState;
