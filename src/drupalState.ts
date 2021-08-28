@@ -78,10 +78,34 @@ class drupalState {
     // Check for collection in the store
     const collectionState = state[objectName]?.data as CollectionData;
 
-    if (collectionState && id) {
-      const resourceState = collectionState.filter(item => {
-        return item['id'] === id;
-      });
+    // If an id is provided, find and return a resource
+    if (id) {
+      // If the collection is in the store, check for the resource
+      if (collectionState) {
+        const resourceState = collectionState.filter(item => {
+          return item['id'] === id;
+        });
+
+        // Resource already exists within collection, return that.
+        if (resourceState) {
+          return resourceState.pop();
+        }
+      } else {
+        // If the resource is not in the store, fetch it from Drupal
+        const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
+        const endpoint: string = dsApiIndex[objectName];
+        const collectionData = (await fetchCollection(
+          `${endpoint}/${id}`
+        )) as CollectionResponse;
+
+        // Pick up: Store resource in local state - in own objectResources
+        // section in state
+
+        return collectionData.data;
+      }
+      // Need some way to differentiate between a collection and a resource
+      // Need some way to force a fetch.
+      // Need a way to provide a name for the collection / resource
     }
 
     if (!collectionState) {

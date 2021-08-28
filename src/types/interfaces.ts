@@ -45,6 +45,7 @@ export interface ResourceData {
   attributes: Record<string, unknown>;
   relationships: Record<string, unknown>;
   links: Record<string, unknown>;
+  pop(): ResourceData;
 }
 
 /**

@@ -14,6 +14,7 @@ store.setState({ custom: 'custom state' });
 await store.getObject('recipes');
 await store.getObject('recipes');
 console.log(
+  'Get Object with an ID',
   await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
 );
 
