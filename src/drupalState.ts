@@ -15,7 +15,10 @@ import {
   GenericIndex,
   CollectionResponse,
   CollectionData,
+  ResourceState,
 } from './types/interfaces';
+
+import { keyedResources } from './types/types';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchCollection from './fetch/fetchCollection';
@@ -90,6 +93,7 @@ class drupalState {
         if (resourceState) {
           return resourceState.pop();
         }
+        // TODO - also check in resource store
       } else {
         // If the resource is not in the store, fetch it from Drupal
         const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
@@ -98,12 +102,21 @@ class drupalState {
           `${endpoint}/${id}`
         )) as CollectionResponse;
 
-        // Pick up: Store resource in local state - in own objectResources
-        // section in state
+        // Pick up - Handle case where resource state already exists
+        // check state first/test with existing resource state.
+        // Check in resource store in addition to collection store.
+        // continue renaming and refining types.
+
+        const resourceArray: keyedResources = {};
+        resourceArray[id] = collectionData;
+
+        // Pick up
+        const fetchedResourceState = {} as ResourceState;
+        fetchedResourceState[`${objectName}Resources`] = resourceArray;
+        this.setState(fetchedResourceState);
 
         return collectionData.data;
       }
-      // Need some way to differentiate between a collection and a resource
       // Need some way to force a fetch.
       // Need a way to provide a name for the collection / resource
     }

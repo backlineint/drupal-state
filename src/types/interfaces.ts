@@ -1,3 +1,5 @@
+import { keyedResources } from './types';
+
 /**
  * An interface documenting all of the named parameters that can be used when
  * creating a new instance of DrupalState
@@ -68,6 +70,13 @@ export interface CollectionResponse {
  */
 export interface CollectionState {
   [key: string]: CollectionResponse;
+}
+
+/**
+ * Describes a partial state object for a keyed list of resources.
+ */
+export interface ResourceState {
+  [key: string]: keyedResources;
 }
 
 /**
