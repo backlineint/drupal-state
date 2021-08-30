@@ -9,6 +9,7 @@ export interface DrupalStateConfig {
    * Url to the root of JSON:API
    */
   apiRoot: string;
+  debug?: boolean;
 }
 
 /**

@@ -25,14 +25,18 @@ import fetchCollection from './fetch/fetchCollection';
 
 class drupalState {
   apiRoot: string;
+  debug: boolean;
   store: StoreApi<State>;
   getState: GetState<State>;
   setState: SetState<State>;
   subscribe: Subscribe<State>;
   destroy: Destroy;
 
-  constructor({ apiRoot }: DrupalStateConfig) {
+  constructor({ apiRoot, debug = false }: DrupalStateConfig) {
     this.apiRoot = apiRoot;
+    this.debug = debug;
+
+    !this.debug || console.log('Debug mode:', debug);
 
     this.store = create(() => ({}));
     const { getState, setState, subscribe, destroy } = this.store;
@@ -89,7 +93,7 @@ class drupalState {
       if (resourceState) {
         const resource = resourceState[id];
         if (resource) {
-          console.log(`Matched resource ${id} in state`);
+          !this.debug || console.log(`Matched resource ${id} in state`);
           return resource;
         }
       }
@@ -103,13 +107,13 @@ class drupalState {
 
         // Resource already exists within collection, return that.
         if (matchedResourceState) {
-          console.log(`Matched resource ${id} in collection`);
+          !this.debug || console.log(`Matched resource ${id} in collection`);
           // TODO: Should this be added to ResourceState as well?
           return matchedResourceState.pop();
         }
       }
       // Resource isn't in state, so fetch it from Drupal
-      console.log(`Fetch Resource ${id} and add to state`);
+      !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint: string = dsApiIndex[objectName];
       const collectionData = (await fetchCollection(
@@ -149,7 +153,8 @@ class drupalState {
     } // End if (id) block
 
     if (!collectionState) {
-      console.log(`Fetch Collection ${objectName} and add to state`);
+      !this.debug ||
+        console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint: string = dsApiIndex[objectName];
       const collectionData = (await fetchCollection(
@@ -163,7 +168,7 @@ class drupalState {
       const updatedState = this.getState() as DsState;
       return updatedState[objectName].data as CollectionData;
     } else {
-      console.log(`Matched collection ${objectName} in state`);
+      !this.debug || console.log(`Matched collection ${objectName} in state`);
       return collectionState;
     }
   }

@@ -5,6 +5,7 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 
 const store: any = new drupalState({
   apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  debug: true,
 });
 
 // If no resources are in state, create a new resource object
