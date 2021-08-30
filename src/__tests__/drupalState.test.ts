@@ -4,12 +4,20 @@ const fetchMock = require('isomorphic-fetch');
 import drupalState from '../drupalState';
 
 import recipes from '../fetch/__tests__/data/collection.json';
+import recipesResourcesState1 from './data/recipesResourcesState1.json';
 import indexResponse from '../fetch/__tests__/data/apiIndex.json';
 
 describe('drupalState', () => {
   beforeEach(() => {
     fetchMock.mockClear();
   });
+
+  // Resource related tests:
+  // If requested resource is in the collection store, return that
+  // Resource isn't in state, so fetch it from Drupal
+  // Creating new resource state
+  // Updating existing resource state
+  // Debug mode
 
   test('Api root is set by constructor', async () => {
     const store: drupalState = new drupalState({
@@ -20,7 +28,18 @@ describe('drupalState', () => {
     );
   });
 
-  test('Get object from local state if it exists', async () => {
+  test('Get resource object from local resource state if it exists', async () => {
+    const store: drupalState = new drupalState({
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+    });
+    store.setState({ recipesResources: recipesResourcesState1 });
+    expect(
+      await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
+    ).toEqual(recipesResourcesState1['a542e833-edfe-44a3-a6f1-7358b115af4b']);
+    expect(fetchMock).toBeCalledTimes(0);
+  });
+
+  test('Get collection object from local state if it exists', async () => {
     const store: drupalState = new drupalState({
       apiRoot: 'https://live-contentacms.pantheonsite.io/api',
     });

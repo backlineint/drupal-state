@@ -15,7 +15,6 @@ import {
   GenericIndex,
   JsonapiResponse,
   CollectionData,
-  ResourceState,
 } from './types/interfaces';
 
 import { keyedResources } from './types/types';
@@ -108,7 +107,7 @@ class drupalState {
         // Resource already exists within collection, return that.
         if (matchedResourceState) {
           !this.debug || console.log(`Matched resource ${id} in collection`);
-          // TODO: Should this be added to ResourceState as well?
+          // Should this be added to ResourceState as well?
           return matchedResourceState.pop();
         }
       }
@@ -119,10 +118,6 @@ class drupalState {
       const resourceData = (await fetchJsonapiEndpoint(
         `${endpoint}/${id}`
       )) as JsonapiResponse;
-
-      // Debug Mode
-      // continue renaming and refining types.
-      // Tests and docs are needed.
 
       const objectResourceState = state[`${objectName}Resources`];
 
@@ -137,19 +132,14 @@ class drupalState {
           [`${objectName}Resources`]: updatedResourceState,
         });
       } else {
-        // Create new object resource state with this resource included
-        const resourceArray: keyedResources = {};
-        resourceArray[id] = resourceData;
+        const newResourceState = {
+          [id]: resourceData.data,
+        };
 
-        const fetchedResourceState = {} as ResourceState;
-        fetchedResourceState[`${objectName}Resources`] = resourceArray;
-        this.setState(fetchedResourceState);
+        this.setState({ [`${objectName}Resources`]: newResourceState });
       }
 
       return resourceData.data;
-
-      // Need some way to force a fetch.
-      // Need a way to provide a name for the collection / resource
     } // End if (id) block
 
     if (!collectionState) {
