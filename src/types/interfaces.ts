@@ -40,6 +40,21 @@ export interface ApiIndexResponse {
 
 // Object Interfaces
 /**
+ * Describes the shape of a JSON:API response. See
+ * {@link fetch/fetchCollection}
+ */
+export interface JsonapiResponse {
+  data: [];
+  jsonapi: {
+    version: string;
+    [key: string]: string;
+  };
+  links: {
+    [key: string]: string;
+  };
+}
+
+/**
  * Represents the data contained within a resource object.
  */
 export interface ResourceData {
@@ -52,28 +67,6 @@ export interface ResourceData {
 }
 
 /**
- * Describes the shape of a JSON:API collection response. See
- * {@link fetch/fetchCollection}
- */
-export interface CollectionResponse {
-  data: [];
-  jsonapi: {
-    version: string;
-    [key: string]: string;
-  };
-  links: {
-    [key: string]: string;
-  };
-}
-
-/**
- * Describes a partial state object for a collection. Used with setState.
- */
-export interface CollectionState {
-  [key: string]: CollectionResponse;
-}
-
-/**
  * Describes a partial state object for a keyed list of resources.
  */
 export interface ResourceState {
@@ -83,8 +76,14 @@ export interface ResourceState {
 /**
  * Represents the data contained within a collection object.
  */
-// TODO - rename to ObjectData?
 export interface CollectionData {
   filter(isMatch: (item: ResourceData) => boolean): ResourceData;
   [key: number]: ResourceData;
+}
+
+/**
+ * Describes a partial state object for a collection. Used with setState.
+ */
+export interface CollectionState {
+  [key: string]: JsonapiResponse;
 }

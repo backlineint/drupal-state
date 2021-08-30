@@ -1,3 +1,3 @@
-import { CollectionResponse } from './interfaces';
+import { JsonapiResponse } from './interfaces';
 
-export type keyedResources = { [key: string]: CollectionResponse };
+export type keyedResources = { [key: string]: JsonapiResponse };

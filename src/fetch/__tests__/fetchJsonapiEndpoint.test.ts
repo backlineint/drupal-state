@@ -2,17 +2,17 @@ jest.mock('isomorphic-fetch', () => require('fetch-mock-jest').sandbox());
 const fetchMock = require('isomorphic-fetch');
 fetchMock.config.overwriteRoutes = true;
 
-import fetchCollection from '../fetchCollection';
+import fetchJsonapiEndpoint from '../fetchJsonapiEndpoint';
 import response from './data/collection.json';
 
-describe('fetchCollection', () => {
+describe('fetchJsonapiEndpoint', () => {
   test('A valid collection response returns data', async () => {
     fetchMock.mock('https://live-contentacms.pantheonsite.io/api/recipes', {
       status: 200,
       body: response,
     });
     expect(
-      await fetchCollection(
+      await fetchJsonapiEndpoint(
         'https://live-contentacms.pantheonsite.io/api/recipes'
       )
     ).toEqual(response);
@@ -23,7 +23,7 @@ describe('fetchCollection', () => {
       throws: new Error('fetch failed'),
     });
     expect(
-      await fetchCollection('https://live-contentacms.pantheonsite.io/api')
+      await fetchJsonapiEndpoint('https://live-contentacms.pantheonsite.io/api')
     ).toEqual(undefined);
   });
 });

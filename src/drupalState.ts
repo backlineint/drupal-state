@@ -13,7 +13,7 @@ import {
   DsState,
   CollectionState,
   GenericIndex,
-  CollectionResponse,
+  JsonapiResponse,
   CollectionData,
   ResourceState,
 } from './types/interfaces';
@@ -21,7 +21,7 @@ import {
 import { keyedResources } from './types/types';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
-import fetchCollection from './fetch/fetchCollection';
+import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
 
 class drupalState {
   apiRoot: string;
@@ -116,9 +116,9 @@ class drupalState {
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint: string = dsApiIndex[objectName];
-      const collectionData = (await fetchCollection(
+      const resourceData = (await fetchJsonapiEndpoint(
         `${endpoint}/${id}`
-      )) as CollectionResponse;
+      )) as JsonapiResponse;
 
       // Debug Mode
       // continue renaming and refining types.
@@ -130,7 +130,7 @@ class drupalState {
         // If the resource state exists, add the new resource to it.
         const updatedResourceState = {
           ...objectResourceState,
-          [id]: collectionData.data,
+          [id]: resourceData.data,
         };
 
         this.setState({
@@ -139,14 +139,14 @@ class drupalState {
       } else {
         // Create new object resource state with this resource included
         const resourceArray: keyedResources = {};
-        resourceArray[id] = collectionData;
+        resourceArray[id] = resourceData;
 
         const fetchedResourceState = {} as ResourceState;
         fetchedResourceState[`${objectName}Resources`] = resourceArray;
         this.setState(fetchedResourceState);
       }
 
-      return collectionData.data;
+      return resourceData.data;
 
       // Need some way to force a fetch.
       // Need a way to provide a name for the collection / resource
@@ -157,9 +157,9 @@ class drupalState {
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint: string = dsApiIndex[objectName];
-      const collectionData = (await fetchCollection(
+      const collectionData = (await fetchJsonapiEndpoint(
         endpoint
-      )) as CollectionResponse;
+      )) as JsonapiResponse;
 
       const fetchedCollectionState = {} as CollectionState;
       fetchedCollectionState[objectName] = collectionData;
