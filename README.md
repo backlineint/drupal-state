@@ -15,16 +15,31 @@ const store = new drupalState({
 ```
 
 Use the {@link drupalState.default.getObject | getObject method} to retrieve an
-object (think collection or resource in JSON:API terms) from your Drupal API:
+object (think collection or resource in JSON:API terms) from your Drupal API. If
+you provide only the first argument of objectName, a collection of all objects
+of that type will be returned.
 
 ```js
 // If the object doesn't exist in local state, it will be fetched from the API,
 // and then added to the store
-const recipesFromApi = await blueState.getObject('recipes');
+const recipesFromApi = await store.getObject('recipes');
 
 // If the object does exist in local state, it will be returned from the store
 // without requiring a fetch from the API
-const recipesFromStore = await blueState.getObject('recipes');
+const recipesFromStore = await store.getObject('recipes');
+```
+
+It is also possible to provide a second argument of ID in order to retrieve a
+single object of that type:
+
+```js
+// If the object doesn't exist in local state, it will be fetched from the API,
+// and then added to the store
+await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b');
+
+// If the object does exist in local state, it will be returned from the store
+// without requiring a fetch from the API
+await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b');
 ```
 
 Drupal Store extends [Zustand](https://github.com/pmndrs/zustand), so you also
@@ -44,8 +59,20 @@ with JSON:API endpoints even if you'd prefer to use an alternative state
 management solution.
 
 - {@link fetch/fetchApiIndex}: Retrieves index of resource links for the API
-- {@link fetch/fetchCollection}: Retrieves a collection of resources from the
-  API
+- {@link fetch/fetchJsonapiEndpoint}: Retrieves either a collection of objects
+  or an individual object from the API
+
+### Debug mode
+
+A Drupal State instance can be configured to run in debug mode. Currently this
+results in some additional logging to the console.
+
+```js
+const store = new drupalState({
+  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  debug: true,
+});
+```
 
 ## Contributing
 

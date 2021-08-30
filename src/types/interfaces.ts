@@ -41,7 +41,7 @@ export interface ApiIndexResponse {
 // Object Interfaces
 /**
  * Describes the shape of a JSON:API response. See
- * {@link fetch/fetchCollection}
+ * {@link fetch/fetchJsonapiEndpoint}
  */
 export interface JsonapiResponse {
   data: [];
