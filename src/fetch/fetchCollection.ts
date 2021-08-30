@@ -1,6 +1,8 @@
 import fetch from 'isomorphic-fetch';
 import { CollectionResponse } from '../types/interfaces';
 
+// TODO - Rename as fetchObject?
+
 /**
  * fetch data for a specific collection from JSON:API
  * @param apiUrl the api url for the collection

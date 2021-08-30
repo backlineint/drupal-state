@@ -83,45 +83,74 @@ class drupalState {
 
     // If an id is provided, find and return a resource
     if (id) {
-      // If the collection is in the store, check for the resource
+      const resourceState = state[`${objectName}Resources`] as keyedResources;
+
+      // If requested resource is in the resource store, return that
+      if (resourceState) {
+        const resource = resourceState[id];
+        if (resource) {
+          console.log(`Matched resource ${id} in state`);
+          return resource;
+        }
+      }
+
+      // If requested resource is in the collection store, return that
       if (collectionState) {
-        const resourceState = collectionState.filter(item => {
+        // If the collection is in the store, check for the resource
+        const matchedResourceState = collectionState.filter(item => {
           return item['id'] === id;
         });
 
         // Resource already exists within collection, return that.
-        if (resourceState) {
-          return resourceState.pop();
+        if (matchedResourceState) {
+          console.log(`Matched resource ${id} in collection`);
+          // TODO: Should this be added to ResourceState as well?
+          return matchedResourceState.pop();
         }
-        // TODO - also check in resource store
+      }
+      // Resource isn't in state, so fetch it from Drupal
+      console.log(`Fetch Resource ${id} and add to state`);
+      const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
+      const endpoint: string = dsApiIndex[objectName];
+      const collectionData = (await fetchCollection(
+        `${endpoint}/${id}`
+      )) as CollectionResponse;
+
+      // Pick up - fix types
+      // Debug Mode
+      // continue renaming and refining types.
+      // Tests and docs are needed.
+
+      const objectResourceState = state[`${objectName}Resources`];
+
+      if (objectResourceState) {
+        // If the resource state exists, add the new resource to it.
+        const updatedResourceState = {
+          ...objectResourceState,
+          [id]: collectionData.data,
+        };
+
+        this.setState({
+          [`${objectName}Resources`]: updatedResourceState,
+        });
       } else {
-        // If the resource is not in the store, fetch it from Drupal
-        const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-        const endpoint: string = dsApiIndex[objectName];
-        const collectionData = (await fetchCollection(
-          `${endpoint}/${id}`
-        )) as CollectionResponse;
-
-        // Pick up - Handle case where resource state already exists
-        // check state first/test with existing resource state.
-        // Check in resource store in addition to collection store.
-        // continue renaming and refining types.
-
+        // Create new object resource state with this resource included
         const resourceArray: keyedResources = {};
         resourceArray[id] = collectionData;
 
-        // Pick up
         const fetchedResourceState = {} as ResourceState;
         fetchedResourceState[`${objectName}Resources`] = resourceArray;
         this.setState(fetchedResourceState);
-
-        return collectionData.data;
       }
+
+      return collectionData.data;
+
       // Need some way to force a fetch.
       // Need a way to provide a name for the collection / resource
-    }
+    } // End if (id) block
 
     if (!collectionState) {
+      console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint: string = dsApiIndex[objectName];
       const collectionData = (await fetchCollection(
@@ -134,9 +163,10 @@ class drupalState {
       this.setState(fetchedCollectionState);
       const updatedState = this.getState() as DsState;
       return updatedState[objectName].data as CollectionData;
+    } else {
+      console.log(`Matched collection ${objectName} in state`);
+      return collectionState;
     }
-
-    return collectionState;
   }
 }
 

@@ -41,14 +41,14 @@ export interface ApiIndexResponse {
 /**
  * Represents the data contained within a resource object.
  */
-export interface ResourceData {
-  type: string;
-  id: string;
-  attributes: Record<string, unknown>;
-  relationships: Record<string, unknown>;
-  links: Record<string, unknown>;
-  pop(): ResourceData;
-}
+// export interface ResourceData {
+//   type: string;
+//   id: string;
+//   attributes: Record<string, unknown>;
+//   relationships: Record<string, unknown>;
+//   links: Record<string, unknown>;
+//   pop(): ResourceData;
+// }
 
 /**
  * Describes the shape of a JSON:API collection response. See
@@ -82,6 +82,7 @@ export interface ResourceState {
 /**
  * Represents the data contained within a collection object.
  */
+// TODO - rename to ObjectData?
 export interface CollectionData {
   filter(isMatch: (item: ResourceData) => boolean): ResourceData;
   [key: number]: ResourceData;
