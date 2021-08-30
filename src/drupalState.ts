@@ -116,7 +116,6 @@ class drupalState {
         `${endpoint}/${id}`
       )) as CollectionResponse;
 
-      // Pick up - fix types
       // Debug Mode
       // continue renaming and refining types.
       // Tests and docs are needed.
