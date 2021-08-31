@@ -7,7 +7,7 @@ A simple data store to manage application state sourced from Drupal's JSON:API.
 Create a new instance of Drupal State:
 
 ```js
-import drupalState from './drupalState';
+import { drupalState } from '@gdwc/drupal-state';
 
 const store = new drupalState({
   apiRoot: 'https://live-contentacms.pantheonsite.io/api',
@@ -61,6 +61,17 @@ management solution.
 - {@link fetch/fetchApiIndex}: Retrieves index of resource links for the API
 - {@link fetch/fetchJsonapiEndpoint}: Retrieves either a collection of objects
   or an individual object from the API
+
+```js
+import { fetchApiIndex, fetchJsonapiEndpoint } from '@gdwc/drupal-state';
+
+const apiIndexData = await fetchApiIndex(
+  'https://live-contentacms.pantheonsite.io/api'
+);
+const recipes = await fetchJsonapiEndpoint(
+  'https://live-contentacms.pantheonsite.io/api/recipes'
+);
+```
 
 ### Debug mode
 
