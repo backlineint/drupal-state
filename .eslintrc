@@ -12,5 +12,5 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier"
   ],
-  "ignorePatterns": ["main.ts", "*.test.ts"]
+  "ignorePatterns": ["main.ts", "*.test.ts", "vite.config.js"]
 }
