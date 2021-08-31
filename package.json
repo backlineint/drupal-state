@@ -1,6 +1,6 @@
 {
   "name": "@gdwc/drupal-state",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "prettier": {
     "singleQuote": true,
     "arrowParens": "avoid",
