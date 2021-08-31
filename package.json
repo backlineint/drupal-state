@@ -1,6 +1,22 @@
 {
   "name": "@gdwc/drupal-state",
   "version": "1.0.0",
+  "files": [
+    "dist",
+    "drupalState.js",
+    "drupalState.ts",
+    "fetch",
+    "types"
+  ],
+  "main": "./dist/drupal-state.umd.js",
+  "module": "./dist/drupal-state.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/drupal-state.es.js",
+      "require": "./dist/drupal-state.umd.js"
+    },
+    "./": "./"
+  },
   "prettier": {
     "singleQuote": true,
     "arrowParens": "avoid",
@@ -26,6 +42,20 @@
     "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://git.drupalcode.org/project/drupal_state.git"
+  },
+  "homepage": "https://www.drupal.org/project/drupal_state",
+  "bugs": {
+    "url": "https://www.drupal.org/project/issues/drupal_state"
+  },
+  "keywords": [
+    "drupal",
+    "decoupled",
+    "zustand"
+  ],
+  "license": "GPL-2.0-or-later",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",

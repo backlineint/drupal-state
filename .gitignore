@@ -13,3 +13,6 @@ docs
 # Jest
 junit.xml
 coverage
+
+# Compiled JS
+src/**/*.js
