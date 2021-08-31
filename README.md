@@ -4,6 +4,12 @@ A simple data store to manage application state sourced from Drupal's JSON:API.
 
 ## Usage
 
+Install Drupal State via npm:
+
+```
+npm i @gdwc/drupal-state
+```
+
 Create a new instance of Drupal State:
 
 ```js

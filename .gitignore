@@ -15,4 +15,5 @@ junit.xml
 coverage
 
 # Compiled JS
+lib.js
 src/**/*.js
