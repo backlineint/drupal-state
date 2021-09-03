@@ -31,6 +31,6 @@ async function main(): Promise<void> {
   store.setState({ custom: 'custom state' });
 }
 
-main();
+await main();
 
 app.innerHTML = `<pre>${JSON.stringify(store.getState(), null, 2)}</pre>`;

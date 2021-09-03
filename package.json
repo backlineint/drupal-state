@@ -1,6 +1,6 @@
 {
   "name": "@gdwc/drupal-state",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "files": [
     "dist",
     "src/drupalState.{js,ts}",
@@ -42,7 +42,8 @@
     "prettier": "prettier \"**/*.{js,ts,md}\" --check --ignore-path .gitignore",
     "prettier:fix": "prettier \"**/*.{js,ts,md}\" --write --ignore-path .gitignore",
     "lint-staged": "lint-staged",
-    "prepare": "npm run build && husky install"
+    "prepare": "npm run build && husky install",
+    "postpublish": "rm src/*.js && rm src/**/*.js"
   },
   "repository": {
     "type": "git",
