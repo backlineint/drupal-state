@@ -1,5 +1,5 @@
-jest.mock('isomorphic-fetch', () => require('fetch-mock-jest').sandbox());
-const fetchMock = require('isomorphic-fetch');
+jest.mock('isomorphic-unfetch', () => require('fetch-mock-jest').sandbox());
+const fetchMock = require('isomorphic-unfetch');
 
 import fetchApiIndex from '../fetchApiIndex';
 import indexResponse from './data/apiIndex.json';
