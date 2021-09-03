@@ -43,7 +43,8 @@
     "prettier:fix": "prettier \"**/*.{js,ts,md}\" --write --ignore-path .gitignore",
     "lint-staged": "lint-staged",
     "prepare": "npm run build && husky install",
-    "postpublish": "rm src/*.js && rm src/**/*.js"
+    "postpublish": "rm src/*.js && rm src/**/*.js",
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
@@ -78,6 +79,7 @@
     "isomorphic-fetch": "^3.0.0",
     "jest": "^27.0.6",
     "jest-junit": "^12.2.0",
+    "patch-package": "^6.4.7",
     "ts-jest": "^27.0.5",
     "zustand": "^3.5.7"
   }
