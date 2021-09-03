@@ -42,7 +42,8 @@
     "prettier": "prettier \"**/*.{js,ts,md}\" --check --ignore-path .gitignore",
     "prettier:fix": "prettier \"**/*.{js,ts,md}\" --write --ignore-path .gitignore",
     "lint-staged": "lint-staged",
-    "prepare": "npm run build && husky install"
+    "prepare": "npm run build && husky install",
+    "postpublish": "rm src/*.js && rm src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -74,6 +75,7 @@
   "dependencies": {
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^27.0.1",
+    "cross-fetch": "^3.1.4",
     "isomorphic-fetch": "^3.0.0",
     "jest": "^27.0.6",
     "jest-junit": "^12.2.0",

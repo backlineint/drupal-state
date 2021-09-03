@@ -1,5 +1,5 @@
-jest.mock('isomorphic-fetch', () => require('fetch-mock-jest').sandbox());
-const fetchMock = require('isomorphic-fetch');
+jest.mock('cross-fetch', () => require('fetch-mock-jest').sandbox());
+const fetchMock = require('cross-fetch');
 fetchMock.config.overwriteRoutes = true;
 
 import fetchJsonapiEndpoint from '../fetchJsonapiEndpoint';
