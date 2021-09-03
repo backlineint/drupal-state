@@ -5,8 +5,7 @@
     "dist",
     "src/drupalState.{js,ts}",
     "src/fetch/*.{js,ts}",
-    "src/types/*.ts",
-    "patches"
+    "src/types/*.ts"
   ],
   "main": "./dist/drupal-state.umd.js",
   "module": "./dist/drupal-state.es.js",
