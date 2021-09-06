@@ -1,3 +1,4 @@
+import { TJsonApiBody, TJsonApiData } from 'jsona/lib/JsonaTypes';
 import { keyedResources } from './types';
 
 /**
@@ -16,9 +17,7 @@ export interface DrupalStateConfig {
  * Generically represents the shape of a Drupal State object
  */
 export interface DsState {
-  [key: string]: {
-    data?: CollectionData;
-  };
+  [key: string]: TJsonApiBody;
 }
 
 // ApiIndex interfaces
@@ -40,30 +39,17 @@ export interface ApiIndexResponse {
 
 // Object Interfaces
 /**
- * Describes the shape of a JSON:API response. See
- * {@link fetch/fetchJsonapiEndpoint}
+ * Extends TJsonApiData with filter method
  */
-export interface JsonapiResponse {
-  data: [];
-  jsonapi: {
-    version: string;
-    [key: string]: string;
-  };
-  links: {
-    [key: string]: string;
-  };
+export interface TJsonApiDataFilterable extends TJsonApiData {
+  filter(isMatch: (item: TJsonApiData) => boolean): TJsonApiData[];
 }
 
 /**
- * Represents the data contained within a resource object.
+ * Describes a partial state object for a collection. Used with setState.
  */
-export interface ResourceData {
-  type: string;
-  id: string;
-  attributes: Record<string, unknown>;
-  relationships: Record<string, unknown>;
-  links: Record<string, unknown>;
-  pop(): ResourceData;
+export interface CollectionState {
+  [key: string]: TJsonApiBody;
 }
 
 /**
@@ -71,19 +57,4 @@ export interface ResourceData {
  */
 export interface ResourceState {
   [key: string]: keyedResources;
-}
-
-/**
- * Represents the data contained within a collection object.
- */
-export interface CollectionData {
-  filter(isMatch: (item: ResourceData) => boolean): ResourceData;
-  [key: number]: ResourceData;
-}
-
-/**
- * Describes a partial state object for a collection. Used with setState.
- */
-export interface CollectionState {
-  [key: string]: JsonapiResponse;
 }

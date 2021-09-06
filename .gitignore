@@ -6,6 +6,7 @@ dist-ssr
 
 # VSCode
 .vscode/settings.json
+.vscode/launch.json
 
 # TypeDocs
 docs

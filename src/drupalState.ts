@@ -7,22 +7,21 @@ import create, {
   State,
   PartialState,
 } from 'zustand/vanilla';
+import Jsona from 'jsona';
 
+import fetchApiIndex from './fetch/fetchApiIndex';
+import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
+
+import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
+import { keyedResources, TJsonApiBodyDataRequired } from './types/types';
 import {
   DrupalStateConfig,
   DsState,
   CollectionState,
   GenericIndex,
-  JsonapiResponse,
-  CollectionData,
 } from './types/interfaces';
 
-import { keyedResources } from './types/types';
-
-import fetchApiIndex from './fetch/fetchApiIndex';
-import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
-
-class drupalState {
+class DrupalState {
   apiRoot: string;
   debug: boolean;
   store: StoreApi<State>;
@@ -30,10 +29,12 @@ class drupalState {
   setState: SetState<State>;
   subscribe: Subscribe<State>;
   destroy: Destroy;
+  private dataFormatter: Jsona;
 
   constructor({ apiRoot, debug = false }: DrupalStateConfig) {
     this.apiRoot = apiRoot;
     this.debug = debug;
+    this.dataFormatter = new Jsona();
 
     !this.debug || console.log('Debug mode:', debug);
 
@@ -56,7 +57,7 @@ class drupalState {
     // TODO: this should be optimized so we don't have create a full copy of
     // the store.
     const state = this.getState() as DsState;
-    const dsApiIndex = state.dsApiIndex;
+    const dsApiIndex = state.dsApiIndex as GenericIndex;
 
     if (!dsApiIndex) {
       // Fetch the API index from Drupal
@@ -64,7 +65,7 @@ class drupalState {
       this.setState({ dsApiIndex: dsApiIndexData });
 
       const updatedState = this.getState() as DsState;
-      return updatedState.dsApiIndex;
+      return updatedState.dsApiIndex as GenericIndex;
     }
 
     return dsApiIndex;
@@ -74,7 +75,8 @@ class drupalState {
    * Get an object from local state if it exists, or fetch it from Drupal if
    * it doesn't exist in local state.
    * @param objectName Name of object to retrieve. Ex: node--article
-   * @returns a promise containing JSON:Api data for the requested object
+   * @returns a promise containing deserialized JSON:API data for the requested
+   * object
    */
   async getObject(
     objectName: string,
@@ -82,7 +84,7 @@ class drupalState {
   ): Promise<PartialState<State>> {
     const state = this.getState() as DsState;
     // Check for collection in the store
-    const collectionState = state[objectName]?.data as CollectionData;
+    const collectionState = state[objectName] as TJsonApiBodyDataRequired;
 
     // If an id is provided, find and return a resource
     if (id) {
@@ -93,14 +95,14 @@ class drupalState {
         const resource = resourceState[id];
         if (resource) {
           !this.debug || console.log(`Matched resource ${id} in state`);
-          return resource;
+          return this.dataFormatter.deserialize(resource);
         }
       }
 
       // If requested resource is in the collection store, return that
-      if (collectionState) {
+      if (collectionState?.data) {
         // If the collection is in the store, check for the resource
-        const matchedResourceState = collectionState.filter(item => {
+        const matchedResourceState = collectionState.data.filter(item => {
           return item['id'] === id;
         });
 
@@ -108,7 +110,8 @@ class drupalState {
         if (matchedResourceState) {
           !this.debug || console.log(`Matched resource ${id} in collection`);
           // Should this be added to ResourceState as well?
-          return matchedResourceState.pop();
+          const serializedState = { data: matchedResourceState.pop() };
+          return this.dataFormatter.deserialize(serializedState);
         }
       }
       // Resource isn't in state, so fetch it from Drupal
@@ -117,7 +120,7 @@ class drupalState {
       const endpoint: string = dsApiIndex[objectName];
       const resourceData = (await fetchJsonapiEndpoint(
         `${endpoint}/${id}`
-      )) as JsonapiResponse;
+      )) as TJsonApiBody;
 
       const objectResourceState = state[`${objectName}Resources`];
 
@@ -125,7 +128,7 @@ class drupalState {
         // If the resource state exists, add the new resource to it.
         const updatedResourceState = {
           ...objectResourceState,
-          [id]: resourceData.data,
+          [id]: resourceData,
         };
 
         this.setState({
@@ -133,13 +136,13 @@ class drupalState {
         });
       } else {
         const newResourceState = {
-          [id]: resourceData.data,
+          [id]: resourceData,
         };
 
         this.setState({ [`${objectName}Resources`]: newResourceState });
       }
 
-      return resourceData.data;
+      return this.dataFormatter.deserialize(resourceData);
     } // End if (id) block
 
     if (!collectionState) {
@@ -149,19 +152,19 @@ class drupalState {
       const endpoint: string = dsApiIndex[objectName];
       const collectionData = (await fetchJsonapiEndpoint(
         endpoint
-      )) as JsonapiResponse;
+      )) as TJsonApiBody;
 
       const fetchedCollectionState = {} as CollectionState;
       fetchedCollectionState[objectName] = collectionData;
 
       this.setState(fetchedCollectionState);
       const updatedState = this.getState() as DsState;
-      return updatedState[objectName].data as CollectionData;
+      return this.dataFormatter.deserialize(updatedState[objectName]);
     } else {
       !this.debug || console.log(`Matched collection ${objectName} in state`);
-      return collectionState;
+      return this.dataFormatter.deserialize(collectionState);
     }
   }
 }
 
-export default drupalState;
+export default DrupalState;

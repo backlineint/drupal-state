@@ -13,17 +13,18 @@ npm i @gdwc/drupal-state
 Create a new instance of Drupal State:
 
 ```js
-import { drupalState } from '@gdwc/drupal-state';
+import { DrupalState } from '@gdwc/drupal-state';
 
-const store = new drupalState({
+const store = new DrupalState({
   apiRoot: 'https://live-contentacms.pantheonsite.io/api',
 });
 ```
 
 Use the {@link drupalState.default.getObject | getObject method} to retrieve an
-object (think collection or resource in JSON:API terms) from your Drupal API. If
-you provide only the first argument of objectName, a collection of all objects
-of that type will be returned.
+object (think collection or resource in JSON:API terms) from your Drupal API. By
+default this will be a simplified deserialized version of the object. If you
+provide only the first argument of objectName, a collection of all objects of
+that type will be returned.
 
 ```js
 // If the object doesn't exist in local state, it will be fetched from the API,
@@ -85,7 +86,7 @@ A Drupal State instance can be configured to run in debug mode. Currently this
 results in some additional logging to the console.
 
 ```js
-const store = new drupalState({
+const store = new DrupalState({
   apiRoot: 'https://live-contentacms.pantheonsite.io/api',
   debug: true,
 });
@@ -135,6 +136,13 @@ Formatting and linting can also be run manually using the following commands:
 - `npm run eslint:fix` - attempts to fix any linting issues
 - `npm run prettier` - checks formatting
 - `npm run prettier:fix` - attempts to fix any formatting issues
+
+## Debugging
+
+For VSCode users, an example launch file is included in An example settings file
+is included in `.vscode/example.launch.json`. Save this file as
+`.vscode/launchs.json` or incorporate the contents into your existing
+launch.json file to enable a Chrome debugging configuration.
 
 ## Testing
 

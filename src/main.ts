@@ -1,9 +1,9 @@
-import drupalState from './drupalState';
+import DrupalState from './DrupalState';
 import './style.css';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
-const store: any = new drupalState({
+const store: any = new DrupalState({
   apiRoot: 'https://live-contentacms.pantheonsite.io/api',
   debug: true,
 });

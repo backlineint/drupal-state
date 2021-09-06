@@ -1,5 +1,5 @@
-import drupalState from './src/drupalState';
+import DrupalState from './src/DrupalState';
 import fetchApiIndex from './src/fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './src/fetch/fetchJsonapiEndpoint';
 
-export { drupalState, fetchApiIndex, fetchJsonapiEndpoint };
+export { DrupalState, fetchApiIndex, fetchJsonapiEndpoint };
