@@ -3,7 +3,7 @@
     "commitMessage": "chore: release v${version}",
     "requireCleanWorkingDir": false
   },
-  "github": {
-    "release": true
+  "hooks": {
+    "after:release": ["git push github 1.0.x"]
   }
 }
