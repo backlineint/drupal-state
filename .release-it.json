@@ -1,8 +1,9 @@
 {
   "git": {
-    "commitMessage": "chore: release v${version}"
+    "commitMessage": "chore: release v${version}",
+    "requireCleanWorkingDir": false
   },
-  "gitlab": {
+  "github": {
     "release": true
   }
 }
