@@ -4,6 +4,6 @@
     "requireCleanWorkingDir": false
   },
   "hooks": {
-    "after:release": ["git push github 1.0.x"]
+    "after:release": ["git push github 1.0.x", "git push github ${version}"]
   }
 }
