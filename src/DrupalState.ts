@@ -13,13 +13,14 @@ import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
 
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
-import { keyedResources, TJsonApiBodyDataRequired } from './types/types';
-import {
+import { 
+  keyedResources,
+  TJsonApiBodyDataRequired,
   DrupalStateConfig,
   DsState,
   CollectionState,
   GenericIndex,
-} from './types/interfaces';
+} from './types/types';
 
 class DrupalState {
   apiRoot: string;
