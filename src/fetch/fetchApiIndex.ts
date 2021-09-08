@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import { GenericIndex, ApiIndexResponse } from '../types/interfaces';
+import { GenericIndex, ApiIndexResponse } from '../types/types';
 
 /**
  * Get an index of resource links for the API
