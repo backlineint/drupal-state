@@ -8,6 +8,7 @@ import create, {
   PartialState,
 } from 'zustand/vanilla';
 import Jsona from 'jsona';
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
@@ -31,11 +32,13 @@ class DrupalState {
   subscribe: Subscribe<State>;
   destroy: Destroy;
   private dataFormatter: Jsona;
+  params: DrupalJsonApiParams;
 
   constructor({ apiRoot, debug = false }: DrupalStateConfig) {
     this.apiRoot = apiRoot;
     this.debug = debug;
     this.dataFormatter = new Jsona();
+    this.params = new DrupalJsonApiParams();
 
     !this.debug || console.log('Debug mode:', debug);
 
@@ -119,8 +122,9 @@ class DrupalState {
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint: string = dsApiIndex[objectName];
+      const query: string = this.params.getQueryString();
       const resourceData = (await fetchJsonapiEndpoint(
-        `${endpoint}/${id}`
+        query ? `${endpoint}/${id}?${query}` : `${endpoint}/${id}`
       )) as TJsonApiBody;
 
       const objectResourceState = state[`${objectName}Resources`];
@@ -150,7 +154,8 @@ class DrupalState {
       !this.debug ||
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-      const endpoint: string = dsApiIndex[objectName];
+      const query = this.params.getQueryString();
+      const endpoint = query ? `${dsApiIndex[objectName]}?${query}` : `${dsApiIndex[objectName]}`;
       const collectionData = (await fetchJsonapiEndpoint(
         endpoint
       )) as TJsonApiBody;
