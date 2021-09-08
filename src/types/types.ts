@@ -23,7 +23,7 @@ export declare type TJsonApiBodyDataRequired = {
  * An interface documenting all of the named parameters that can be used when
  * creating a new instance of DrupalState
  */
- export interface DrupalStateConfig {
+export interface DrupalStateConfig {
   /**
    * Url to the root of JSON:API
    */

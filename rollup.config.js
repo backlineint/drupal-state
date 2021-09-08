@@ -3,23 +3,19 @@ import typescript from '@rollup/plugin-typescript';
 export default [
   {
     input: 'lib.ts',
-    output:{
+    output: {
       file: 'dist/drupal-state.es.js',
-      format: 'es'
+      format: 'es',
     },
-    plugins: [
-			typescript(),
-		]
+    plugins: [typescript()],
   },
   {
     input: 'lib.ts',
     output: {
       file: 'dist/drupal-state.umd.js',
       format: 'umd',
-      name: 'DrupalState'
+      name: 'DrupalState',
     },
-    plugins: [
-			typescript(),
-		]
-  }
+    plugins: [typescript()],
+  },
 ];

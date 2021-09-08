@@ -13,7 +13,7 @@ import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
 
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
-import { 
+import {
   keyedResources,
   TJsonApiBodyDataRequired,
   DrupalStateConfig,
