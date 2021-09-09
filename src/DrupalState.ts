@@ -8,6 +8,7 @@ import create, {
   PartialState,
 } from 'zustand/vanilla';
 import Jsona from 'jsona';
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
@@ -31,11 +32,13 @@ class DrupalState {
   subscribe: Subscribe<State>;
   destroy: Destroy;
   private dataFormatter: Jsona;
+  params: DrupalJsonApiParams;
 
   constructor({ apiRoot, debug = false }: DrupalStateConfig) {
     this.apiRoot = apiRoot;
     this.debug = debug;
     this.dataFormatter = new Jsona();
+    this.params = new DrupalJsonApiParams();
 
     !this.debug || console.log('Debug mode:', debug);
 
@@ -70,6 +73,26 @@ class DrupalState {
     }
 
     return dsApiIndex;
+  }
+
+  assembleEndpoint(
+    index: string | GenericIndex,
+    query: string,
+    id = ''
+  ): string {
+    let endpoint = '';
+    if (typeof index === 'string') {
+      endpoint = index;
+    } else {
+      endpoint = index.href as string;
+    }
+    if (id) {
+      endpoint += `/${id}`;
+    }
+    if (query) {
+      endpoint += `?${query}`;
+    }
+    return endpoint;
   }
 
   /**
@@ -118,9 +141,13 @@ class DrupalState {
       // Resource isn't in state, so fetch it from Drupal
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-      const endpoint: string = dsApiIndex[objectName];
+      const endpoint = this.assembleEndpoint(
+        dsApiIndex[objectName],
+        this.params.getQueryString(),
+        id
+      );
       const resourceData = (await fetchJsonapiEndpoint(
-        `${endpoint}/${id}`
+        endpoint
       )) as TJsonApiBody;
 
       const objectResourceState = state[`${objectName}Resources`];
@@ -150,7 +177,11 @@ class DrupalState {
       !this.debug ||
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-      const endpoint: string = dsApiIndex[objectName];
+      const endpoint = this.assembleEndpoint(
+        dsApiIndex[objectName],
+        this.params.getQueryString(),
+        id
+      );
       const collectionData = (await fetchJsonapiEndpoint(
         endpoint
       )) as TJsonApiBody;

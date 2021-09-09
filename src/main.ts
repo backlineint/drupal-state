@@ -9,6 +9,9 @@ const store: any = new DrupalState({
 });
 
 async function main(): Promise<void> {
+  // Include images in response
+  store.params.addInclude(['image']);
+
   // If no resources are in state, create a new resource object
   await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b');
   // If a resource is in state, use the local version rather than fetching

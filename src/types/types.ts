@@ -44,7 +44,7 @@ export interface DsState {
  * {@link fetch/fetchApiIndex}
  */
 export interface GenericIndex {
-  [key: string]: string;
+  [key: string]: string | GenericIndex;
 }
 
 /**
