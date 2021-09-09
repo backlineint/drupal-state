@@ -75,6 +75,26 @@ class DrupalState {
     return dsApiIndex;
   }
 
+  assembleEndpoint(
+    index: string | GenericIndex,
+    query: string,
+    id = ''
+  ): string {
+    let endpoint = '';
+    if (typeof index === 'string') {
+      endpoint = index;
+    } else {
+      endpoint = index.href as string;
+    }
+    if (id) {
+      endpoint += `/${id}`;
+    }
+    if (query) {
+      endpoint += `?${query}`;
+    }
+    return endpoint;
+  }
+
   /**
    * Get an object from local state if it exists, or fetch it from Drupal if
    * it doesn't exist in local state.
@@ -121,10 +141,13 @@ class DrupalState {
       // Resource isn't in state, so fetch it from Drupal
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-      const endpoint: string = dsApiIndex[objectName];
-      const query: string = this.params.getQueryString();
+      const endpoint = this.assembleEndpoint(
+        dsApiIndex[objectName],
+        this.params.getQueryString(),
+        id
+      );
       const resourceData = (await fetchJsonapiEndpoint(
-        query ? `${endpoint}/${id}?${query}` : `${endpoint}/${id}`
+        endpoint
       )) as TJsonApiBody;
 
       const objectResourceState = state[`${objectName}Resources`];
@@ -154,8 +177,11 @@ class DrupalState {
       !this.debug ||
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
-      const query = this.params.getQueryString();
-      const endpoint = query ? `${dsApiIndex[objectName]}?${query}` : `${dsApiIndex[objectName]}`;
+      const endpoint = this.assembleEndpoint(
+        dsApiIndex[objectName],
+        this.params.getQueryString(),
+        id
+      );
       const collectionData = (await fetchJsonapiEndpoint(
         endpoint
       )) as TJsonApiBody;
