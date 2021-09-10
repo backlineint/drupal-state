@@ -25,11 +25,7 @@
     "proseWrap": "always"
   },
   "lint-staged": {
-    "*.{js,ts}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{md,mdx}": "prettier --write"
+    "*.{js,ts,md,mdx}": "prettier --write"
   },
   "scripts": {
     "dev": "vite",

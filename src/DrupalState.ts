@@ -32,6 +32,9 @@ class DrupalState {
   subscribe: Subscribe<State>;
   destroy: Destroy;
   private dataFormatter: Jsona;
+  /**
+   * DrupalJsonApiParams - see [https://www.npmjs.com/package/drupal-jsonapi-params](https://www.npmjs.com/package/drupal-jsonapi-params)
+   */
   params: DrupalJsonApiParams;
 
   constructor({ apiRoot, debug = false }: DrupalStateConfig) {
@@ -53,6 +56,33 @@ class DrupalState {
 
   // Todo - Various error handling
   /**
+   * Assembles a correctly formatted JSON:API endpoint URL.
+   * @param index a JSON:API resource endpoint
+   * @param query query string containing JSON:API parameters
+   * @param id id of an individual resource
+   */
+  assembleEndpoint(
+    index: string | GenericIndex,
+    query: string,
+    id = ''
+  ): string {
+    let endpoint = '';
+    if (typeof index === 'string') {
+      endpoint = index;
+    } else {
+      // TODO - probably need some additional error handling here
+      endpoint = index.href as string;
+    }
+    if (id) {
+      endpoint += `/${id}`;
+    }
+    if (query) {
+      endpoint += `?${query}`;
+    }
+    return endpoint;
+  }
+
+  /**
    * Get the contents of the root API from local state if it exists, or fetch
    * it from Drupal if it doesn't exist in local state.
    * @returns a promise containing an index of api links
@@ -73,26 +103,6 @@ class DrupalState {
     }
 
     return dsApiIndex;
-  }
-
-  assembleEndpoint(
-    index: string | GenericIndex,
-    query: string,
-    id = ''
-  ): string {
-    let endpoint = '';
-    if (typeof index === 'string') {
-      endpoint = index;
-    } else {
-      endpoint = index.href as string;
-    }
-    if (id) {
-      endpoint += `/${id}`;
-    }
-    if (query) {
-      endpoint += `?${query}`;
-    }
-    return endpoint;
   }
 
   /**

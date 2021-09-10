@@ -17,6 +17,7 @@
   "exclude": ["./**/__tests__", "./src/main.ts"],
   "typedocOptions": {
     "entryPoints": ["./src"],
+    "exclude": ["./src/main.ts", "**/*.test.ts"],
     "out": "docs"
   }
 }

@@ -20,7 +20,7 @@ const store = new DrupalState({
 });
 ```
 
-Use the {@link drupalState.default.getObject | getObject method} to retrieve an
+Use the {@link DrupalState.default.getObject | getObject method} to retrieve an
 object (think collection or resource in JSON:API terms) from your Drupal API. By
 default this will be a simplified deserialized version of the object. If you
 provide only the first argument of objectName, a collection of all objects of
@@ -57,6 +57,34 @@ if needed:
 ```js
 store.setState({ custom: 'My custom state' });
 const myCustomState = store.getState().custom; // Returns 'My custom state'
+```
+
+### Request Parameters
+
+Parameters can be added to requests using methods on the param property. For
+example, to include image relationships in the response:
+
+```js
+const store = new DrupalState({
+  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+});
+
+store.params.addInclude(['image']);
+const recipes = await store.getObject('recipes');
+
+// The resulting JSON:API request will be https://live-contentacms.pantheonsite.io/api/recipes?include=image
+```
+
+All helper methods provided by the excellent
+[Drupal JSON:API Params package](https://www.npmjs.com/package/drupal-jsonapi-params)
+are available so it is possible to filter, sort, use sparse fieldsets,
+pagination, and so on.
+
+The param object persists for the life of the data store, so it may also be
+cleared if necessary in order to structure a new query string.
+
+```js
+store.params.clear();
 ```
 
 ### Utilities
