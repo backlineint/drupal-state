@@ -83,6 +83,21 @@ class DrupalState {
   }
 
   /**
+   * Wraps {@link fetch/fetchApiIndex} function so it can be overridden.
+   */
+  async fetchApiIndex(apiRoot: string): Promise<void | GenericIndex> {
+    return await fetchApiIndex(apiRoot);
+  }
+
+  /**
+   *
+   * Wraps {@link fetch/fetchJsonapiEndpoint} function so it can be overridden.
+   */
+  async fetchJsonapiEndpoint(endpoint: string): Promise<void | TJsonApiBody> {
+    return await fetchJsonapiEndpoint(endpoint);
+  }
+
+  /**
    * Get the contents of the root API from local state if it exists, or fetch
    * it from Drupal if it doesn't exist in local state.
    * @returns a promise containing an index of api links
@@ -95,7 +110,7 @@ class DrupalState {
 
     if (!dsApiIndex) {
       // Fetch the API index from Drupal
-      const dsApiIndexData = await fetchApiIndex(this.apiRoot);
+      const dsApiIndexData = await this.fetchApiIndex(this.apiRoot);
       this.setState({ dsApiIndex: dsApiIndexData });
 
       const updatedState = this.getState() as DsState;
@@ -156,7 +171,7 @@ class DrupalState {
         this.params.getQueryString(),
         id
       );
-      const resourceData = (await fetchJsonapiEndpoint(
+      const resourceData = (await this.fetchJsonapiEndpoint(
         endpoint
       )) as TJsonApiBody;
 
@@ -192,7 +207,7 @@ class DrupalState {
         this.params.getQueryString(),
         id
       );
-      const collectionData = (await fetchJsonapiEndpoint(
+      const collectionData = (await this.fetchJsonapiEndpoint(
         endpoint
       )) as TJsonApiBody;
 
