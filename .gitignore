@@ -19,5 +19,9 @@ coverage
 lib.js
 src/**/*.js
 
+# Compiled TS Definitions
+lib.d.ts
+src/**/*.d.ts
+
 # dotenv
 .env

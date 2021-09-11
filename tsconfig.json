@@ -11,7 +11,9 @@
     "noEmit": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "declaration": true,
+    "declarationDir": "./dist/declarations"
   },
   "include": ["./src", "lib.ts"],
   "exclude": ["./**/__tests__", "./src/main.ts"],
