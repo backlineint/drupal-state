@@ -35,7 +35,10 @@ describe('drupalState', () => {
     });
     store.setState({ recipesResources: recipesResourcesState1 });
     expect(
-      await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
+      await store.getObject({
+        objectName: 'recipes',
+        id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      })
     ).toEqual(recipesResourceObject1);
     expect(fetchMock).toBeCalledTimes(0);
   });
@@ -47,7 +50,10 @@ describe('drupalState', () => {
     });
     store.setState({ recipes: recipes });
     expect(
-      await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
+      await store.getObject({
+        objectName: 'recipes',
+        id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      })
     ).toEqual(recipesResourceObject1);
     expect(fetchMock).toBeCalledTimes(0);
   });
@@ -66,7 +72,10 @@ describe('drupalState', () => {
       }
     );
     expect(
-      await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
+      await store.getObject({
+        objectName: 'recipes',
+        id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      })
     ).toEqual(recipesResourceObject1);
     expect(fetchMock).toBeCalledTimes(1);
   });
@@ -87,7 +96,10 @@ describe('drupalState', () => {
     );
 
     expect(
-      await store.getObject('recipes', '84cfaa18-faca-471f-bfa5-fbb8c199d039')
+      await store.getObject({
+        objectName: 'recipes',
+        id: '84cfaa18-faca-471f-bfa5-fbb8c199d039',
+      })
     ).toEqual(recipesResourceObject2);
     const state: any = await store.getState();
     expect(state.recipesResources).toEqual(recipesResourcesState2);
@@ -100,7 +112,9 @@ describe('drupalState', () => {
       debug: true,
     });
     store.setState({ recipes: recipes });
-    expect(await store.getObject('recipes')).toEqual(recipesCollectionObject1);
+    expect(await store.getObject({ objectName: 'recipes' })).toEqual(
+      recipesCollectionObject1
+    );
     expect(fetchMock).toBeCalledTimes(0);
   });
 
@@ -117,7 +131,9 @@ describe('drupalState', () => {
       status: 200,
       body: recipes,
     });
-    expect(await store.getObject('recipes')).toEqual(recipesCollectionObject1);
+    expect(await store.getObject({ objectName: 'recipes' })).toEqual(
+      recipesCollectionObject1
+    );
     expect(fetchMock).toBeCalledTimes(2);
   });
 
@@ -134,7 +150,9 @@ describe('drupalState', () => {
       },
       { overwriteRoutes: true }
     );
-    expect(await store.getObject('recipes')).toEqual(recipesCollectionObject1);
+    expect(await store.getObject({ objectName: 'recipes' })).toEqual(
+      recipesCollectionObject1
+    );
     expect(fetchMock).toBeCalledTimes(1);
   });
 });

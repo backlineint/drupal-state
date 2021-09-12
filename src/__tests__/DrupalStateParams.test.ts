@@ -59,7 +59,10 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
       }
     );
     expect(
-      await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b')
+      await store.getObject({
+        objectName: 'recipes',
+        id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      })
     ).toEqual(singleIncludeObject);
     expect(fetchMock).toBeCalledTimes(1);
   });
@@ -78,7 +81,9 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
         body: nestedIncludeData,
       }
     );
-    expect(await store.getObject('node--article')).toEqual(nestedIncludeObject);
+    expect(await store.getObject({ objectName: 'node--article' })).toEqual(
+      nestedIncludeObject
+    );
     expect(fetchMock).toBeCalledTimes(1);
   });
 

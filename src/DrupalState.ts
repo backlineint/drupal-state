@@ -1,3 +1,4 @@
+import { ServerResponse } from 'http';
 import create, {
   StoreApi,
   GetState,
@@ -21,6 +22,7 @@ import {
   DsState,
   CollectionState,
   GenericIndex,
+  GetObjectParams,
 } from './types/types';
 
 class DrupalState {
@@ -93,8 +95,11 @@ class DrupalState {
    *
    * Wraps {@link fetch/fetchJsonapiEndpoint} function so it can be overridden.
    */
-  async fetchJsonapiEndpoint(endpoint: string): Promise<void | TJsonApiBody> {
-    return await fetchJsonapiEndpoint(endpoint);
+  async fetchJsonapiEndpoint(
+    endpoint: string,
+    res: ServerResponse | boolean
+  ): Promise<void | TJsonApiBody> {
+    return await fetchJsonapiEndpoint(endpoint, res);
   }
 
   /**
@@ -124,13 +129,16 @@ class DrupalState {
    * Get an object from local state if it exists, or fetch it from Drupal if
    * it doesn't exist in local state.
    * @param objectName Name of object to retrieve. Ex: node--article
+   * @param id id of a specific resource
+   * @param res response object
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    */
-  async getObject(
-    objectName: string,
-    id?: string
-  ): Promise<PartialState<State>> {
+  async getObject({
+    objectName,
+    id,
+    res = false,
+  }: GetObjectParams): Promise<PartialState<State>> {
     const state = this.getState() as DsState;
     // Check for collection in the store
     const collectionState = state[objectName] as TJsonApiBodyDataRequired;
@@ -171,8 +179,10 @@ class DrupalState {
         this.params.getQueryString(),
         id
       );
+
       const resourceData = (await this.fetchJsonapiEndpoint(
-        endpoint
+        endpoint,
+        res
       )) as TJsonApiBody;
 
       const objectResourceState = state[`${objectName}Resources`];
@@ -208,7 +218,8 @@ class DrupalState {
         id
       );
       const collectionData = (await this.fetchJsonapiEndpoint(
-        endpoint
+        endpoint,
+        res
       )) as TJsonApiBody;
 
       const fetchedCollectionState = {} as CollectionState;

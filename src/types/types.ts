@@ -1,3 +1,4 @@
+import { ServerResponse } from 'http';
 import { TJsonApiBody, TJsonApiData } from 'jsona/lib/JsonaTypes';
 
 // Type Aliases
@@ -56,6 +57,12 @@ export interface ApiIndexResponse {
 }
 
 // Object Interfaces
+export interface GetObjectParams {
+  objectName: string;
+  id?: string;
+  res?: ServerResponse | boolean;
+}
+
 /**
  * Extends TJsonApiData with filter method
  */

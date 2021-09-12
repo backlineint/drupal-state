@@ -29,11 +29,11 @@ that type will be returned.
 ```js
 // If the object doesn't exist in local state, it will be fetched from the API,
 // and then added to the store
-const recipesFromApi = await store.getObject('recipes');
+const recipesFromApi = await store.getObject({ objectName: 'recipes' });
 
 // If the object does exist in local state, it will be returned from the store
 // without requiring a fetch from the API
-const recipesFromStore = await store.getObject('recipes');
+const recipesFromStore = await store.getObject({ objectName: 'recipes' });
 ```
 
 It is also possible to provide a second argument of ID in order to retrieve a
@@ -42,11 +42,17 @@ single object of that type:
 ```js
 // If the object doesn't exist in local state, it will be fetched from the API,
 // and then added to the store
-await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b');
+await store.getObject({
+  objectName: 'recipes',
+  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+});
 
 // If the object does exist in local state, it will be returned from the store
 // without requiring a fetch from the API
-await store.getObject('recipes', 'a542e833-edfe-44a3-a6f1-7358b115af4b');
+await store.getObject({
+  objectName: 'recipes',
+  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+});
 ```
 
 Drupal Store extends [Zustand](https://github.com/pmndrs/zustand), so you also
@@ -70,7 +76,7 @@ const store = new DrupalState({
 });
 
 store.params.addInclude(['image']);
-const recipes = await store.getObject('recipes');
+const recipes = await store.getObject({ objectName: 'recipes' });
 
 // The resulting JSON:API request will be https://live-contentacms.pantheonsite.io/api/recipes?include=image
 ```
