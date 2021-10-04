@@ -1,0 +1,14 @@
+{
+  "__typename": "node--page",
+  "id": "04fe66ed-1161-47f4-8a3f-6450eb9a8fa9",
+  "title": "About Umami",
+  "body": {
+    "value": "<p>Umami is a fictional food magazine that has been created to demonstrate how you might build a Drupal site using functionality provided 'out of the box'.</p><p>For more information visit <a href='https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile'>https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile</a>.</p>",
+    "format": "basic_html",
+    "processed": "<p>Umami is a fictional food magazine that has been created to demonstrate how you might build a Drupal site using functionality provided 'out of the box'.</p>\n<p>For more information visit <a href=\"https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile\">https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile</a>.</p>\n",
+    "summary": null
+  },
+  "path": {
+    "alias": "/about-umami"
+  }
+}

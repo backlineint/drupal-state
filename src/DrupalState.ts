@@ -19,6 +19,7 @@ import {
 } from '@apollo/client/core';
 import Jsona from 'jsona';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
+import { camelize } from 'humps';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
@@ -165,8 +166,9 @@ class DrupalState {
     res: ServerResponse | boolean = false
   ): Promise<TJsonApiBody> {
     if (query) {
+      const queryObjectName = camelize(objectName as string);
       const gqlQuery = gql`{
-        ${objectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
+        ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
           {
             jsonapi
             graphql
@@ -175,7 +177,7 @@ class DrupalState {
         }`;
       return (await this.client.query({ query: gqlQuery }).then(response => {
         const data = response.data as keyedResources;
-        const object = data[objectName as string] as jsonapiLinkObject;
+        const object = data[queryObjectName] as jsonapiLinkObject;
         return {
           data: object.jsonapi.data,
           graphql: object.graphql,

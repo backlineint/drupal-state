@@ -80,6 +80,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.15",
+    "@types/humps": "^2.0.1",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^27.0.1",
     "apollo-link": "^1.2.14",

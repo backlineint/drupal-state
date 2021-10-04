@@ -14,8 +14,11 @@ import recipesResourceQueryObject1 from './data/recipesResourceQueryObject1.json
 import recipesResourcesQueryState2 from './data/recipesResourcesQueryState2.json';
 import recipesResourceQueryData1 from './data/recipesResourceQueryData1.json';
 import recipesResourceQueryData2 from './data/recipesResourceQueryData2.json';
+import nodePageResourceQueryData from './data/nodePageResourceQueryData.json';
 import recipesResourceQueryObject2 from './data/recipesResourceQueryObject2.json';
+import nodePageResourceQueryObject from './data/nodePageResourceQueryObject.json';
 import indexResponse from '../fetch/__tests__/data/apiIndex.json';
+import hyphenatedApiIndex from './data/hyphenatedApiIndex.json';
 
 describe('drupalState', () => {
   beforeEach(() => {
@@ -171,6 +174,36 @@ describe('drupalState', () => {
         }`,
       })
     ).toEqual(categoriesCollectionObjectQuery);
+    expect(fetchMock).toBeCalledTimes(1);
+  });
+
+  test('Get resource object with hyphens in objectName', async () => {
+    const store: DrupalState = new DrupalState({
+      apiRoot: 'http://demo-decoupled-bridge.lndo.site/en/jsonapi/',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: hyphenatedApiIndex });
+    fetchMock.mock(
+      'http://demo-decoupled-bridge.lndo.site/en/jsonapi/node/page/04fe66ed-1161-47f4-8a3f-6450eb9a8fa9?fields%5Bnode--page%5D=id%2Ctitle%2Cbody%2Cpath',
+      {
+        status: 200,
+        body: nodePageResourceQueryData,
+      }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'node--page',
+        id: '04fe66ed-1161-47f4-8a3f-6450eb9a8fa9',
+        query: `{
+          id
+          title
+          body
+          path {
+            alias
+          }
+        }`,
+      })
+    ).toEqual(nodePageResourceQueryObject);
     expect(fetchMock).toBeCalledTimes(1);
   });
 });
