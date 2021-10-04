@@ -1,0 +1,24 @@
+{
+  "data": {
+    "type": "recipes",
+    "id": "84cfaa18-faca-471f-bfa5-fbb8c199d039",
+    "attributes": {
+      "title": "Majorcan vegetable bake",
+      "difficulty": "easy"
+    },
+    "links": {
+      "self": "https:\/\/live-contentacms.pantheonsite.io\/api\/recipes\/84cfaa18-faca-471f-bfa5-fbb8c199d039"
+    }
+  },
+  "jsonapi": {
+    "version": "1.0",
+    "meta": {
+      "links": {
+        "self": "http:\/\/jsonapi.org\/format\/1.0\/"
+      }
+    }
+  },
+  "links": {
+    "self": "https:\/\/live-contentacms.pantheonsite.io\/api\/recipes\/84cfaa18-faca-471f-bfa5-fbb8c199d039?fields%5Brecipes%5D=title%2Cdifficulty%2Cid"
+  }
+}

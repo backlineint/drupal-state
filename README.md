@@ -16,7 +16,7 @@ Create a new instance of Drupal State:
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
 });
 ```
 
@@ -72,7 +72,7 @@ example, to include image relationships in the response:
 
 ```js
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
 });
 
 store.params.addInclude(['image']);
@@ -112,6 +112,32 @@ const apiIndexData = await fetchApiIndex(
 const recipes = await fetchJsonapiEndpoint(
   'https://live-contentacms.pantheonsite.io/api/recipes'
 );
+```
+
+### GraphQL Queries (Experimental)
+
+Drupal State also uses
+[apollo-link-json-api](https://github.com/rsullivan00/apollo-link-json-api) to
+allow for GraphQL queries to be made against Drupal's JSON:API endpoints. Drupal
+State will derive the necessary fields from the query and use
+[sparse fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets) when
+making a request to the JSON:API endpoint.
+
+```js
+await store.getObject({
+  objectName: 'node--page',
+  id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+  query: `
+    {
+      id
+      title
+      body
+      path {
+        alias
+      }
+    }
+  `,
+});
 ```
 
 ### Debug mode

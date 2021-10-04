@@ -1,5 +1,6 @@
 import { ServerResponse } from 'http';
 import { TJsonApiBody, TJsonApiData } from 'jsona/lib/JsonaTypes';
+import { SelectionSetNode } from 'graphql/language/ast';
 
 // Type Aliases
 
@@ -16,6 +17,13 @@ export type keyedResources = {
 export declare type TJsonApiBodyDataRequired = {
   data: TJsonApiDataFilterable;
   included?: Array<TJsonApiData>;
+};
+
+/**
+ * Allows iteration on a DefinitionNode object
+ */
+export type IterableDefinitionNode = {
+  selectionSet: SelectionSetNode;
 };
 
 // Interfaces
@@ -56,11 +64,21 @@ export interface ApiIndexResponse {
   links: GenericIndex;
 }
 
+/**
+ * Describes json-api-link data that includes the original jsonapi response
+ */
+export interface jsonapiLinkObject {
+  jsonapi: TJsonApiBody;
+  graphql: TJsonApiData;
+  __typename: string;
+}
+
 // Object Interfaces
 export interface GetObjectParams {
   objectName: string;
   id?: string;
   res?: ServerResponse | boolean;
+  query?: string | boolean;
 }
 
 /**

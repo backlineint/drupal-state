@@ -1,0 +1,78 @@
+{
+  "data": [
+    {
+      "__typename": "jsonapi_full_response_categories",
+      "type": "categories",
+      "id": "529406be-17fa-4080-b98d-19d23eaabb7b",
+      "attributes": {
+        "name": "Salad",
+        "__typename": "jsonapi_full_response_categories_attributes"
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/categories/529406be-17fa-4080-b98d-19d23eaabb7b",
+        "__typename": "jsonapi_full_response_categories_links"
+      }
+    },
+    {
+      "__typename": "jsonapi_full_response_categories",
+      "type": "categories",
+      "id": "fa40ad89-e749-44ed-8a96-e0bac344dc76",
+      "attributes": {
+        "name": "Main course",
+        "__typename": "jsonapi_full_response_categories_attributes"
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/categories/fa40ad89-e749-44ed-8a96-e0bac344dc76",
+        "__typename": "jsonapi_full_response_categories_links"
+      }
+    },
+    {
+      "__typename": "jsonapi_full_response_categories",
+      "type": "categories",
+      "id": "e0ab7460-f144-47de-9aeb-f7658aa85315",
+      "attributes": {
+        "name": "Starter",
+        "__typename": "jsonapi_full_response_categories_attributes"
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/categories/e0ab7460-f144-47de-9aeb-f7658aa85315",
+        "__typename": "jsonapi_full_response_categories_links"
+      }
+    },
+    {
+      "__typename": "jsonapi_full_response_categories",
+      "type": "categories",
+      "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6",
+      "attributes": {
+        "name": "Snack",
+        "__typename": "jsonapi_full_response_categories_attributes"
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/categories/12bb3fb4-5ef4-48c6-b71f-730a576b84f6",
+        "__typename": "jsonapi_full_response_categories_links"
+      }
+    }
+  ],
+  "graphql": [
+    {
+      "__typename": "categories",
+      "name": "Salad",
+      "id": "529406be-17fa-4080-b98d-19d23eaabb7b"
+    },
+    {
+      "__typename": "categories",
+      "name": "Main course",
+      "id": "fa40ad89-e749-44ed-8a96-e0bac344dc76"
+    },
+    {
+      "__typename": "categories",
+      "name": "Starter",
+      "id": "e0ab7460-f144-47de-9aeb-f7658aa85315"
+    },
+    {
+      "__typename": "categories",
+      "name": "Snack",
+      "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6"
+    }
+  ]
+}

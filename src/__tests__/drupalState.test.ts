@@ -1,5 +1,7 @@
 jest.mock('isomorphic-fetch', () => require('fetch-mock-jest').sandbox());
 const fetchMock = require('isomorphic-fetch');
+// After adding recent dependencies, tests fail if global Headers are not defined.
+global.Headers = fetchMock.Headers;
 
 import DrupalState from '../DrupalState';
 
@@ -20,17 +22,17 @@ describe('drupalState', () => {
 
   test('Api root and debug is set by constructor', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
     });
     expect(store.apiRoot).toEqual(
-      'https://live-contentacms.pantheonsite.io/api'
+      'https://live-contentacms.pantheonsite.io/api/'
     );
     expect(store.debug).toEqual(false);
   });
 
   test('Get resource object from local resource state if it exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
     store.setState({ recipesResources: recipesResourcesState1 });
@@ -45,7 +47,7 @@ describe('drupalState', () => {
 
   test('Get resource object from local collection state if it exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
     store.setState({ recipes: recipes });
@@ -60,7 +62,7 @@ describe('drupalState', () => {
 
   test('Fetch resource if it does not exist in state', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -82,7 +84,7 @@ describe('drupalState', () => {
 
   test('Add resource object to local resource state if resource state already exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -108,7 +110,7 @@ describe('drupalState', () => {
 
   test('Get collection object from local state if it exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
     store.setState({ recipes: recipes });
@@ -120,10 +122,10 @@ describe('drupalState', () => {
 
   test('Fetch API index and object if they do not exist in local storage', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
-    fetchMock.mock('https://live-contentacms.pantheonsite.io/api', {
+    fetchMock.mock('https://live-contentacms.pantheonsite.io/api/', {
       status: 200,
       body: indexResponse,
     });
@@ -139,7 +141,7 @@ describe('drupalState', () => {
 
   test('Get API Index from local state if it exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
     });
     store.setState({ dsApiIndex: indexResponse.links });
     fetchMock.mock(

@@ -1,4 +1,5 @@
 import { ServerResponse } from 'http';
+import fetch from 'isomorphic-fetch';
 import create, {
   StoreApi,
   GetState,
@@ -8,6 +9,14 @@ import create, {
   State,
   PartialState,
 } from 'zustand/vanilla';
+import { JsonApiLink } from 'apollo-link-json-api';
+import {
+  ApolloClient,
+  gql,
+  InMemoryCache,
+  NormalizedCacheObject,
+  ApolloLink,
+} from '@apollo/client/core';
 import Jsona from 'jsona';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
@@ -23,6 +32,8 @@ import {
   CollectionState,
   GenericIndex,
   GetObjectParams,
+  IterableDefinitionNode,
+  jsonapiLinkObject,
 } from './types/types';
 
 class DrupalState {
@@ -33,6 +44,7 @@ class DrupalState {
   setState: SetState<State>;
   subscribe: Subscribe<State>;
   destroy: Destroy;
+  client: ApolloClient<NormalizedCacheObject>;
   private dataFormatter: Jsona;
   /**
    * DrupalJsonApiParams - see [https://www.npmjs.com/package/drupal-jsonapi-params](https://www.npmjs.com/package/drupal-jsonapi-params)
@@ -54,33 +66,69 @@ class DrupalState {
     this.setState = setState;
     this.subscribe = subscribe;
     this.destroy = destroy;
+
+    // TODO - fix JsonApiLink type defs - unknown feels like a hack.
+    const jsonApiLink = new JsonApiLink({
+      uri: apiRoot,
+      customFetch: fetch,
+    }) as unknown as ApolloLink;
+
+    this.client = new ApolloClient({
+      link: jsonApiLink,
+      cache: new InMemoryCache(),
+    });
   }
 
   // Todo - Various error handling
   /**
    * Assembles a correctly formatted JSON:API endpoint URL.
+   * @param objectName - The resource type we're fetching.
    * @param index a JSON:API resource endpoint
-   * @param query query string containing JSON:API parameters
    * @param id id of an individual resource
+   * @param query user provided GraphQL query
+   * @returns a full endpoint URL or a relative endpoint URL is a query is provided
    */
   assembleEndpoint(
+    objectName: string,
     index: string | GenericIndex,
-    query: string,
-    id = ''
+    id = '',
+    query?: string | boolean
   ): string {
     let endpoint = '';
+
     if (typeof index === 'string') {
       endpoint = index;
     } else {
       // TODO - probably need some additional error handling here
       endpoint = index.href as string;
     }
+
     if (id) {
       endpoint += `/${id}`;
     }
+
     if (query) {
-      endpoint += `?${query}`;
+      const fields: string[] = [];
+      const gqlObject = gql(query as string);
+
+      gqlObject.definitions.forEach(definition => {
+        const iterableDefinitions = definition as IterableDefinitionNode;
+        iterableDefinitions.selectionSet.selections.forEach(selection => {
+          if (selection.kind === 'Field') {
+            fields.push(selection.name.value);
+          }
+        });
+      });
+
+      this.params.addFields(objectName, fields);
+      // Check here to make sure apiRoot has trailing slash?
+      endpoint = endpoint.replace(this.apiRoot, '');
     }
+
+    if (this.params.getQueryString()) {
+      endpoint += `?${this.params.getQueryString()}`;
+    }
+
     return endpoint;
   }
 
@@ -100,6 +148,42 @@ class DrupalState {
     res: ServerResponse | boolean
   ): Promise<void | TJsonApiBody> {
     return await fetchJsonapiEndpoint(endpoint, res);
+  }
+
+  /**
+   * If a query is provided, fetches data using apollo-link-json-api, otherwise uses out fetch method.
+   * @param endpoint the assembled JSON:API endpoint
+   * @param query the specified GraphQL query
+   * @param objectName Name of object to retrieve. Ex: node--article
+   * @param res response object
+   * @returns data fetched from JSON:API endpoint
+   */
+  async conditionalFetch(
+    endpoint: string,
+    query: string | boolean = false,
+    objectName: string | boolean = false,
+    res: ServerResponse | boolean = false
+  ): Promise<TJsonApiBody> {
+    if (query) {
+      const gqlQuery = gql`{
+        ${objectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
+          {
+            jsonapi
+            graphql
+            ${query}
+          }
+        }`;
+      return (await this.client.query({ query: gqlQuery }).then(response => {
+        const data = response.data as keyedResources;
+        const object = data[objectName as string] as jsonapiLinkObject;
+        return {
+          data: object.jsonapi.data,
+          graphql: object.graphql,
+        };
+      })) as TJsonApiBody;
+    } else {
+      return (await this.fetchJsonapiEndpoint(endpoint, res)) as TJsonApiBody;
+    }
   }
 
   /**
@@ -131,6 +215,7 @@ class DrupalState {
    * @param objectName Name of object to retrieve. Ex: node--article
    * @param id id of a specific resource
    * @param res response object
+   * @param query user provided GraphQL query
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    */
@@ -138,6 +223,7 @@ class DrupalState {
     objectName,
     id,
     res = false,
+    query = false,
   }: GetObjectParams): Promise<PartialState<State>> {
     const state = this.getState() as DsState;
     // Check for collection in the store
@@ -149,21 +235,25 @@ class DrupalState {
 
       // If requested resource is in the resource store, return that
       if (resourceState) {
-        const resource = resourceState[id];
+        const resource = resourceState[id] as keyedResources;
         if (resource) {
           !this.debug || console.log(`Matched resource ${id} in state`);
-          return this.dataFormatter.deserialize(resource);
+          return resource?.graphql
+            ? resource.graphql
+            : this.dataFormatter.deserialize(resource);
         }
       }
 
       // If requested resource is in the collection store, return that
-      if (collectionState?.data) {
+      // We can't ensure that ID will be in a response if a query was defined,
+      // so we have to fetch from Drupal in that case.
+      if (collectionState?.data && !query) {
         // If the collection is in the store, check for the resource
         const matchedResourceState = collectionState.data.filter(item => {
           return item['id'] === id;
         });
 
-        // Resource already exists within collection, return that.
+        // If resource already exists within collection, return that.
         if (matchedResourceState) {
           !this.debug || console.log(`Matched resource ${id} in collection`);
           // Should this be added to ResourceState as well?
@@ -175,15 +265,18 @@ class DrupalState {
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint = this.assembleEndpoint(
+        objectName,
         dsApiIndex[objectName],
-        this.params.getQueryString(),
-        id
+        id,
+        query
       );
 
-      const resourceData = (await this.fetchJsonapiEndpoint(
+      const resourceData = (await this.conditionalFetch(
         endpoint,
+        query,
+        `${objectName}Resources`,
         res
-      )) as TJsonApiBody;
+      )) as keyedResources;
 
       const objectResourceState = state[`${objectName}Resources`];
 
@@ -205,7 +298,9 @@ class DrupalState {
         this.setState({ [`${objectName}Resources`]: newResourceState });
       }
 
-      return this.dataFormatter.deserialize(resourceData);
+      return query
+        ? resourceData.graphql
+        : this.dataFormatter.deserialize(resourceData);
     } // End if (id) block
 
     if (!collectionState) {
@@ -213,24 +308,32 @@ class DrupalState {
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       const endpoint = this.assembleEndpoint(
+        objectName,
         dsApiIndex[objectName],
-        this.params.getQueryString(),
-        id
+        id,
+        query
       );
-      const collectionData = (await this.fetchJsonapiEndpoint(
+
+      const collectionData = (await this.conditionalFetch(
         endpoint,
+        query,
+        objectName,
         res
-      )) as TJsonApiBody;
+      )) as keyedResources;
 
       const fetchedCollectionState = {} as CollectionState;
       fetchedCollectionState[objectName] = collectionData;
 
       this.setState(fetchedCollectionState);
-      const updatedState = this.getState() as DsState;
-      return this.dataFormatter.deserialize(updatedState[objectName]);
+      return query
+        ? collectionData.graphql
+        : this.dataFormatter.deserialize(collectionData);
     } else {
       !this.debug || console.log(`Matched collection ${objectName} in state`);
-      return this.dataFormatter.deserialize(collectionState);
+      const gqlCollectionState = collectionState as keyedResources;
+      return query
+        ? gqlCollectionState.graphql
+        : this.dataFormatter.deserialize(collectionState);
     }
   }
 }

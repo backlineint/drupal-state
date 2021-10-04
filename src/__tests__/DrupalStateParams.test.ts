@@ -1,5 +1,6 @@
 jest.mock('isomorphic-fetch', () => require('fetch-mock-jest').sandbox());
 const fetchMock = require('isomorphic-fetch');
+global.Headers = fetchMock.Headers;
 
 import DrupalState from '../DrupalState';
 
@@ -9,6 +10,7 @@ import singleIncludeData from './data/singleIncludeData.json';
 import singleIncludeObject from './data/singleIncludeObject.json';
 import nestedIncludeData from './data/nestedIncludeData.json';
 import nestedIncludeObject from './data/nestedIncludeObject.json';
+import recipesResourceQueryData1 from './data/recipesResourceQueryData1.json';
 
 describe('Test the use of JSON:API query parameters with DrupalState', () => {
   beforeEach(() => {
@@ -17,7 +19,7 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Add a single include parameter', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
     });
     store.params.addInclude(['image']);
     expect(store.params.getQueryString()).toEqual('include=image');
@@ -25,7 +27,7 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Add multiple include parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
     });
     store.params.addInclude(['image', 'tags']);
     expect(store.params.getQueryString()).toEqual('include=image%2Ctags');
@@ -33,7 +35,7 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('I can reset parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
     });
 
     store.params.addInclude(['image', 'tags']);
@@ -46,7 +48,7 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Fetch a resource with a single include', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -69,7 +71,7 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Fetch a collection with nested includes', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'http://demo-decoupled-bridge.lndo.site/en/jsonapi',
+      apiRoot: 'http://demo-decoupled-bridge.lndo.site/en/jsonapi/',
       debug: true,
     });
     store.setState({ dsApiIndex: hrefApiIndex.links });
@@ -87,5 +89,32 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
     expect(fetchMock).toBeCalledTimes(1);
   });
 
-  // TODO - Cover additional query parameters
+  test('Field params are added by a query', async () => {
+    const store: DrupalState = new DrupalState({
+      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/recipes/912e092f-a7d5-41ae-9e92-e23ffa357b28?fields%5Brecipes%5D=title%2Cdifficulty%2Cid',
+      {
+        status: 200,
+        body: recipesResourceQueryData1,
+      }
+    );
+    await store.getObject({
+      objectName: 'recipes',
+      id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+      query: `{
+        title
+        difficulty
+        id
+      }`,
+    });
+    expect(fetchMock).toBeCalledTimes(1);
+    expect(store.params.getQueryString()).toEqual(
+      'fields%5Brecipes%5D=title%2Cdifficulty%2Cid'
+    );
+  });
+
+  // TODO - Cover additional query parameters - groups, pagination, sort, etc.
 });
