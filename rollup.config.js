@@ -1,4 +1,5 @@
 import typescript from '@rollup/plugin-typescript';
+import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 
 export default [
   {
@@ -7,7 +8,12 @@ export default [
       file: 'dist/drupal-state.es.js',
       format: 'es',
     },
-    plugins: [typescript()],
+    plugins: [
+      typescript(),
+      getBabelOutputPlugin({
+        presets: ['@babel/preset-env'],
+      }),
+    ],
   },
   {
     input: 'lib.ts',
