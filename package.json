@@ -2,6 +2,7 @@
   "name": "@gdwc/drupal-state",
   "version": "1.0.26",
   "files": [
+    "lib.{js,ts}",
     "dist",
     "src/drupalState.{js,ts}",
     "src/fetch/*.{js,ts}",
