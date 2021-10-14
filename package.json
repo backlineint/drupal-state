@@ -2,21 +2,24 @@
   "name": "@gdwc/drupal-state",
   "version": "1.0.26",
   "files": [
-    "lib.{js,ts}",
     "dist",
     "src/drupalState.{js,ts}",
     "src/fetch/*.{js,ts}",
     "src/types/*.ts"
   ],
-  "source": "lib.ts",
-  "main": "./dist/drupal-state.cjs",
-  "module": "./dist/drupal-state.module.js",
-  "unpkg": "./dist/drupal-state.umd.js",
-  "exports": {
-    "require": "./dist/drupal-state.cjs",
-    "default": "./dist/drupal-state.modern.js"
-  },
+  "main": "./dist/drupal-state.umd.js",
+  "module": "./dist/drupal-state.es.js",
   "types": "./dist/declarations/lib.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/drupal-state.es.js",
+      "require": "./dist/drupal-state.umd.js"
+    },
+    "./fetchApiIndex": "./src/fetch/fetchApiIndex",
+    "./fetchJsonapiEndpoint": "./src/fetch/fetchJsonapiEndpoint",
+    "./types": "./src/types",
+    "./": "./"
+  },
   "prettier": {
     "singleQuote": true,
     "arrowParens": "avoid",
@@ -27,7 +30,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && microbundle",
+    "build": "tsc && rollup -c",
     "serve": "vite preview",
     "typedoc": "typedoc",
     "test": "jest --coverage",
@@ -41,7 +44,7 @@
     "postinstall": "patch-package",
     "release": "dotenv release-it --",
     "dpdm": "dpdm lib.ts",
-    "microbundle": "microbundle"
+    "rollup": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -71,7 +74,6 @@
     "fetch-mock-jest": "^1.5.1",
     "husky": "^7.0.1",
     "lint-staged": "^11.1.2",
-    "microbundle": "^0.14.1",
     "prettier": "2.3.2",
     "release-it": "^14.11.5",
     "rollup": "^2.56.3",
