@@ -1,9 +1,5 @@
 import typescript from '@rollup/plugin-typescript';
 import { getBabelOutputPlugin } from '@rollup/plugin-babel';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 export default [
   {
@@ -13,14 +9,10 @@ export default [
       format: 'es',
     },
     plugins: [
-      nodeResolve({ preferBuiltins: false }),
-      commonjs(),
-      nodePolyfills(),
       typescript(),
       getBabelOutputPlugin({
         presets: ['@babel/preset-env'],
       }),
-      terser(),
     ],
   },
   {
@@ -30,12 +22,6 @@ export default [
       format: 'umd',
       name: 'DrupalState',
     },
-    plugins: [
-      nodeResolve({ preferBuiltins: false }),
-      commonjs(),
-      nodePolyfills(),
-      typescript(),
-      terser(),
-    ],
+    plugins: [typescript()],
   },
 ];
