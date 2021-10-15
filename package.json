@@ -16,10 +16,8 @@
       "import": "./dist/drupal-state.es.js",
       "require": "./dist/drupal-state.umd.js"
     },
-    "./fetchApiIndex": "./src/fetch/fetchApiIndex",
-    "./fetchJsonapiEndpoint": "./src/fetch/fetchJsonapiEndpoint",
-    "./types": "./src/types",
-    "./": "./"
+    "./fetchApiIndex": "./src/fetch/fetchApiIndex.js",
+    "./fetchJsonapiEndpoint": "./src/fetch/fetchJsonapiEndpoint.js"
   },
   "prettier": {
     "singleQuote": true,
