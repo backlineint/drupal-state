@@ -43,7 +43,11 @@
     "postinstall": "patch-package",
     "release": "dotenv release-it --",
     "dpdm": "dpdm lib.ts",
-    "rollup": "rollup -c"
+    "rollup": "rollup -c",
+    "build:docs": "npm run astro:build && npm run typedoc",
+    "astro:dev": "astro dev --project-root web",
+    "astro:build": "astro build --project-root web",
+    "astro:preview": "astro preview --project-root web"
   },
   "repository": {
     "type": "git",
@@ -60,12 +64,15 @@
   ],
   "license": "GPL-2.0-or-later",
   "devDependencies": {
+    "@astrojs/renderer-preact": "^0.2.2",
     "@babel/preset-env": "^7.15.8",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-typescript": "^8.2.5",
+    "@snowpack/plugin-dotenv": "^2.2.0",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
     "@typescript-eslint/parser": "^4.29.1",
     "@vitejs/plugin-legacy": "^1.6.1",
+    "astro": "^0.20.12",
     "dotenv-cli": "^4.0.0",
     "dpdm": "^3.7.1",
     "eslint": "^7.32.0",
@@ -82,6 +89,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.15",
+    "@docsearch/react": "^3.0.0-alpha.41",
     "@types/humps": "^2.0.1",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^27.0.1",
