@@ -19,7 +19,7 @@ export const KNOWN_LANGUAGES = {
 };
 
 // Uncomment this to add an "Edit this page" button to every page of documentation.
-export const GITHUB_EDIT_URL = `https://git.drupalcode.org/project/drupal_state/web/`;
+export const GITHUB_EDIT_URL = `https://git.drupalcode.org/project/drupal_state/-/tree/1.0.x/web/`;
 
 // Uncomment this to add an "Join our Community" button to every page of documentation.
 export const COMMUNITY_INVITE_URL = `https://www.drupal.org/project/drupal_state`;
