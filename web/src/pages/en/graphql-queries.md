@@ -13,7 +13,8 @@ thus reducing the response payload automatically.**
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 
 // Add an include parameter to include relationship data
@@ -145,7 +146,8 @@ Recipe:
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 
 // Add an include parameter to include relationship data

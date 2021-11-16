@@ -16,7 +16,8 @@ Create a new instance of Drupal State:
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 ```
 
@@ -65,6 +66,32 @@ store.setState({ custom: 'My custom state' });
 const myCustomState = store.getState().custom; // Returns 'My custom state'
 ```
 
+### GraphQL Queries (Experimental)
+
+Drupal State also uses
+[apollo-link-json-api](https://github.com/rsullivan00/apollo-link-json-api) to
+allow for GraphQL queries to be made against Drupal's JSON:API endpoints. Drupal
+State will derive the necessary fields from the query and use
+[sparse fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets) when
+making a request to the JSON:API endpoint.
+
+```js
+await store.getObject({
+  objectName: 'node--page',
+  id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+  query: `
+    {
+      id
+      title
+      body
+      path {
+        alias
+      }
+    }
+  `,
+});
+```
+
 ### Request Parameters
 
 Parameters can be added to requests using methods on the param property. For
@@ -93,6 +120,34 @@ cleared if necessary in order to structure a new query string.
 store.params.clear();
 ```
 
+### Authorization
+
+By providing values for `clientId` and `clientSecret`, Drupal State can make
+requests to JSON:API endpoints that require authorization. The library currently
+supports [Simple OAuth](https://www.drupal.org/project/simple_oauth) using the
+`client_credntials` grant type, but we expect to support other authorization
+methods in the future.
+
+```js
+const store = new DrupalState({
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api', // apiPrefix defaults to 'jsonapi'
+  clientId: 'my-client-id',
+  clientSecret: 'my-client-secret',
+});
+
+// The following API request will automatically be made with an authorization
+// header containing a valid token:
+const recipes = await store.getObject({ objectName: 'recipes' });
+```
+
+(Note: in most cases sensitive information like secrets should be provided to
+Drupal State via environment variables.)
+
+Drupal State will request an access token and provide it in the Authorization
+header when making requests to your API. It will also reuse this access token
+while valid, and automatically request a new token when expired.
+
 ### Utilities
 
 Drupal State also exposes a few utility functions that can be used to interact
@@ -102,42 +157,33 @@ management solution.
 - {@link fetch/fetchApiIndex}: Retrieves index of resource links for the API
 - {@link fetch/fetchJsonapiEndpoint}: Retrieves either a collection of objects
   or an individual object from the API
+- {@link fetch/fetchToken}: Makes a fetch request to a token endpoint with
+  headers and provided body and returns the token API response
 
 ```js
-import { fetchApiIndex, fetchJsonapiEndpoint } from '@gdwc/drupal-state';
+import {
+  fetchApiIndex,
+  fetchJsonapiEndpoint,
+  fetchToken,
+} from '@gdwc/drupal-state';
 
 const apiIndexData = await fetchApiIndex(
   'https://live-contentacms.pantheonsite.io/api'
 );
+
 const recipes = await fetchJsonapiEndpoint(
   'https://live-contentacms.pantheonsite.io/api/recipes'
 );
-```
 
-### GraphQL Queries (Experimental)
-
-Drupal State also uses
-[apollo-link-json-api](https://github.com/rsullivan00/apollo-link-json-api) to
-allow for GraphQL queries to be made against Drupal's JSON:API endpoints. Drupal
-State will derive the necessary fields from the query and use
-[sparse fieldsets](https://jsonapi.org/format/#fetching-sparse-fieldsets) when
-making a request to the JSON:API endpoint.
-
-```js
-await store.getObject({
-  objectName: 'node--page',
-  id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
-  query: `
-    {
-      id
-      title
-      body
-      path {
-        alias
-      }
-    }
-  `,
-});
+const tokenRequestBody = {
+  grant_type: 'client_credentials',
+  client_id: 'MY_ID',
+  client_secret: 'MY_SECRET',
+};
+const tokenPayload = await fetchtoken(
+  'https://ds-demo.lndo.site/oauth/token',
+  tokenRequestBody
+);
 ```
 
 ### Debug mode

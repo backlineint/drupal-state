@@ -1,8 +1,20 @@
 import { ServerResponse } from 'http';
 import { TJsonApiBody, TJsonApiData } from 'jsona/lib/JsonaTypes';
 import { SelectionSetNode } from 'graphql/language/ast';
+import {
+  ApolloClient,
+  ApolloLink,
+  NormalizedCacheObject,
+} from '@apollo/client/core';
 
 // Type Aliases
+
+/**
+ * An index of string keys and values.
+ */
+export type stringIndex = {
+  [key: string]: string;
+};
 
 /**
  * JSON:API resource responses keyed by id
@@ -34,10 +46,47 @@ export type IterableDefinitionNode = {
  */
 export interface DrupalStateConfig {
   /**
-   * Url to the root of JSON:API
+   * Configuration object for DrupalState instance
    */
-  apiRoot: string;
+  apiBase: string;
+  apiPrefix?: string;
+  clientId?: string;
+  clientSecret?: string;
   debug?: boolean;
+}
+
+/**
+ * Object representing the data returned from the oAuth token endpoint
+ */
+export interface TokenResponseObject {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
+/**
+ * Object containing our internal representation of the data returned from
+ * the oAuth token endpoint
+ */
+export interface TokenObject {
+  accessToken: string;
+  validUntil: number;
+  tokenType: string;
+}
+
+/**
+ * Extends ApolloLink to allow access to headers object
+ */
+export interface ApolloLinkWithHeaders extends ApolloLink {
+  headers: Record<string, unknown>;
+}
+
+/**
+ * Extends ApolloClient to allow access to headers object
+ */
+export interface ApolloClientWithHeaders
+  extends ApolloClient<NormalizedCacheObject> {
+  link: ApolloLinkWithHeaders;
 }
 
 /**

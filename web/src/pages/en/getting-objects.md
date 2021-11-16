@@ -12,7 +12,8 @@ collection of objects. Add the `id` parameter to get an individual object.**
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 
 // If the object doesn't exist in local state, it will be fetched from the API
@@ -104,7 +105,8 @@ const recipeFromState = recipesFromApi.data.filter(item => {
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 
 // If the object doesn't exist in local state, it will be fetched from the API

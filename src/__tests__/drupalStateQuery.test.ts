@@ -19,6 +19,7 @@ import recipesResourceQueryObject2 from './data/recipesResourceQueryObject2.json
 import nodePageResourceQueryObject from './data/nodePageResourceQueryObject.json';
 import indexResponse from '../fetch/__tests__/data/apiIndex.json';
 import hyphenatedApiIndex from './data/hyphenatedApiIndex.json';
+import tokenResponse from '../fetch/__tests__/data/token.json';
 
 describe('drupalState', () => {
   beforeEach(() => {
@@ -27,7 +28,8 @@ describe('drupalState', () => {
 
   test('Get resource object from local resource state if it exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({ recipesResources: recipesResourcesQueryState1 });
@@ -47,7 +49,8 @@ describe('drupalState', () => {
 
   test('Fetch resource if it does not exist in state', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -74,7 +77,8 @@ describe('drupalState', () => {
 
   test('Fetch resource object even if it exists in local collection state', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({
@@ -105,7 +109,8 @@ describe('drupalState', () => {
 
   test('Add resource object to local resource state if resource state already exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -136,7 +141,8 @@ describe('drupalState', () => {
 
   test('Get collection object from local state if it exists', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({ categories: categories });
@@ -154,7 +160,8 @@ describe('drupalState', () => {
 
   test('Fetch resource object if they do not exist in local storage', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -179,7 +186,8 @@ describe('drupalState', () => {
 
   test('Get resource object with hyphens in objectName', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'http://demo-decoupled-bridge.lndo.site/en/jsonapi/',
+      apiBase: 'http://demo-decoupled-bridge.lndo.site',
+      apiPrefix: 'en/jsonapi',
       debug: true,
     });
     store.setState({ dsApiIndex: hyphenatedApiIndex });
@@ -205,5 +213,52 @@ describe('drupalState', () => {
       })
     ).toEqual(nodePageResourceQueryObject);
     expect(fetchMock).toBeCalledTimes(1);
+  });
+
+  test('Fetch resource using query and authentication', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
+      clientId: '9adc9c69-fa3b-4c21-9cef-fbd345d1a269',
+      clientSecret: 'mysecret',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/recipes/912e092f-a7d5-41ae-9e92-e23ffa357b28?fields%5Brecipes%5D=title%2Cdifficulty%2Cid',
+      {
+        status: 200,
+        body: recipesResourceQueryData1,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      {
+        url: 'https://live-contentacms.pantheonsite.io/oauth/token',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+      {
+        status: 200,
+        body: tokenResponse,
+      }
+    );
+    expect(await store['getAuthHeader']()).toEqual(
+      `${tokenResponse.token_type} ${tokenResponse.access_token}`
+    );
+    expect(
+      await store.getObject({
+        objectName: 'recipes',
+        id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+        query: `{
+          title
+          difficulty
+          id
+        }`,
+      })
+    ).toEqual(recipesResourceQueryObject1);
+    expect(fetchMock).toBeCalledTimes(2);
   });
 });

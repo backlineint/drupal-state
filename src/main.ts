@@ -4,9 +4,20 @@ import './style.css';
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
 const store: any = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
   debug: true,
 });
+
+// Uncomment to use authenticated store - currently depends on local environment
+
+// const authStore: any = new DrupalState({
+//   apiBase: 'https://demo-decoupled-bridge.lndo.site',
+//   apiPrefix: 'en/jsonapi',
+//   clientId: '9adc9c69-fa3b-4c21-9cef-fbd345d1a269',
+//   clientSecret: 'mysecret',
+//   debug: true,
+// });
 
 async function main(): Promise<void> {
   // Include images in response
@@ -121,6 +132,26 @@ async function main(): Promise<void> {
       }`,
     })
   );
+
+  // Uncomment to use authenticated store - currently depends on local environment
+
+  // console.log('--- Get articles with authentication ---');
+  // console.log(
+  //   await authStore.getObject({
+  //     objectName: 'node--article',
+  //   })
+  // );
+
+  // console.log('--- Get pages with authentication and a query ---');
+  // console.log(
+  //   await authStore.getObject({
+  //     objectName: 'node--page',
+  //     query: `{
+  //       title
+  //       id
+  //     }`,
+  //   })
+  // );
 
   // You also have direct access to the Zustand store if necessary
   store.setState({ custom: 'custom state' });

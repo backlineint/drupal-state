@@ -12,7 +12,8 @@ result.**
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 
 // Add an include parameter to include a related object in the result
@@ -136,7 +137,8 @@ const categoryName = category[0].attributes.name;
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
 });
 
 // Add an include parameter to include a related object in the result

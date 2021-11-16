@@ -14,7 +14,6 @@ import {
   ApolloClient,
   gql,
   InMemoryCache,
-  NormalizedCacheObject,
   ApolloLink,
 } from '@apollo/client/core';
 import Jsona from 'jsona';
@@ -23,6 +22,7 @@ import { camelize } from 'humps';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
+import fetchToken from './fetch/fetchToken';
 
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
 import {
@@ -35,25 +35,48 @@ import {
   GetObjectParams,
   IterableDefinitionNode,
   jsonapiLinkObject,
+  TokenObject,
+  TokenResponseObject,
+  ApolloClientWithHeaders,
 } from './types/types';
 
 class DrupalState {
+  apiBase: string;
+  apiPrefix: string;
   apiRoot: string;
+  private clientId: string | undefined;
+  private clientSecret: string | undefined;
+  private token: TokenObject = {
+    accessToken: '',
+    validUntil: 0,
+    tokenType: '',
+  };
   debug: boolean;
   store: StoreApi<State>;
   getState: GetState<State>;
   setState: SetState<State>;
   subscribe: Subscribe<State>;
   destroy: Destroy;
-  client: ApolloClient<NormalizedCacheObject>;
+  client: ApolloClientWithHeaders;
   private dataFormatter: Jsona;
   /**
    * DrupalJsonApiParams - see [https://www.npmjs.com/package/drupal-jsonapi-params](https://www.npmjs.com/package/drupal-jsonapi-params)
    */
   params: DrupalJsonApiParams;
 
-  constructor({ apiRoot, debug = false }: DrupalStateConfig) {
-    this.apiRoot = apiRoot;
+  constructor({
+    apiBase,
+    apiPrefix = 'jsonapi',
+    clientId,
+    clientSecret,
+    debug = false,
+  }: DrupalStateConfig) {
+    this.apiBase = apiBase;
+    this.apiPrefix = apiPrefix;
+    this.apiRoot = this.assembleApiRoot();
+    // TODO - .env support? Or should the consuming app be responsible for that?
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
     this.debug = debug;
     this.dataFormatter = new Jsona();
     this.params = new DrupalJsonApiParams();
@@ -70,14 +93,30 @@ class DrupalState {
 
     // TODO - fix JsonApiLink type defs - unknown feels like a hack.
     const jsonApiLink = new JsonApiLink({
-      uri: apiRoot,
+      uri: this.apiRoot,
       customFetch: fetch,
     }) as unknown as ApolloLink;
 
     this.client = new ApolloClient({
       link: jsonApiLink,
       cache: new InMemoryCache(),
-    });
+    }) as ApolloClientWithHeaders;
+  }
+
+  /**
+   * Format apiBase, apiPrefix, and combine into apiRoot.
+   * @returns a fully qualified JSON:API root endpoint URL
+   */
+  assembleApiRoot(): string {
+    // Format apiBase - ensure it doesn't have a trailing /
+    this.apiBase = this.apiBase.replace(/\/\s*$/, '');
+    // Format apiPrefix - ensure it doesn't have a leading / and does have a
+    // trailing /
+    this.apiPrefix = this.apiPrefix.replace(/^\s*\//, '');
+    this.apiPrefix =
+      this.apiPrefix.slice(-1) === '/' ? this.apiPrefix : `${this.apiPrefix}/`;
+
+    return `${this.apiBase}/${this.apiPrefix}`;
   }
 
   // Todo - Various error handling
@@ -134,6 +173,34 @@ class DrupalState {
   }
 
   /**
+   * Assembles an authorization header using an existing token if valid, or by
+   * fetching a new token if necessary.
+   * @returns a string containing an authorization header value
+   */
+  private async getAuthHeader(): Promise<string> {
+    if (this.token.validUntil - 10 * 1000 > Date.now()) {
+      !this.debug || console.log('Using existing auth token');
+    } else {
+      !this.debug || console.log('Fetching new auth token');
+      const tokenRequestBody = {
+        grant_type: 'client_credentials',
+        client_id: this.clientId as string,
+        client_secret: this.clientSecret as string,
+      };
+      const tokenResponse = (await fetchToken(
+        `${this.apiBase}/oauth/token`,
+        tokenRequestBody
+      )) as TokenResponseObject;
+      this.token = {
+        accessToken: tokenResponse.access_token,
+        validUntil: Date.now() + tokenResponse.expires_in * 1000,
+        tokenType: tokenResponse.token_type,
+      };
+    }
+    return `${this.token.tokenType} ${this.token.accessToken}`;
+  }
+
+  /**
    * Wraps {@link fetch/fetchApiIndex} function so it can be overridden.
    */
   async fetchApiIndex(apiRoot: string): Promise<void | GenericIndex> {
@@ -146,9 +213,10 @@ class DrupalState {
    */
   async fetchJsonapiEndpoint(
     endpoint: string,
+    requestInit = {},
     res: ServerResponse | boolean
   ): Promise<void | TJsonApiBody> {
-    return await fetchJsonapiEndpoint(endpoint, res);
+    return await fetchJsonapiEndpoint(endpoint, requestInit, res);
   }
 
   /**
@@ -165,7 +233,20 @@ class DrupalState {
     objectName: string | boolean = false,
     res: ServerResponse | boolean = false
   ): Promise<TJsonApiBody> {
+    let requestInit = {};
+    let authHeader = '';
+    if (this.clientId && this.clientSecret) {
+      authHeader = await this.getAuthHeader();
+      requestInit = {
+        headers: {
+          Authorization: authHeader,
+        },
+      };
+    }
+
     if (query) {
+      this.client.link.headers = { Authorization: authHeader };
+
       const queryObjectName = camelize(objectName as string);
       const gqlQuery = gql`{
         ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
@@ -184,7 +265,11 @@ class DrupalState {
         };
       })) as TJsonApiBody;
     } else {
-      return (await this.fetchJsonapiEndpoint(endpoint, res)) as TJsonApiBody;
+      return (await this.fetchJsonapiEndpoint(
+        endpoint,
+        requestInit,
+        res
+      )) as TJsonApiBody;
     }
   }
 
@@ -202,6 +287,8 @@ class DrupalState {
     if (!dsApiIndex) {
       // Fetch the API index from Drupal
       const dsApiIndexData = await this.fetchApiIndex(this.apiRoot);
+      // TODO - consider adding this to the DrupalState class rather than adding
+      // data that we rely on to the store.
       this.setState({ dsApiIndex: dsApiIndexData });
 
       const updatedState = this.getState() as DsState;

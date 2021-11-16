@@ -17,6 +17,30 @@ describe('fetchJsonapiEndpoint', () => {
       )
     ).toEqual(response);
   });
+  test('Request init object is honored', async () => {
+    const requestInit = {
+      headers: {
+        Authorization: 'Bearer TOKEN',
+      },
+    };
+    fetchMock.mock(
+      {
+        url: 'https://live-contentacms.pantheonsite.io/api/recipes',
+        headers: requestInit.headers,
+      },
+      {
+        status: 200,
+        body: response,
+      }
+    );
+    expect(
+      await fetchJsonapiEndpoint(
+        'https://live-contentacms.pantheonsite.io/api/recipes',
+        requestInit
+      )
+    ).toEqual(response);
+  });
+
   // TODO - would be nice to test the error message as well
   test('A fetch failure returns undefined', async () => {
     fetchMock.mock('https://live-contentacms.pantheonsite.io/api', {

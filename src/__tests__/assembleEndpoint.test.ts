@@ -3,7 +3,8 @@ import DrupalState from '../DrupalState';
 describe('Correctly assemble endpoints including query params', () => {
   test('No parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     expect(
       store.assembleEndpoint(
@@ -20,7 +21,8 @@ describe('Correctly assemble endpoints including query params', () => {
 
   test('No parameters with ID', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     expect(
       store.assembleEndpoint(
@@ -44,7 +46,8 @@ describe('Correctly assemble endpoints including query params', () => {
 
   test('Parameters, ID and includes', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     store.params.addInclude(['image']);
     expect(
@@ -69,7 +72,8 @@ describe('Correctly assemble endpoints including query params', () => {
 
   test('Parameters and includes, no ID', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     store.params.addInclude(['image']);
     expect(
@@ -91,7 +95,8 @@ describe('Correctly assemble endpoints including query params', () => {
 
   test('Query', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     expect(
       store.assembleEndpoint(
@@ -109,7 +114,8 @@ describe('Correctly assemble endpoints including query params', () => {
 
   test('Query with ID', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     expect(
       store.assembleEndpoint(
@@ -129,7 +135,8 @@ describe('Correctly assemble endpoints including query params', () => {
 
   test('Query with kitchen sink', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     store.params.addInclude(['image']);
     expect(

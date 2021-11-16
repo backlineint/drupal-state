@@ -19,7 +19,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Add a single include parameter', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     store.params.addInclude(['image']);
     expect(store.params.getQueryString()).toEqual('include=image');
@@ -27,7 +28,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Add multiple include parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     store.params.addInclude(['image', 'tags']);
     expect(store.params.getQueryString()).toEqual('include=image%2Ctags');
@@ -35,7 +37,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('I can reset parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
 
     store.params.addInclude(['image', 'tags']);
@@ -48,7 +51,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Fetch a resource with a single include', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
@@ -71,7 +75,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Fetch a collection with nested includes', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'http://demo-decoupled-bridge.lndo.site/en/jsonapi/',
+      apiBase: 'http://demo-decoupled-bridge.lndo.site',
+      apiPrefix: 'en/jsonapi',
       debug: true,
     });
     store.setState({ dsApiIndex: hrefApiIndex.links });
@@ -91,7 +96,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Field params are added by a query', async () => {
     const store: DrupalState = new DrupalState({
-      apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
     });
     store.setState({ dsApiIndex: indexResponse.links });
     fetchMock.mock(
