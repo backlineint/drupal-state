@@ -46,6 +46,7 @@ class DrupalState {
   apiRoot: string;
   private clientId: string | undefined;
   private clientSecret: string | undefined;
+  auth: boolean;
   private token: TokenObject = {
     accessToken: '',
     validUntil: 0,
@@ -77,6 +78,7 @@ class DrupalState {
     // TODO - .env support? Or should the consuming app be responsible for that?
     this.clientId = clientId;
     this.clientSecret = clientSecret;
+    this.auth = this.clientId && this.clientSecret ? true : false;
     this.debug = debug;
     this.dataFormatter = new Jsona();
     this.params = new DrupalJsonApiParams();
@@ -177,7 +179,7 @@ class DrupalState {
    * fetching a new token if necessary.
    * @returns a string containing an authorization header value
    */
-  private async getAuthHeader(): Promise<string> {
+  async getAuthHeader(): Promise<string> {
     if (this.token.validUntil - 10 * 1000 > Date.now()) {
       !this.debug || console.log('Using existing auth token');
     } else {

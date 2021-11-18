@@ -34,6 +34,7 @@ describe('drupalState', () => {
     );
     expect(store['clientId']).toEqual('test-client-id');
     expect(store['clientSecret']).toEqual('test-client-secret');
+    expect(store.auth).toEqual(true);
     expect(store['token']).toEqual({
       accessToken: '',
       validUntil: 0,
@@ -48,6 +49,7 @@ describe('drupalState', () => {
       apiPrefix: 'api',
       debug: true,
     });
+    expect(store.auth).toEqual(false);
     store.setState({ recipesResources: recipesResourcesState1 });
     expect(
       await store.getObject({
