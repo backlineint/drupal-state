@@ -14,7 +14,7 @@ const store: any = new DrupalState({
 // const authStore: any = new DrupalState({
 //   apiBase: 'https://demo-decoupled-bridge.lndo.site',
 //   apiPrefix: 'en/jsonapi',
-//   clientId: '9adc9c69-fa3b-4c21-9cef-fbd345d1a269',
+//   clientId: 'my-client-id',
 //   clientSecret: 'mysecret',
 //   debug: true,
 // });
@@ -135,10 +135,10 @@ async function main(): Promise<void> {
 
   // Uncomment to use authenticated store - currently depends on local environment
 
-  // console.log('--- Get articles with authentication ---');
+  // console.log('--- Get taxonomy with authentication ---');
   // console.log(
   //   await authStore.getObject({
-  //     objectName: 'node--article',
+  //     objectName: 'taxonomy_vocabulary--taxonomy_vocabulary',
   //   })
   // );
 
