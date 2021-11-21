@@ -28,6 +28,11 @@ const recipes = await fetchJsonapiEndpoint(
   'https://live-contentacms.pantheonsite.io/api/recipes'
 );
 
+const tokenRequestBody = {
+  grant_type: 'client_credentials',
+  client_id: 'MY_ID',
+  client_secret: 'MY_SECRET',
+};
 const tokenResponse = await fetchToken(
   'https://live-contentacms.pantheonsite.io/api/recipes',
   tokenfetchBody

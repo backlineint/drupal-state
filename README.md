@@ -66,6 +66,35 @@ store.setState({ custom: 'My custom state' });
 const myCustomState = store.getState().custom; // Returns 'My custom state'
 ```
 
+### Request Parameters
+
+Parameters can be added to requests using methods on the param property. For
+example, to include image relationships in the response:
+
+```js
+const store = new DrupalState({
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
+});
+
+store.params.addInclude(['image']);
+const recipes = await store.getObject({ objectName: 'recipes' });
+
+// The resulting JSON:API request will be https://live-contentacms.pantheonsite.io/api/recipes?include=image
+```
+
+All helper methods provided by the excellent
+[Drupal JSON:API Params package](https://www.npmjs.com/package/drupal-jsonapi-params)
+are available so it is possible to filter, sort, use sparse fieldsets,
+pagination, and so on.
+
+The param object persists for the life of the data store, so it may also be
+cleared if necessary in order to structure a new query string.
+
+```js
+store.params.clear();
+```
+
 ### GraphQL Queries (Experimental)
 
 Drupal State also uses
@@ -92,40 +121,12 @@ await store.getObject({
 });
 ```
 
-### Request Parameters
-
-Parameters can be added to requests using methods on the param property. For
-example, to include image relationships in the response:
-
-```js
-const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api/',
-});
-
-store.params.addInclude(['image']);
-const recipes = await store.getObject({ objectName: 'recipes' });
-
-// The resulting JSON:API request will be https://live-contentacms.pantheonsite.io/api/recipes?include=image
-```
-
-All helper methods provided by the excellent
-[Drupal JSON:API Params package](https://www.npmjs.com/package/drupal-jsonapi-params)
-are available so it is possible to filter, sort, use sparse fieldsets,
-pagination, and so on.
-
-The param object persists for the life of the data store, so it may also be
-cleared if necessary in order to structure a new query string.
-
-```js
-store.params.clear();
-```
-
 ### Authorization
 
 By providing values for `clientId` and `clientSecret`, Drupal State can make
 requests to JSON:API endpoints that require authorization. The library currently
 supports [Simple OAuth](https://www.drupal.org/project/simple_oauth) using the
-`client_credntials` grant type, but we expect to support other authorization
+`client_credentials` grant type, but we expect to support other authorization
 methods in the future.
 
 ```js
@@ -157,8 +158,7 @@ management solution.
 - {@link fetch/fetchApiIndex}: Retrieves index of resource links for the API
 - {@link fetch/fetchJsonapiEndpoint}: Retrieves either a collection of objects
   or an individual object from the API
-- {@link fetch/fetchToken}: Makes a fetch request to a token endpoint with
-  headers and provided body and returns the token API response
+- {@link fetch/fetchToken}: Retrieves a token using provided credentials.
 
 ```js
 import {
@@ -193,7 +193,8 @@ results in some additional logging to the console.
 
 ```js
 const store = new DrupalState({
-  apiRoot: 'https://live-contentacms.pantheonsite.io/api',
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiPrefix: 'api',
   debug: true,
 });
 ```
