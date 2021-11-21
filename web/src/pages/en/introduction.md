@@ -44,5 +44,7 @@ Features include:
 - ✅ **Write GraphQL queries against Drupal's Core JSON:API endpoints.
   (Experimental)**
 
+- ✅ **Easily source data from API endpoints that require authorization**
+
 Plus much more on the roadmap. Have a feature request? Submit it in
 [the issue queue](https://www.drupal.org/project/issues/drupal_state?categories=All).

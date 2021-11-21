@@ -3,7 +3,7 @@ title: Including Related Data
 layout: ../../layouts/MainLayout.astro
 ---
 
-**tldr; Use params.addInclude() to include related objects in the deserialized
+**tldr; Use `params.addInclude()` to include related objects in the deserialized
 result.**
 
 [![Edit Including Related Data](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/including-related-data-quj2h?fontsize=14&hidenavigation=1&theme=dark)

@@ -41,6 +41,7 @@ export const SIDEBAR = {
     { text: 'Getting objects', link: 'en/getting-objects' },
     { text: 'Including Related Data', link: 'en/including-related-data' },
     { text: 'GraphQL Queries (Experimental)', link: 'en/graphql-queries' },
+    { text: 'Authorization', link: 'en/authorization' },
     { text: 'Utilities', link: 'en/utilities' },
 
     { text: 'Project Direction', header: true },
