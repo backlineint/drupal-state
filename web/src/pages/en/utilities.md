@@ -13,12 +13,17 @@ solution.**
   Retrieves either a collection of objects or an individual object from the API
 - [fetch/fetchToken](/en/modules/fetch_fetchtoken): Retrieves a token using
   provided credentials.
+- [fetch/translatePath](/en/modules/fetch_translatepath): helper function to
+  make it easier to resolve a path to an entity. Requires installing the
+  [Decoupled Router](https://www.drupal.org/project/decoupled_router) module on
+  your Drupal site.
 
 ```js
 import {
   fetchApiIndex,
   fetchJsonapiEndpoint,
   fetchToken,
+  translatePath,
 } from '@gdwc/drupal-state';
 
 const apiIndexData = await fetchApiIndex(
@@ -36,5 +41,10 @@ const tokenRequestBody = {
 const tokenResponse = await fetchToken(
   'https://live-contentacms.pantheonsite.io/api/recipes',
   tokenfetchBody
+);
+
+const translatedPath = await translatePath(
+  'https://live-contentacms.pantheonsite.io/router/translate-path',
+  '/recipes/fiery-chili-sauce'
 );
 ```

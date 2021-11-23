@@ -1,0 +1,24 @@
+{
+    "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+    "isHomePath": false,
+    "entity": {
+        "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+        "type": "node",
+        "bundle": "recipe",
+        "id": "9",
+        "uuid": "d38db4a4-c703-4d2d-91ab-4a2bc22607ab"
+    },
+    "label": "Fiery chili sauce",
+    "jsonapi": {
+        "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/d38db4a4-c703-4d2d-91ab-4a2bc22607ab",
+        "resourceName": "node--recipe",
+        "pathPrefix": "jsonapi",
+        "basePath": "/jsonapi",
+        "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+    },
+    "meta": {
+        "deprecated": {
+            "jsonapi.pathPrefix": "This property has been deprecated and will be removed in the next version of Decoupled Router. Use basePath instead."
+        }
+    }
+}
