@@ -159,12 +159,17 @@ management solution.
 - {@link fetch/fetchJsonapiEndpoint}: Retrieves either a collection of objects
   or an individual object from the API
 - {@link fetch/fetchToken}: Retrieves a token using provided credentials.
+- {@link fetch/translatePath}: helper function to make it easier to resolve a
+  path to an entity. Requires installing the
+  [Decoupled Router](https://www.drupal.org/project/decoupled_router) module on
+  your Drupal site.
 
 ```js
 import {
   fetchApiIndex,
   fetchJsonapiEndpoint,
   fetchToken,
+  translatePath,
 } from '@gdwc/drupal-state';
 
 const apiIndexData = await fetchApiIndex(
@@ -183,6 +188,11 @@ const tokenRequestBody = {
 const tokenPayload = await fetchtoken(
   'https://ds-demo.lndo.site/oauth/token',
   tokenRequestBody
+);
+
+const translatedPath = await translatePath(
+  'https://live-contentacms.pantheonsite.io/router/translate-path',
+  '/recipes/fiery-chili-sauce'
 );
 ```
 
