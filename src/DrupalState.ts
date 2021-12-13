@@ -22,6 +22,7 @@ import { camelize } from 'humps';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
+import translatePath from './fetch/translatePath';
 import fetchToken from './fetch/fetchToken';
 
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
@@ -33,11 +34,13 @@ import {
   CollectionState,
   GenericIndex,
   GetObjectParams,
+  GetObjectByPathParams,
   IterableDefinitionNode,
   jsonapiLinkObject,
   TokenObject,
   TokenResponseObject,
   ApolloClientWithHeaders,
+  dsPathTranslations,
 } from './types/types';
 
 class DrupalState {
@@ -298,6 +301,83 @@ class DrupalState {
     }
 
     return dsApiIndex;
+  }
+
+  /**
+   * Get an object by path alias from local state if it exists, or fetch it from Drupal if
+   * it doesn't exist in local state.
+   * @param objectName Name of object to retrieve. Ex: node--article
+   * @param path Path Alias of a specific resource
+   * @param res response object
+   * @param query user provided GraphQL query
+   * @returns a promise containing deserialized JSON:API data for the requested
+   * object
+   */
+  async getObjectByPath({
+    objectName,
+    path,
+    res,
+    query = false,
+  }: GetObjectByPathParams): Promise<PartialState<State>> {
+    const currentState = this.getState() as DsState;
+    const dsPathTranslations = currentState.dsPathTranslations as GenericIndex;
+    if (!dsPathTranslations?.[`${path}`]) {
+      !this.debug ||
+        console.log(
+          `No match for ${path} in dsPathTranslations - calling translatePath.`
+        );
+      // TODO - abstract helper method to assemble requestInit and authHeader
+      let requestInit = {};
+      let authHeader = '';
+      if (this.clientId && this.clientSecret) {
+        authHeader = await this.getAuthHeader();
+        requestInit = {
+          headers: {
+            Authorization: authHeader,
+          },
+        };
+      }
+      const response = (await translatePath(
+        this.apiBase + '/router/translate-path',
+        path,
+        requestInit,
+        false
+      )) as TJsonApiBody;
+      if (response) {
+        const pathTranslationsState = currentState['dsPathTranslations'];
+
+        if (pathTranslationsState) {
+          // If dsPathTranslaitons exists in state, add the new path to it.
+          const updatedPathTranslationState = {
+            ...pathTranslationsState,
+            [path]: response,
+          } as dsPathTranslations;
+
+          this.setState({
+            ['dsPathTranslations']: updatedPathTranslationState,
+          });
+        } else {
+          const newPathTranslationState = {
+            [path]: response,
+          };
+
+          this.setState({ ['dsPathTranslations']: newPathTranslationState });
+        }
+      }
+    }
+
+    const updatedState = this.getState() as DsState;
+    const pathTranslations =
+      updatedState.dsPathTranslations as dsPathTranslations;
+    const id = pathTranslations[`${path}`].entity.uuid;
+
+    const object = await this.getObject({
+      objectName: objectName,
+      id: id,
+      res,
+      query,
+    });
+    return object;
   }
 
   /**

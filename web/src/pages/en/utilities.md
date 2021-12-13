@@ -7,13 +7,13 @@ layout: ../../layouts/MainLayout.astro
 JSON:API endpoints even if you'd prefer to use an alternative state management
 solution.**
 
-- [fetch/fetchApiIndex](/en/modules/fetch_fetchapiindex): Retrieves index of
+- [fetch/fetchApiIndex](/en/api/modules/fetch_fetchapiindex): Retrieves index of
   resource links for the API
-- [fetch/fetchJsonapiEndpoint](/en/modules/fetch_fetchjsonapiendpoint):
+- [fetch/fetchJsonapiEndpoint](/en/api/modules/fetch_fetchjsonapiendpoint):
   Retrieves either a collection of objects or an individual object from the API
-- [fetch/fetchToken](/en/modules/fetch_fetchtoken): Retrieves a token using
+- [fetch/fetchToken](/en/api/modules/fetch_fetchtoken): Retrieves a token using
   provided credentials.
-- [fetch/translatePath](/en/modules/fetch_translatepath): helper function to
+- [fetch/translatePath](/en/api/modules/fetch_translatepath): helper function to
   make it easier to resolve a path to an entity. Requires installing the
   [Decoupled Router](https://www.drupal.org/project/decoupled_router) module on
   your Drupal site.

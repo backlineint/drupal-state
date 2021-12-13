@@ -10,7 +10,6 @@ const store: any = new DrupalState({
 });
 
 // Uncomment to use authenticated store - currently depends on local environment
-
 // const authStore: any = new DrupalState({
 //   apiBase: 'https://demo-decoupled-bridge.lndo.site',
 //   apiPrefix: 'en/jsonapi',
@@ -134,6 +133,30 @@ async function main(): Promise<void> {
   );
 
   // Uncomment to use authenticated store - currently depends on local environment
+
+  // console.log(
+  //   '--- Fetch an object by path where path needs to be translated ---'
+  // );
+  // console.log(
+  //   await authStore.getObjectByPath({
+  //     objectName: 'node--recipe',
+  //     path: '/recipes/fiery-chili-sauce',
+  //   })
+  // );
+  // console.log('--- Add a second path to dsPathTranslations in state ---');
+  // console.log(
+  //   await authStore.getObjectByPath({
+  //     objectName: 'node--recipe',
+  //     path: '/recipes/victoria-sponge-cake',
+  //   })
+  // );
+  // console.log('--- Use path translation in state if it already exists ---');
+  // console.log(
+  //   await authStore.getObjectByPath({
+  //     objectName: 'node--recipe',
+  //     path: '/recipes/victoria-sponge-cake',
+  //   })
+  // );
 
   // console.log('--- Get taxonomy with authentication ---');
   // console.log(

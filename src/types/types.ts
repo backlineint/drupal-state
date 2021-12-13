@@ -122,12 +122,35 @@ export interface jsonapiLinkObject {
   __typename: string;
 }
 
-// Object Interfaces
+/**
+ * Describes get object parameters.
+ */
 export interface GetObjectParams {
   objectName: string;
   id?: string;
   res?: ServerResponse | boolean;
   query?: string | boolean;
+}
+
+/**
+ * Describes get object by Path alias.
+ */
+export interface GetObjectByPathParams {
+  objectName: string;
+  path: string;
+  res?: ServerResponse | boolean;
+  query?: string | boolean;
+}
+
+/**
+ * Represents an index of path translation data.
+ */
+export interface dsPathTranslations {
+  [key: string]: {
+    entity: {
+      uuid: string;
+    };
+  };
 }
 
 /**

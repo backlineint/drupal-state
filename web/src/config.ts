@@ -36,12 +36,16 @@ export const SIDEBAR = {
     { text: 'Getting Started', header: true },
     { text: 'Introduction', link: 'en/introduction' },
     { text: 'Quick Start', link: 'en/quick-start' },
+    { text: 'Beyond the Basics', link: 'en/beyond-basics' },
 
     { text: 'Why Use Drupal State?', header: true },
-    { text: 'Getting objects', link: 'en/getting-objects' },
+    { text: 'Getting Objects', link: 'en/getting-objects' },
     { text: 'Including Related Data', link: 'en/including-related-data' },
     { text: 'GraphQL Queries (Experimental)', link: 'en/graphql-queries' },
     { text: 'Authorization', link: 'en/authorization' },
+
+    { text: 'Additional Features', header: true },
+    { text: 'Getting Objects by Path', link: 'en/get-object-by-path' },
     { text: 'Utilities', link: 'en/utilities' },
 
     { text: 'Project Direction', header: true },

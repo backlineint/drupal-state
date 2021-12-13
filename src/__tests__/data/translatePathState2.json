@@ -1,0 +1,50 @@
+{
+  "/recipes/victoria-sponge-cake": {
+    "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/victoria-sponge-cake",
+    "isHomePath": false,
+    "entity": {
+      "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/victoria-sponge-cake",
+      "type": "node",
+      "bundle": "recipe",
+      "id": "5",
+      "uuid": "1d857bf9-163b-48b2-990b-cc5dd234c76d"
+    },
+    "label": "Victoria sponge cake",
+    "jsonapi": {
+      "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/1d857bf9-163b-48b2-990b-cc5dd234c76d",
+      "resourceName": "node--recipe",
+      "pathPrefix": "jsonapi",
+      "basePath": "/jsonapi",
+      "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+    },
+    "meta": {
+      "deprecated": {
+        "jsonapi.pathPrefix": "This property has been deprecated and will be removed in the next version of Decoupled Router. Use basePath instead."
+      }
+    }
+  },
+  "/recipes/fiery-chili-sauce": {
+    "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+    "isHomePath": false,
+    "entity": {
+      "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+      "type": "node",
+      "bundle": "recipe",
+      "id": "9",
+      "uuid": "33f4a373-433e-447b-afc4-705776065639"
+    },
+    "label": "Fiery chili sauce",
+    "jsonapi": {
+      "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/33f4a373-433e-447b-afc4-705776065639",
+      "resourceName": "node--recipe",
+      "pathPrefix": "jsonapi",
+      "basePath": "/jsonapi",
+      "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+    },
+    "meta": {
+      "deprecated": {
+        "jsonapi.pathPrefix": "This property has been deprecated and will be removed in the next version of Decoupled Router. Use basePath instead."
+      }
+    }
+  }
+}
