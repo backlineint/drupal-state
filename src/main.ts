@@ -12,7 +12,8 @@ const store: any = new DrupalState({
 // Uncomment to use authenticated store - currently depends on local environment
 // const authStore: any = new DrupalState({
 //   apiBase: 'https://demo-decoupled-bridge.lndo.site',
-//   apiPrefix: 'en/jsonapi',
+//   apiPrefix: 'jsonapi',
+//   defaultLocale: 'en',
 //   clientId: 'my-client-id',
 //   clientSecret: 'mysecret',
 //   debug: true,

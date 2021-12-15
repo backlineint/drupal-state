@@ -48,7 +48,8 @@ describe('assembleApiRoot', () => {
   test('Kitchen Sink', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://live-contentacms.pantheonsite.io/',
-      apiPrefix: '/en/api/',
+      apiPrefix: 'api',
+      defaultLocale: 'en',
     });
     expect(store.assembleApiRoot()).toEqual(
       'https://live-contentacms.pantheonsite.io/en/api/'

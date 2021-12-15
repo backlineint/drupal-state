@@ -17,7 +17,8 @@ import recipesResourceQueryData from './data/recipesResourceQueryData3.json';
 
 const dsConfig = {
   apiBase: 'https://demo-decoupled-bridge.lndo.site',
-  apiPrefix: 'en/jsonapi',
+  apiPrefix: 'jsonapi',
+  defaultLocale: 'en',
 };
 
 describe('getObjectByPath', () => {

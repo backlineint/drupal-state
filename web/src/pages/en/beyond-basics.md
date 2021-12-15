@@ -3,6 +3,15 @@ title: Beyond the Basics
 layout: ../../layouts/MainLayout.astro
 ---
 
+Specify a default locale:
+
+```js
+const store = new DrupalState({
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  defaultLocale: 'en', // optional
+});
+```
+
 Include related data:
 
 ```js

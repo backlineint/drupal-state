@@ -14,7 +14,10 @@ import recipesResourceData1 from './data/recipesResourceData1.json';
 import recipesResourceData2 from './data/recipesResourceData2.json';
 import recipesResourceObject2 from './data/recipesResourceObject2.json';
 import indexResponse from '../fetch/__tests__/data/apiIndex.json';
+import spanishApiIndex from './data/spanishApiIndex.json';
 import tokenResponse from '../fetch/__tests__/data/token.json';
+import nodePageSpanishResourceQueryData from './data/nodePageSpanishResourceQueryData.json';
+import nodePageSpanishResourceQueryObject from './data/nodePageSpanishResourceQueryObject.json';
 
 describe('drupalState', () => {
   beforeEach(() => {
@@ -219,5 +222,45 @@ describe('drupalState', () => {
       })
     ).toEqual(recipesResourceObject1);
     expect(fetchMock).toBeCalledTimes(2);
+  });
+
+  test('A locale is honored if specified', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://demo-decoupled-bridge.lndo.site',
+      apiPrefix: 'jsonapi',
+      defaultLocale: 'es',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: spanishApiIndex });
+    fetchMock.mock(
+      'https://demo-decoupled-bridge.lndo.site/es/jsonapi/node/page/04fe66ed-1161-47f4-8a3f-6450eb9a8fa9?fields%5Bnode--page%5D=title%2Cid',
+      {
+        status: 200,
+        body: nodePageSpanishResourceQueryData,
+      }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'node--page',
+        id: '04fe66ed-1161-47f4-8a3f-6450eb9a8fa9',
+        query: `{
+          title
+          id
+        }`,
+      })
+    ).toEqual(nodePageSpanishResourceQueryObject);
+    expect(fetchMock).toBeCalledTimes(1);
+  });
+
+  test("Locale not provided it won't be used as part of URL structure", async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    expect(store.assembleApiRoot()).toEqual(
+      'https://live-contentacms.pantheonsite.io/api/'
+    );
   });
 });

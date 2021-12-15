@@ -50,6 +50,7 @@ export interface DrupalStateConfig {
    */
   apiBase: string;
   apiPrefix?: string;
+  defaultLocale?: string;
   clientId?: string;
   clientSecret?: string;
   debug?: boolean;

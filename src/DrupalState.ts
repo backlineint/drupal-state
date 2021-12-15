@@ -46,6 +46,7 @@ import {
 class DrupalState {
   apiBase: string;
   apiPrefix: string;
+  defaultLocale?: string;
   apiRoot: string;
   private clientId: string | undefined;
   private clientSecret: string | undefined;
@@ -71,12 +72,14 @@ class DrupalState {
   constructor({
     apiBase,
     apiPrefix = 'jsonapi',
+    defaultLocale,
     clientId,
     clientSecret,
     debug = false,
   }: DrupalStateConfig) {
     this.apiBase = apiBase;
     this.apiPrefix = apiPrefix;
+    this.defaultLocale = defaultLocale;
     this.apiRoot = this.assembleApiRoot();
     // TODO - .env support? Or should the consuming app be responsible for that?
     this.clientId = clientId;
@@ -121,7 +124,11 @@ class DrupalState {
     this.apiPrefix =
       this.apiPrefix.slice(-1) === '/' ? this.apiPrefix : `${this.apiPrefix}/`;
 
-    return `${this.apiBase}/${this.apiPrefix}`;
+    if (this.defaultLocale) {
+      return `${this.apiBase}/${this.defaultLocale}/${this.apiPrefix}`;
+    } else {
+      return `${this.apiBase}/${this.apiPrefix}`;
+    }
   }
 
   // Todo - Various error handling

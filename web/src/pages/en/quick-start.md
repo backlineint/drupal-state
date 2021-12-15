@@ -20,7 +20,7 @@ Create an instance of the store and specify the root of your API:
 ```js
 const store = new DrupalState({
   apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api', // apiPrefix defaults to 'jsonapi'
+  apiPrefix: 'api', // optional, defaults to 'jsonapi'
 });
 ```
 

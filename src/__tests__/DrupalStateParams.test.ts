@@ -76,7 +76,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
   test('Fetch a collection with nested includes', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'http://demo-decoupled-bridge.lndo.site',
-      apiPrefix: 'en/jsonapi',
+      apiPrefix: 'jsonapi',
+      defaultLocale: 'en',
       debug: true,
     });
     store.setState({ dsApiIndex: hrefApiIndex.links });

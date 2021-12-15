@@ -187,7 +187,8 @@ describe('drupalState', () => {
   test('Get resource object with hyphens in objectName', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'http://demo-decoupled-bridge.lndo.site',
-      apiPrefix: 'en/jsonapi',
+      apiPrefix: 'jsonapi',
+      defaultLocale: 'en',
       debug: true,
     });
     store.setState({ dsApiIndex: hyphenatedApiIndex });
