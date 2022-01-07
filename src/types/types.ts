@@ -41,6 +41,17 @@ export type IterableDefinitionNode = {
 // Interfaces
 
 /**
+ * A fetch compatible function
+ */
+export interface fetchAdapter {
+  (
+    input: RequestInfo,
+    init?: RequestInit | undefined,
+    res?: ServerResponse | boolean
+  ): Promise<Response>;
+}
+
+/**
  * An interface documenting all of the named parameters that can be used when
  * creating a new instance of DrupalState
  */
@@ -53,6 +64,7 @@ export interface DrupalStateConfig {
   defaultLocale?: string;
   clientId?: string;
   clientSecret?: string;
+  fetchAdapter?: fetchAdapter;
   debug?: boolean;
 }
 

@@ -1,5 +1,4 @@
 import { ServerResponse } from 'http';
-import fetch from 'isomorphic-fetch';
 import create, {
   StoreApi,
   GetState,
@@ -25,6 +24,8 @@ import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
 import translatePath from './fetch/translatePath';
 import fetchToken from './fetch/fetchToken';
 
+import defaultFetch from './fetch/defaultFetch';
+
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
 import {
   keyedResources,
@@ -41,6 +42,7 @@ import {
   TokenResponseObject,
   ApolloClientWithHeaders,
   dsPathTranslations,
+  fetchAdapter,
 } from './types/types';
 
 class DrupalState {
@@ -50,6 +52,7 @@ class DrupalState {
   apiRoot: string;
   private clientId: string | undefined;
   private clientSecret: string | undefined;
+  fetchAdapter?: fetchAdapter;
   auth: boolean;
   private token: TokenObject = {
     accessToken: '',
@@ -75,6 +78,7 @@ class DrupalState {
     defaultLocale,
     clientId,
     clientSecret,
+    fetchAdapter = defaultFetch,
     debug = false,
   }: DrupalStateConfig) {
     this.apiBase = apiBase;
@@ -85,6 +89,7 @@ class DrupalState {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.auth = this.clientId && this.clientSecret ? true : false;
+    this.fetchAdapter = fetchAdapter;
     this.debug = debug;
     this.dataFormatter = new Jsona();
     this.params = new DrupalJsonApiParams();
@@ -102,7 +107,7 @@ class DrupalState {
     // TODO - fix JsonApiLink type defs - unknown feels like a hack.
     const jsonApiLink = new JsonApiLink({
       uri: this.apiRoot,
-      customFetch: fetch,
+      customFetch: this.fetchAdapter,
     }) as unknown as ApolloLink;
 
     this.client = new ApolloClient({
@@ -201,7 +206,8 @@ class DrupalState {
       };
       const tokenResponse = (await fetchToken(
         `${this.apiBase}/oauth/token`,
-        tokenRequestBody
+        tokenRequestBody,
+        this.fetchAdapter
       )) as TokenResponseObject;
       this.token = {
         accessToken: tokenResponse.access_token,
@@ -216,7 +222,7 @@ class DrupalState {
    * Wraps {@link fetch/fetchApiIndex} function so it can be overridden.
    */
   async fetchApiIndex(apiRoot: string): Promise<void | GenericIndex> {
-    return await fetchApiIndex(apiRoot);
+    return await fetchApiIndex(apiRoot, this.fetchAdapter);
   }
 
   /**
@@ -227,8 +233,13 @@ class DrupalState {
     endpoint: string,
     requestInit = {},
     res: ServerResponse | boolean
-  ): Promise<void | TJsonApiBody> {
-    return await fetchJsonapiEndpoint(endpoint, requestInit, res);
+  ): Promise<void | Response> {
+    return await fetchJsonapiEndpoint(
+      endpoint,
+      requestInit,
+      res,
+      this.fetchAdapter
+    );
   }
 
   /**
@@ -248,11 +259,11 @@ class DrupalState {
     let requestInit = {};
     let authHeader = '';
     if (this.clientId && this.clientSecret) {
+      const headers = new Headers();
       authHeader = await this.getAuthHeader();
+      headers.append('Authorization', authHeader);
       requestInit = {
-        headers: {
-          Authorization: authHeader,
-        },
+        headers: headers,
       };
     }
 
@@ -337,18 +348,19 @@ class DrupalState {
       let requestInit = {};
       let authHeader = '';
       if (this.clientId && this.clientSecret) {
+        const headers = new Headers();
         authHeader = await this.getAuthHeader();
+        headers.append('Authorization', authHeader);
         requestInit = {
-          headers: {
-            Authorization: authHeader,
-          },
+          headers: headers,
         };
       }
       const response = (await translatePath(
         this.apiBase + '/router/translate-path',
         path,
         requestInit,
-        false
+        false,
+        this.fetchAdapter
       )) as TJsonApiBody;
       if (response) {
         const pathTranslationsState = currentState['dsPathTranslations'];

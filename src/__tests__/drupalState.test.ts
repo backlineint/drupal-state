@@ -3,6 +3,9 @@ const fetchMock = require('isomorphic-fetch');
 // After adding recent dependencies, tests fail if global Headers are not defined.
 global.Headers = fetchMock.Headers;
 
+import { ServerResponse } from 'http';
+import fetch from 'isomorphic-fetch';
+
 import DrupalState from '../DrupalState';
 
 import recipes from '../fetch/__tests__/data/collection.json';
@@ -18,6 +21,16 @@ import spanishApiIndex from './data/spanishApiIndex.json';
 import tokenResponse from '../fetch/__tests__/data/token.json';
 import nodePageSpanishResourceQueryData from './data/nodePageSpanishResourceQueryData.json';
 import nodePageSpanishResourceQueryObject from './data/nodePageSpanishResourceQueryObject.json';
+
+const testCustomFetch = (
+  apiUrl: RequestInfo,
+  requestInit = {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _res?: ServerResponse | boolean
+): Promise<Response> => {
+  console.log('Custom fetch function used');
+  return fetch(apiUrl, requestInit);
+};
 
 describe('drupalState', () => {
   beforeEach(() => {
@@ -262,5 +275,30 @@ describe('drupalState', () => {
     expect(store.assembleApiRoot()).toEqual(
       'https://live-contentacms.pantheonsite.io/api/'
     );
+  });
+
+  test('Fetch resource with custom fetchAdapter', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
+      fetchAdapter: testCustomFetch,
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b',
+      {
+        status: 200,
+        body: recipesResourceData1,
+      },
+      { overwriteRoutes: true }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'recipes',
+        id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      })
+    ).toEqual(recipesResourceObject1);
+    expect(fetchMock).toBeCalledTimes(1);
   });
 });

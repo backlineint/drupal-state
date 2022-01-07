@@ -122,7 +122,7 @@ await store.getObject({
 });
 ```
 
-## Getting Objects by Path
+### Getting Objects by Path
 
 Use getObjectByPath to get data for the object that
 [Decoupled Router](https://www.drupal.org/project/decoupled_router) resolves to
@@ -218,6 +218,19 @@ const translatedPath = await translatePath(
   'https://live-contentacms.pantheonsite.io/router/translate-path',
   '/recipes/fiery-chili-sauce'
 );
+```
+
+### Using a custom fetch function
+
+The `fetchAdapter` option can be used to provide a custom fetch-compatible
+function to Drupal State. This function will be used instead of Drupal State's
+default isomorphic-fetch.
+
+```js
+const store = new DrupalState({
+  apiBase: 'https://live-contentacms.pantheonsite.io',
+  fetchAdapter: myFetchFunction,
+});
 ```
 
 ### Debug mode

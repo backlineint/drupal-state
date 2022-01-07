@@ -1,17 +1,19 @@
-import fetch from 'isomorphic-fetch';
+import defaultFetch from './defaultFetch';
 
-import { stringIndex } from '../types/types';
+import { fetchAdapter, stringIndex } from '../types/types';
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
 
 /**
  * Fetch a token from Drupal
  * @param apiUrl the api url for the JON:API endpoint
  * @param tokenFetchBody object containing body parameters for the token request
+ * @param fetch fetch compatible function
  * @returns a promise containing the token api response
  */
 const fetchToken = (
   apiUrl: string,
-  tokenFetchBody: stringIndex
+  tokenFetchBody: stringIndex,
+  fetch: fetchAdapter = defaultFetch
 ): Promise<void | TJsonApiBody> => {
   // Convert body object to parameter string
   const body = Object.keys(tokenFetchBody)
