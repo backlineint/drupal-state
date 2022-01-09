@@ -1,0 +1,38 @@
+include:
+  - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
+
+image: node:lts-alpine
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  key: ${CI_JOB_NAME}-cache-1611911790
+  paths:
+    - node_modules
+
+build-docs:
+  stage: build
+  script:
+    - npm ci
+    - npm run build:docs
+  artifacts:
+    paths:
+      - docs
+
+jest:
+  stage: test
+  script:
+    - npm run test
+
+deploy-docs:
+  stage: deploy
+  script:
+    - mv docs public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
