@@ -33,6 +33,7 @@
     "serve": "vite preview",
     "typedoc": "typedoc",
     "test": "jest --coverage",
+    "test:ci": "JEST_JUNIT_OUTPUT_DIR='./test-results/jest' jest --ci --reporters=default --reporters=jest-junit",
     "eslint": "eslint --ext .js,.ts src --ignore-path .gitignore",
     "eslint:fix": "eslint --ext .js,.ts src --fix --ignore-path .gitignore",
     "prettier": "prettier \"**/*.{js,ts,md}\" --check --ignore-path .gitignore",
