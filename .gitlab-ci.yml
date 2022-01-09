@@ -38,7 +38,7 @@ jest:
 deploy-docs:
   stage: deploy
   script:
-    - mv docs public
+    - mv web public
   artifacts:
     paths:
       - public
