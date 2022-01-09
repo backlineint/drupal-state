@@ -22,7 +22,7 @@ build-docs:
     - npm run build:docs
   artifacts:
     paths:
-      - web
+      - web/dist
 
 jest:
   stage: test
@@ -35,10 +35,10 @@ jest:
       junit:
         - test-results/jest/junit.xml
 
-deploy-docs:
+pages:
   stage: deploy
   script:
-    - mv web public
+    - mv web/dist public
   artifacts:
     paths:
       - public
