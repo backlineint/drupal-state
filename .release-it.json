@@ -7,9 +7,7 @@
     "before:init": ["git pull origin 1.0.x"],
     "after:release": [
       "git push origin 1.0.x",
-      "git push origin ${version}",
-      "git push github 1.0.x",
-      "git push github ${version}"
+      "git push origin ${version}"
     ]
   }
 }
