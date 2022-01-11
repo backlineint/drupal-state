@@ -15,6 +15,6 @@ export default /** @type {import('astro').AstroUserConfig} */ ({
     '@astrojs/renderer-react',
   ],
   buildOptions: {
-    site: 'http://project.pages.drupalcode.org/drupal_state/',
+    site: 'https://project.pages.drupalcode.org/drupal_state/',
   },
 });
