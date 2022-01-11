@@ -47,7 +47,7 @@
     "rollup": "rollup -c",
     "build:docs": "npm run astro:build && npm run typedoc",
     "astro:dev": "astro dev --project-root web",
-    "astro:build": "astro build --project-root web",
+    "astro:build": "astro build --config astro.config.prod.mjs --project-root web",
     "astro:preview": "astro preview --project-root web"
   },
   "repository": {
