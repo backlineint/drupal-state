@@ -23,6 +23,8 @@ build-docs:
   artifacts:
     paths:
       - web/dist
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 jest:
   stage: test
