@@ -38,7 +38,7 @@ jest:
 pages:
   stage: deploy
   script:
-    - mv web/dist public
+    - mv web/dist/* public
   artifacts:
     paths:
       - public
