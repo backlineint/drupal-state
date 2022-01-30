@@ -12,6 +12,15 @@ export default [
       typescript(),
       getBabelOutputPlugin({
         presets: ['@babel/preset-env'],
+        plugins: [
+          [
+            '@babel/plugin-transform-runtime',
+            {
+              helpers: false,
+              regenerator: true,
+            },
+          ],
+        ],
       }),
     ],
   },

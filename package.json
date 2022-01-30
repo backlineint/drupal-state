@@ -66,6 +66,7 @@
   "license": "GPL-2.0-or-later",
   "devDependencies": {
     "@astrojs/renderer-preact": "^0.4.0",
+    "@babel/plugin-transform-runtime": "^7.16.10",
     "@babel/preset-env": "^7.15.8",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-typescript": "^8.2.5",
@@ -90,6 +91,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.15",
+    "@babel/runtime": "^7.16.7",
     "@docsearch/react": "^1.0.0-alpha.28",
     "@types/humps": "^2.0.1",
     "@types/isomorphic-fetch": "0.0.35",
