@@ -1,0 +1,592 @@
+{
+  "data": [
+    {
+      "type": "files",
+      "id": "158df1f4-bb70-40fd-8f76-f0abbac4277a",
+      "attributes": {
+        "internalId": 51,
+        "filename": "jsonapi-13.png",
+        "uri": "public://jsonapi-13.png",
+        "mimetype": "image/png",
+        "size": 1178344,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-13.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/158df1f4-bb70-40fd-8f76-f0abbac4277a"
+      }
+    },
+    {
+      "type": "files",
+      "id": "76ec5bb7-51e7-455e-840f-0734119d01ed",
+      "attributes": {
+        "internalId": 52,
+        "filename": "simple-oauth-7.png",
+        "uri": "public://simple-oauth-7.png",
+        "mimetype": "image/png",
+        "size": 987520,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/simple-oauth-7.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/76ec5bb7-51e7-455e-840f-0734119d01ed"
+      }
+    },
+    {
+      "type": "files",
+      "id": "8afea241-80ee-40d6-9f95-b8ad547c33d3",
+      "attributes": {
+        "internalId": 53,
+        "filename": "jsonapi-1.png",
+        "uri": "public://jsonapi-1.png",
+        "mimetype": "image/png",
+        "size": 1197225,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-1.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/8afea241-80ee-40d6-9f95-b8ad547c33d3"
+      }
+    },
+    {
+      "type": "files",
+      "id": "fd5b67dc-35c8-4b70-aa14-c2d19d036c8e",
+      "attributes": {
+        "internalId": 54,
+        "filename": "elm.png",
+        "uri": "public://elm.png",
+        "mimetype": "image/png",
+        "size": 6613,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/elm.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/fd5b67dc-35c8-4b70-aa14-c2d19d036c8e"
+      }
+    },
+    {
+      "type": "files",
+      "id": "b2b05df3-a719-497f-8fb0-2adf81834bd3",
+      "attributes": {
+        "internalId": 55,
+        "filename": "jsonapi-14.png",
+        "uri": "public://jsonapi-14.png",
+        "mimetype": "image/png",
+        "size": 1185507,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-14.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/b2b05df3-a719-497f-8fb0-2adf81834bd3"
+      }
+    },
+    {
+      "type": "files",
+      "id": "f1a73a34-1e2a-42a0-8ca5-f6fc80be7a74",
+      "attributes": {
+        "internalId": 56,
+        "filename": "jsonapi-3.png",
+        "uri": "public://jsonapi-3.png",
+        "mimetype": "image/png",
+        "size": 1197102,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-3.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/f1a73a34-1e2a-42a0-8ca5-f6fc80be7a74"
+      }
+    },
+    {
+      "type": "files",
+      "id": "6aba9116-973f-4c9c-b378-6498dd788b93",
+      "attributes": {
+        "internalId": 57,
+        "filename": "jsonapi-9.png",
+        "uri": "public://jsonapi-9.png",
+        "mimetype": "image/png",
+        "size": 1189493,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-9.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/6aba9116-973f-4c9c-b378-6498dd788b93"
+      }
+    },
+    {
+      "type": "files",
+      "id": "a1b3f392-7b17-4c56-a032-efc1a0bdc193",
+      "attributes": {
+        "internalId": 58,
+        "filename": "ionic.png",
+        "uri": "public://ionic.png",
+        "mimetype": "image/png",
+        "size": 20491,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/ionic.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/a1b3f392-7b17-4c56-a032-efc1a0bdc193"
+      }
+    },
+    {
+      "type": "files",
+      "id": "798055d4-a129-4a87-a7c2-e53797133872",
+      "attributes": {
+        "internalId": 59,
+        "filename": "routing.jpg",
+        "uri": "public://routing.jpg",
+        "mimetype": "image/jpeg",
+        "size": 231321,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/routing.jpg"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/798055d4-a129-4a87-a7c2-e53797133872"
+      }
+    },
+    {
+      "type": "files",
+      "id": "d6a30761-a718-47f2-b8dd-44eddd71bef3",
+      "attributes": {
+        "internalId": 60,
+        "filename": "schemas.jpg",
+        "uri": "public://schemas.jpg",
+        "mimetype": "image/jpeg",
+        "size": 121483,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/schemas.jpg"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/d6a30761-a718-47f2-b8dd-44eddd71bef3"
+      }
+    },
+    {
+      "type": "files",
+      "id": "958e70a9-e697-4168-a2ac-0b3e116b8cf9",
+      "attributes": {
+        "internalId": 61,
+        "filename": "jsonapi-15.png",
+        "uri": "public://jsonapi-15.png",
+        "mimetype": "image/png",
+        "size": 1189514,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-15.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/958e70a9-e697-4168-a2ac-0b3e116b8cf9"
+      }
+    },
+    {
+      "type": "files",
+      "id": "1648c8b6-04df-4492-8500-2c64181900ea",
+      "attributes": {
+        "internalId": 62,
+        "filename": "jsonapi-11.png",
+        "uri": "public://jsonapi-11.png",
+        "mimetype": "image/png",
+        "size": 1185604,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-11.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/1648c8b6-04df-4492-8500-2c64181900ea"
+      }
+    },
+    {
+      "type": "files",
+      "id": "0eeaa339-a615-4d6f-8f1e-7f7f4c76b5c4",
+      "attributes": {
+        "internalId": 63,
+        "filename": "ben-cliff.jpg",
+        "uri": "public://ben-cliff.jpg",
+        "mimetype": "image/jpeg",
+        "size": 77870,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/ben-cliff.jpg"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/0eeaa339-a615-4d6f-8f1e-7f7f4c76b5c4"
+      }
+    },
+    {
+      "type": "files",
+      "id": "de35dc3c-33de-451a-a5cf-d8b2acde24ff",
+      "attributes": {
+        "internalId": 64,
+        "filename": "simple-oauth-2.png",
+        "uri": "public://simple-oauth-2.png",
+        "mimetype": "image/png",
+        "size": 986955,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/simple-oauth-2.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/de35dc3c-33de-451a-a5cf-d8b2acde24ff"
+      }
+    },
+    {
+      "type": "files",
+      "id": "51b9a4c5-c9eb-4c7e-8f89-52ea21e07e6b",
+      "attributes": {
+        "internalId": 65,
+        "filename": "vue.png",
+        "uri": "public://vue.png",
+        "mimetype": "image/png",
+        "size": 11839,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/vue.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/51b9a4c5-c9eb-4c7e-8f89-52ea21e07e6b"
+      }
+    },
+    {
+      "type": "files",
+      "id": "5b2b429c-82db-4326-a1b0-5e3872c79b61",
+      "attributes": {
+        "internalId": 66,
+        "filename": "simple-oauth-3.png",
+        "uri": "public://simple-oauth-3.png",
+        "mimetype": "image/png",
+        "size": 1008978,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/simple-oauth-3.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/5b2b429c-82db-4326-a1b0-5e3872c79b61"
+      }
+    },
+    {
+      "type": "files",
+      "id": "4f0c9da9-c6f0-475e-a28a-d6a52b8bb983",
+      "attributes": {
+        "internalId": 67,
+        "filename": "jsonapi-4.png",
+        "uri": "public://jsonapi-4.png",
+        "mimetype": "image/png",
+        "size": 1187406,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-4.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/4f0c9da9-c6f0-475e-a28a-d6a52b8bb983"
+      }
+    },
+    {
+      "type": "files",
+      "id": "ec31e70e-d537-42f7-b5e6-40bce579286f",
+      "attributes": {
+        "internalId": 68,
+        "filename": "ember.png",
+        "uri": "public://ember.png",
+        "mimetype": "image/png",
+        "size": 103382,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/ember.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/ec31e70e-d537-42f7-b5e6-40bce579286f"
+      }
+    },
+    {
+      "type": "files",
+      "id": "05f18f62-ed67-41fa-843d-bae2bd7c23a7",
+      "attributes": {
+        "internalId": 69,
+        "filename": "simple-oauth-4.png",
+        "uri": "public://simple-oauth-4.png",
+        "mimetype": "image/png",
+        "size": 994797,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/simple-oauth-4.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/05f18f62-ed67-41fa-843d-bae2bd7c23a7"
+      }
+    },
+    {
+      "type": "files",
+      "id": "fe7b4005-5297-4efc-9eb7-66b0633457d1",
+      "attributes": {
+        "internalId": 70,
+        "filename": "simple-oauth-8.png",
+        "uri": "public://simple-oauth-8.png",
+        "mimetype": "image/png",
+        "size": 984171,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/simple-oauth-8.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/fe7b4005-5297-4efc-9eb7-66b0633457d1"
+      }
+    },
+    {
+      "type": "files",
+      "id": "bc0c6336-195a-4e79-89f3-29b13ba78dc0",
+      "attributes": {
+        "internalId": 71,
+        "filename": "jsonapi-7.png",
+        "uri": "public://jsonapi-7.png",
+        "mimetype": "image/png",
+        "size": 1186147,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-7.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/bc0c6336-195a-4e79-89f3-29b13ba78dc0"
+      }
+    },
+    {
+      "type": "files",
+      "id": "38c8bb24-38a7-4d0e-b048-6e0467efca90",
+      "attributes": {
+        "internalId": 72,
+        "filename": "jsonapi-2.png",
+        "uri": "public://jsonapi-2.png",
+        "mimetype": "image/png",
+        "size": 1185305,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-2.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/38c8bb24-38a7-4d0e-b048-6e0467efca90"
+      }
+    },
+    {
+      "type": "files",
+      "id": "1182b147-2039-4bc9-a4f2-99da4837fbef",
+      "attributes": {
+        "internalId": 73,
+        "filename": "jsonapi-8.png",
+        "uri": "public://jsonapi-8.png",
+        "mimetype": "image/png",
+        "size": 1196258,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-8.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/1182b147-2039-4bc9-a4f2-99da4837fbef"
+      }
+    },
+    {
+      "type": "files",
+      "id": "c05807c6-db9a-453d-855e-4f2367590520",
+      "attributes": {
+        "internalId": 74,
+        "filename": "jsonapi-5.png",
+        "uri": "public://jsonapi-5.png",
+        "mimetype": "image/png",
+        "size": 1183573,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/jsonapi-5.png"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/c05807c6-db9a-453d-855e-4f2367590520"
+      }
+    },
+    {
+      "type": "files",
+      "id": "f54b6498-6f25-4965-9121-9d00423e02a7",
+      "attributes": {
+        "internalId": 75,
+        "filename": "json-api-drupal-youtube.jpg",
+        "uri": "public://chokustecraporakudetrekasidrokelojiswogishitrahaspachohadivodathabreshaprihabeclestudrufrospenustaslujadojipewrupridruvucathupuvashonitucapebrestucribritrespowecluswibrishuthecrashadrahuropuuamagubriphashudramiprat",
+        "mimetype": "application/octet-stream",
+        "size": 0,
+        "isPublished": true,
+        "createdAt": "2017-12-31T12:57:13+0100",
+        "updatedAt": "2017-12-31T12:57:13+0100",
+        "url": "https://live-contentacms.pantheonsite.io/sites/default/files/chokustecraporakudetrekasidrokelojiswogishitrahaspachohadivodathabreshaprihabeclestudrufrospenustaslujadojipewrupridruvucathupuvashonitucapebrestucribritrespowecluswibrishuthecrashadrahuropuuamagubriphashudramiprat"
+      },
+      "relationships": {
+        "owner": {
+          "data": null
+        }
+      },
+      "links": {
+        "self": "https://live-contentacms.pantheonsite.io/api/files/f54b6498-6f25-4965-9121-9d00423e02a7"
+      }
+    }
+  ],
+  "jsonapi": {
+    "version": "1.0",
+    "meta": {
+      "links": {
+        "self": "http://jsonapi.org/format/1.0/"
+      }
+    }
+  },
+  "links": {
+    "self": "https://live-contentacms.pantheonsite.io/api/files?page%5Boffset%5D=50%5Cu0026page%5Blimit%5D%3D50",
+    "first": "https://live-contentacms.pantheonsite.io/api/files?page%5Boffset%5D=0&page%5Blimit%5D=50",
+    "prev": "https://live-contentacms.pantheonsite.io/api/files?page%5Boffset%5D=0&page%5Blimit%5D=50"
+  }
+}

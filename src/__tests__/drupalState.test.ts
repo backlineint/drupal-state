@@ -21,6 +21,9 @@ import spanishApiIndex from './data/spanishApiIndex.json';
 import tokenResponse from '../fetch/__tests__/data/token.json';
 import nodePageSpanishResourceQueryData from './data/nodePageSpanishResourceQueryData.json';
 import nodePageSpanishResourceQueryObject from './data/nodePageSpanishResourceQueryObject.json';
+import fileCollectionResponsePage1 from './data/fileCollectionResponsePage1.json';
+import fileCollectionResponsePage2 from './data/fileCollectionResponsePage2.json';
+import fileCollectionObjects from './data/fileCollectionObjects.json';
 
 const testCustomFetch = (
   apiUrl: RequestInfo,
@@ -300,5 +303,33 @@ describe('drupalState', () => {
       })
     ).toEqual(recipesResourceObject1);
     expect(fetchMock).toBeCalledTimes(1);
+  });
+
+  test('Fetch all Objects of a specific type', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock('https://live-contentacms.pantheonsite.io/api/files', {
+      status: 200,
+      body: fileCollectionResponsePage1,
+    });
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/files?page%5Boffset%5D=50\u0026page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: fileCollectionResponsePage2,
+      }
+    );
+
+    expect(
+      await store.getObject({
+        objectName: 'files',
+        all: true,
+      })
+    ).toStrictEqual(fileCollectionObjects);
+    expect(fetchMock).toBeCalledTimes(2);
   });
 });

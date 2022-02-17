@@ -18,6 +18,7 @@ import {
 import Jsona from 'jsona';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 import { camelize } from 'humps';
+import { default as deepmerge } from 'deepmerge';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
 import fetchJsonapiEndpoint from './fetch/fetchJsonapiEndpoint';
@@ -26,7 +27,7 @@ import fetchToken from './fetch/fetchToken';
 
 import defaultFetch from './fetch/defaultFetch';
 
-import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
+import { TJsonApiBody, TJsonApiLinks } from 'jsona/lib/JsonaTypes';
 import {
   keyedResources,
   TJsonApiBodyDataRequired,
@@ -43,6 +44,7 @@ import {
   ApolloClientWithHeaders,
   dsPathTranslations,
   fetchAdapter,
+  ResourceState,
 } from './types/types';
 
 class DrupalState {
@@ -248,13 +250,15 @@ class DrupalState {
    * @param query the specified GraphQL query
    * @param objectName Name of object to retrieve. Ex: node--article
    * @param res response object
+   * @param all if ture, include links in the returned object
    * @returns data fetched from JSON:API endpoint
    */
   async conditionalFetch(
     endpoint: string,
     query: string | boolean = false,
     objectName: string | boolean = false,
-    res: ServerResponse | boolean = false
+    res: ServerResponse | boolean = false,
+    all = false
   ): Promise<TJsonApiBody> {
     let requestInit = {};
     let authHeader = '';
@@ -282,10 +286,17 @@ class DrupalState {
       return (await this.client.query({ query: gqlQuery }).then(response => {
         const data = response.data as keyedResources;
         const object = data[queryObjectName] as jsonapiLinkObject;
-        return {
-          data: object.jsonapi.data,
-          graphql: object.graphql,
-        };
+        // add links only if fetching 'all' pages
+        return all
+          ? {
+              data: object.jsonapi.data,
+              graphql: object.graphql,
+              links: object.jsonapi.links,
+            }
+          : {
+              data: object.jsonapi.data,
+              graphql: object.graphql,
+            };
       })) as TJsonApiBody;
     } else {
       return (await this.fetchJsonapiEndpoint(
@@ -406,6 +417,7 @@ class DrupalState {
    * @param id id of a specific resource
    * @param res response object
    * @param query user provided GraphQL query
+   * @param all a boolean value. If true, fetch all objects in a collection.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    */
@@ -414,6 +426,7 @@ class DrupalState {
     id,
     res = false,
     query = false,
+    all = false,
   }: GetObjectParams): Promise<PartialState<State>> {
     const state = this.getState() as DsState;
     // Check for collection in the store
@@ -493,7 +506,10 @@ class DrupalState {
         : this.dataFormatter.deserialize(resourceData);
     } // End if (id) block
 
-    if (!collectionState) {
+    // if there's a query, we want to fetch that
+    // data with the query even if there's
+    // data in collectionState
+    if (!collectionState || (query && !collectionState.graphql)) {
       !this.debug ||
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
@@ -508,19 +524,66 @@ class DrupalState {
         endpoint,
         query,
         objectName,
-        res
+        res,
+        all
       )) as keyedResources;
 
       const fetchedCollectionState = {} as CollectionState;
       fetchedCollectionState[objectName] = collectionData;
 
       this.setState(fetchedCollectionState);
+      // if the all flag is present
+      // and if there is a next page
+      // aka >50 items available,
+      // fetch them and add to store
+      if (all) {
+        let links = collectionData.links as TJsonApiLinks;
+        if (links.next) {
+          const nextPageEndpoint = query
+            ? `${objectName}${id ? `/${id}` : ''}?${links.next.split('?')[1]}`
+            : links.next;
+
+          // helper function to fetch and add next page's data to the store
+          const getNextPage = async (nextPageEndpoint: string) => {
+            const nextPage = (await this.conditionalFetch(
+              nextPageEndpoint,
+              query,
+              objectName,
+              res,
+              all
+            )) as keyedResources;
+
+            const currentState = this.getState() as CollectionState;
+            // using deepmerge to merge arrays instead of overwriting them
+            const mergedCollection: keyedResources = deepmerge(
+              currentState[objectName],
+              nextPage
+            );
+
+            currentState[objectName] = mergedCollection;
+            this.setState(currentState);
+            return nextPage.links;
+          };
+          // if current page has a next page, get that data too
+          let results;
+          do {
+            const currentLinks = await getNextPage(nextPageEndpoint);
+            results = this.getState() as ResourceState;
+            links = currentLinks as TJsonApiLinks;
+          } while (links.next);
+
+          return query
+            ? results[objectName].graphql
+            : this.dataFormatter.deserialize(results[objectName]);
+        }
+      }
       return query
         ? collectionData.graphql
         : this.dataFormatter.deserialize(collectionData);
     } else {
       !this.debug || console.log(`Matched collection ${objectName} in state`);
       const gqlCollectionState = collectionState as keyedResources;
+
       return query
         ? gqlCollectionState.graphql
         : this.dataFormatter.deserialize(collectionState);

@@ -133,6 +133,27 @@ async function main(): Promise<void> {
     })
   );
 
+  console.log('--- Fetch _all_ objects of a type ---');
+  console.log(
+    await store.getObject({
+      objectName: 'files',
+      all: true,
+    })
+  );
+
+  console.log('--- Fetch _all_ objects of a type with a query---');
+  console.log(
+    await store.getObject({
+      objectName: 'files',
+      all: true,
+      query: `{
+          filename
+          id
+        }`,
+    })
+  );
+
+  console.log(store.getState());
   // Uncomment to use authenticated store - currently depends on local environment
 
   // console.log(

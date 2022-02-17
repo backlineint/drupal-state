@@ -26,6 +26,13 @@ const recipeFromStore = await store.getObject({
   objectName: 'recipes',
   id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
 });
+
+// If there is a collection with more than 50 entries, Drupal will automatically paginate results and return the first 50 items.
+// To fetch all items in a collection, use the `all` option
+const allArticlesFromApi = await store.getObject({
+  objectName: 'articles',
+  all: true,
+});
 ```
 
 To better understand the advantages of Drupal State, below we will compare the

@@ -1,5 +1,9 @@
 import { ServerResponse } from 'http';
-import { TJsonApiBody, TJsonApiData } from 'jsona/lib/JsonaTypes';
+import {
+  TJsonApiBody,
+  TJsonApiData,
+  TJsonApiLinks,
+} from 'jsona/lib/JsonaTypes';
 import { SelectionSetNode } from 'graphql/language/ast';
 import {
   ApolloClient,
@@ -28,6 +32,7 @@ export type keyedResources = {
  */
 export declare type TJsonApiBodyDataRequired = {
   data: TJsonApiDataFilterable;
+  graphql?: TJsonApiBody;
   included?: Array<TJsonApiData>;
 };
 
@@ -130,7 +135,9 @@ export interface ApiIndexResponse {
  * Describes json-api-link data that includes the original jsonapi response
  */
 export interface jsonapiLinkObject {
-  jsonapi: TJsonApiBody;
+  jsonapi: {
+    [key: string]: TJsonApiBody | TJsonApiLinks;
+  };
   graphql: TJsonApiData;
   __typename: string;
 }
@@ -143,6 +150,7 @@ export interface GetObjectParams {
   id?: string;
   res?: ServerResponse | boolean;
   query?: string | boolean;
+  all?: boolean;
 }
 
 /**

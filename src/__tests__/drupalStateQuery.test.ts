@@ -20,6 +20,10 @@ import nodePageResourceQueryObject from './data/nodePageResourceQueryObject.json
 import indexResponse from '../fetch/__tests__/data/apiIndex.json';
 import hyphenatedApiIndex from './data/hyphenatedApiIndex.json';
 import tokenResponse from '../fetch/__tests__/data/token.json';
+import fileCollectionQueryResponsePage1 from './data/fileCollectionQueryResponsePage1.json';
+import fileCollectionQueryResponsePage2 from './data/fileCollectionQueryResponsePage2.json';
+import fileCllectionObjects from './data/fileCollectionObjects.json';
+import fileCollectionQueryObjects from './data/fileCollectionQueryObjects.json';
 
 describe('drupalState', () => {
   beforeEach(() => {
@@ -260,6 +264,81 @@ describe('drupalState', () => {
         }`,
       })
     ).toEqual(recipesResourceQueryObject1);
+    expect(fetchMock).toBeCalledTimes(2);
+  });
+
+  test('Fetch all Objects of a specific type using a query', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/files?fields%5Bfiles%5D=filename%2Cid',
+      {
+        status: 200,
+        body: fileCollectionQueryResponsePage1,
+      }
+    );
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/files?fields%5Bfiles%5D=filename%2Cid&page%5Boffset%5D=50&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: fileCollectionQueryResponsePage2,
+      }
+    );
+
+    expect(
+      await store.getObject({
+        objectName: 'files',
+        all: true,
+        query: `{
+          filename
+          id
+        }`,
+      })
+    ).toEqual(fileCollectionQueryObjects);
+    expect(fetchMock).toBeCalledTimes(2);
+  });
+
+  test('Fetch all Objects of a specific type using a query when that object type is found in store', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://live-contentacms.pantheonsite.io',
+      apiPrefix: 'api',
+      debug: true,
+    });
+    store.setState({
+      dsApiIndex: indexResponse.links,
+      files: fileCllectionObjects,
+    });
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/files?fields%5Bfiles%5D=filename%2Cid',
+      {
+        status: 200,
+        body: fileCollectionQueryResponsePage1,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://live-contentacms.pantheonsite.io/api/files?fields%5Bfiles%5D=filename%2Cid&page%5Boffset%5D=50&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: fileCollectionQueryResponsePage2,
+      },
+      { overwriteRoutes: true }
+    );
+
+    expect(
+      await store.getObject({
+        objectName: 'files',
+        all: true,
+        query: `{
+          filename
+          id
+        }`,
+      })
+    ).toEqual(fileCollectionQueryObjects);
     expect(fetchMock).toBeCalledTimes(2);
   });
 });
