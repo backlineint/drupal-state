@@ -1,24 +1,30 @@
 {
-  "data": {
-    "type": "recipes",
-    "id": "84cfaa18-faca-471f-bfa5-fbb8c199d039",
-    "attributes": {
-      "title": "Majorcan vegetable bake",
-      "difficulty": "easy"
-    },
-    "links": {
-      "self": "https:\/\/live-contentacms.pantheonsite.io\/api\/recipes\/84cfaa18-faca-471f-bfa5-fbb8c199d039"
-    }
-  },
   "jsonapi": {
     "version": "1.0",
     "meta": {
       "links": {
-        "self": "http:\/\/jsonapi.org\/format\/1.0\/"
+        "self": {
+          "href": "http://jsonapi.org/format/1.0/"
+        }
       }
     }
   },
+  "data": {
+    "type": "node--recipe",
+    "id": "510cec29-bc95-4a64-a519-0ca6084529db",
+    "links": {
+      "self": {
+        "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/510cec29-bc95-4a64-a519-0ca6084529db?resourceVersion=id%3A10"
+      }
+    },
+    "attributes": {
+      "title": "Victoria sponge cake",
+      "field_difficulty": "easy"
+    }
+  },
   "links": {
-    "self": "https:\/\/live-contentacms.pantheonsite.io\/api\/recipes\/84cfaa18-faca-471f-bfa5-fbb8c199d039?fields%5Brecipes%5D=title%2Cdifficulty%2Cid"
+    "self": {
+      "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/510cec29-bc95-4a64-a519-0ca6084529db?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid"
+    }
   }
 }

@@ -27,10 +27,10 @@ import {
 } from '@gdwc/drupal-state';
 
 const apiIndexData = await fetchApiIndex(
-  'https://live-contentacms.pantheonsite.io/api'
+  'https://dev-ds-demo.pantheonsite.io/jsonapi'
 );
 const recipes = await fetchJsonapiEndpoint(
-  'https://live-contentacms.pantheonsite.io/api/recipes'
+  'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe'
 );
 
 const tokenRequestBody = {
@@ -39,12 +39,12 @@ const tokenRequestBody = {
   client_secret: 'MY_SECRET',
 };
 const tokenResponse = await fetchToken(
-  'https://live-contentacms.pantheonsite.io/api/recipes',
+  'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe',
   tokenfetchBody
 );
 
 const translatedPath = await translatePath(
-  'https://live-contentacms.pantheonsite.io/router/translate-path',
+  'https://dev-ds-demo.pantheonsite.io/router/translate-path',
   '/recipes/fiery-chili-sauce'
 );
 ```

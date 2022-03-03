@@ -8,15 +8,15 @@ make requests to JSON:API endpoints that require authorization.**
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api', // apiPrefix defaults to 'jsonapi'
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi', // apiPrefix defaults to 'jsonapi'
   clientId: 'my-client-id',
   clientSecret: 'my-client-secret',
 });
 
 // The following API request will automatically be made with an authorization
 // header containing a valid token:
-const recipes = await store.getObject({ objectName: 'recipes' });
+const recipes = await store.getObject({ objectName: 'node--recipe' });
 ```
 
 (Note: in most cases sensitive information like secrets should be provided to
@@ -53,15 +53,15 @@ need to:
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api', // apiPrefix defaults to 'jsonapi'
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi', // apiPrefix defaults to 'jsonapi'
   clientId: 'my-client-id',
   clientSecret: 'my-client-secret',
 });
 
 // The following API request will automatically be made with an authorization
 // header containing a valid token:
-const recipes = await store.getObject({ objectName: 'recipes' });
+const recipes = await store.getObject({ objectName: 'node--recipe' });
 ```
 
 Provide values for `clientId` and `clientSecret` when initializing a new

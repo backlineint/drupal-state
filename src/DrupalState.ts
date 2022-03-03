@@ -14,6 +14,7 @@ import {
   gql,
   InMemoryCache,
   ApolloLink,
+  ApolloError,
 } from '@apollo/client/core';
 import Jsona from 'jsona';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
@@ -45,6 +46,7 @@ import {
   dsPathTranslations,
   fetchAdapter,
   ResourceState,
+  queryResponse,
 } from './types/types';
 
 class DrupalState {
@@ -155,18 +157,31 @@ class DrupalState {
   ): string {
     let endpoint = '';
 
-    if (typeof index === 'string') {
+    // TODO - probably need some additional error handling here
+    if (index === undefined || typeof index === undefined) {
+      throw new Error(
+        `Error: The following index is not a string. Check the object name, id and, apiBase:\n\t index: ${JSON.stringify(
+          index
+        )}\n\t id: ${id}\n\t objectName: ${objectName}`
+      );
+    } else if (typeof index === 'string') {
       endpoint = index;
     } else {
-      // TODO - probably need some additional error handling here
       endpoint = index.href as string;
     }
-
     if (id) {
       endpoint += `/${id}`;
     }
 
     if (query) {
+      // if a query exists we don't want the apiBase on the endpoint
+      // as it will make the gqlQuery in conditionalFetch fail
+      endpoint = endpoint.replace(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        `${this.apiBase}${`/${this.defaultLocale}` || ''}/${this.apiPrefix}`,
+        ''
+      );
+
       const fields: string[] = [];
       const gqlObject = gql(query as string);
 
@@ -259,7 +274,7 @@ class DrupalState {
     objectName: string | boolean = false,
     res: ServerResponse | boolean = false,
     all = false
-  ): Promise<TJsonApiBody> {
+  ): Promise<TJsonApiBody | queryResponse | void> {
     let requestInit = {};
     let authHeader = '';
     if (this.clientId && this.clientSecret) {
@@ -272,32 +287,49 @@ class DrupalState {
     }
 
     if (query) {
-      this.client.link.headers = { Authorization: authHeader };
+      try {
+        this.client.link.headers = { Authorization: authHeader };
+        const queryObjectName = camelize(objectName as string);
+        const gqlQuery = gql`{
+              ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
+                {
+                  jsonapi
+                  graphql
+                  ${query}
+                }
+              }`;
+        const response = await this.client.query({ query: gqlQuery });
 
-      const queryObjectName = camelize(objectName as string);
-      const gqlQuery = gql`{
-        ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
-          {
-            jsonapi
-            graphql
-            ${query}
-          }
-        }`;
-      return (await this.client.query({ query: gqlQuery }).then(response => {
         const data = response.data as keyedResources;
         const object = data[queryObjectName] as jsonapiLinkObject;
         // add links only if fetching 'all' pages
-        return all
-          ? {
+        let result: queryResponse;
+        all
+          ? (result = {
               data: object.jsonapi.data,
               graphql: object.graphql,
               links: object.jsonapi.links,
-            }
-          : {
+            })
+          : (result = {
               data: object.jsonapi.data,
               graphql: object.graphql,
-            };
-      })) as TJsonApiBody;
+            });
+
+        return new Promise((resolve, reject) => {
+          resolve(result);
+          if (response.errors || response.error) {
+            reject(response.errors || response.error);
+          }
+        });
+      } catch (errors: unknown) {
+        if (errors instanceof ApolloError) {
+          errors.graphQLErrors.forEach((e, i) =>
+            console.error(`Error ${i + 1}: ${JSON.stringify(e, null, 2)}`)
+          );
+        } else {
+          console.error(errors);
+        }
+      }
     } else {
       return (await this.fetchJsonapiEndpoint(
         endpoint,
@@ -506,10 +538,19 @@ class DrupalState {
         : this.dataFormatter.deserialize(resourceData);
     } // End if (id) block
 
+    // get length of collectionState.data
+    // so that if we fetch an object once and it is in state
+    // and we fetch it again later with all:true, we fetch
+    // the remaining pages
+
     // if there's a query, we want to fetch that
     // data with the query even if there's
     // data in collectionState
-    if (!collectionState || (query && !collectionState.graphql)) {
+    if (
+      !collectionState ||
+      (query && !collectionState.graphql) ||
+      (collectionState.links?.next && !collectionState.links?.last && all)
+    ) {
       !this.debug ||
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
@@ -538,13 +579,37 @@ class DrupalState {
       // fetch them and add to store
       if (all) {
         let links = collectionData.links as TJsonApiLinks;
-        if (links.next) {
-          const nextPageEndpoint = query
-            ? `${objectName}${id ? `/${id}` : ''}?${links.next.split('?')[1]}`
-            : links.next;
+        // the shape of { links } is not consistent so normalize it here
+        const normalizeNextLink = (linkObj: TJsonApiLinks): string => {
+          if (!linkObj.next) {
+            return '';
+          } else if (typeof linkObj.next === 'string') {
+            return linkObj.next;
+          } else if (typeof linkObj.next?.href === 'string') {
+            return linkObj.next.href;
+          }
+          return '';
+        };
+        const nextLink = normalizeNextLink(links);
+
+        if (nextLink) {
+          // helper function to parse the next page endpoint in case there is a query
+          const getNextPageEndpoint = (nextLink: string): string => {
+            let nextPageEndpoint: string;
+            if (query && objectName.includes('--')) {
+              const querySafeName = objectName.split('--').join('/');
+              nextPageEndpoint = `${querySafeName}${id ? `/${id}` : ''}?${
+                nextLink.split('?')[1]
+              }`;
+            } else {
+              nextPageEndpoint = nextLink;
+            }
+            return nextPageEndpoint;
+          };
 
           // helper function to fetch and add next page's data to the store
           const getNextPage = async (nextPageEndpoint: string) => {
+            if (nextPageEndpoint === '') return {} as TJsonApiLinks;
             const nextPage = (await this.conditionalFetch(
               nextPageEndpoint,
               query,
@@ -562,14 +627,18 @@ class DrupalState {
 
             currentState[objectName] = mergedCollection;
             this.setState(currentState);
-            return nextPage.links;
+
+            return nextPage.links as TJsonApiLinks;
           };
+          let nextPageEndpoint = getNextPageEndpoint(nextLink);
           // if current page has a next page, get that data too
           let results;
           do {
             const currentLinks = await getNextPage(nextPageEndpoint);
             results = this.getState() as ResourceState;
-            links = currentLinks as TJsonApiLinks;
+            links = currentLinks;
+            const nextLink = normalizeNextLink(currentLinks);
+            nextPageEndpoint = getNextPageEndpoint(nextLink);
           } while (links.next);
 
           return query
@@ -577,6 +646,7 @@ class DrupalState {
             : this.dataFormatter.deserialize(results[objectName]);
         }
       }
+
       return query
         ? collectionData.graphql
         : this.dataFormatter.deserialize(collectionData);

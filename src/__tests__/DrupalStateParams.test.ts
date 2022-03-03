@@ -16,49 +16,51 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
   beforeEach(() => {
     fetchMock.mockClear();
   });
-
+  //TODO: update tests with https://dev-ds-demo.pantheonsite.io apiBase
   test('Add a single include parameter', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
     });
-    store.params.addInclude(['image']);
-    expect(store.params.getQueryString()).toEqual('include=image');
+    store.params.addInclude(['field_media_image']);
+    expect(store.params.getQueryString()).toEqual('include=field_media_image');
   });
 
   test('Add multiple include parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
     });
-    store.params.addInclude(['image', 'tags']);
-    expect(store.params.getQueryString()).toEqual('include=image%2Ctags');
+    store.params.addInclude(['field_media_image', 'field_tags']);
+    expect(store.params.getQueryString()).toEqual(
+      'include=field_media_image%2Cfield_tags'
+    );
   });
 
   test('I can reset parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
     });
 
-    store.params.addInclude(['image', 'tags']);
+    store.params.addInclude(['field_media_image', 'field_tags']);
     store.params.clear();
     expect(store.params.getQueryString()).toEqual('');
 
-    store.params.addInclude(['tags']);
-    expect(store.params.getQueryString()).toEqual('include=tags');
+    store.params.addInclude(['field_tags']);
+    expect(store.params.getQueryString()).toEqual('include=field_tags');
   });
 
   test('Fetch a resource with a single include', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
       debug: true,
     });
     store.setState({ dsApiIndex: indexResponse.links });
-    store.params.addInclude(['image']);
+    store.params.addInclude(['field_media_image']);
     fetchMock.mock(
-      'https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b?include=image',
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/50c3e7c9-64a9-453c-9289-278132beb4a2?include=field_media_image',
       {
         status: 200,
         body: singleIncludeData,
@@ -66,8 +68,8 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
     );
     expect(
       await store.getObject({
-        objectName: 'recipes',
-        id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+        objectName: 'node--recipe',
+        id: '50c3e7c9-64a9-453c-9289-278132beb4a2',
       })
     ).toEqual(singleIncludeObject);
     expect(fetchMock).toBeCalledTimes(1);
@@ -97,29 +99,30 @@ describe('Test the use of JSON:API query parameters with DrupalState', () => {
 
   test('Field params are added by a query', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
+      defaultLocale: 'en',
     });
     store.setState({ dsApiIndex: indexResponse.links });
     fetchMock.mock(
-      'https://live-contentacms.pantheonsite.io/api/recipes/912e092f-a7d5-41ae-9e92-e23ffa357b28?fields%5Brecipes%5D=title%2Cdifficulty%2Cid',
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/59895e1a-f6ca-4a88-9cac-488b85e48ef8?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid',
       {
         status: 200,
         body: recipesResourceQueryData1,
       }
     );
     await store.getObject({
-      objectName: 'recipes',
-      id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+      objectName: 'node--recipe',
+      id: '59895e1a-f6ca-4a88-9cac-488b85e48ef8',
       query: `{
         title
-        difficulty
+        field_difficulty
         id
       }`,
     });
     expect(fetchMock).toBeCalledTimes(1);
     expect(store.params.getQueryString()).toEqual(
-      'fields%5Brecipes%5D=title%2Cdifficulty%2Cid'
+      'fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
     );
   });
 

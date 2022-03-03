@@ -1,78 +1,127 @@
 {
-  "data": [
-    {
-      "__typename": "jsonapi_full_response_categories",
-      "type": "categories",
-      "id": "529406be-17fa-4080-b98d-19d23eaabb7b",
-      "attributes": {
-        "name": "Salad",
-        "__typename": "jsonapi_full_response_categories_attributes"
+  "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_body_wrapper",
+  "jsonapi": {
+    "data": [
+      {
+        "__typename": "jsonapi_full_response_taxonomy_term--recipe_category",
+        "type": "taxonomy_term--recipe_category",
+        "id": "3b2120bf-cacd-4313-808a-b31130a54434",
+        "attributes": {
+          "name": "Accompaniments",
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_attributes"
+        },
+        "relationships": "undefined",
+        "meta": "undefined",
+        "links": {
+          "self": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/3b2120bf-cacd-4313-808a-b31130a54434"
+          },
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_links"
+        }
       },
-      "links": {
-        "self": "https://live-contentacms.pantheonsite.io/api/categories/529406be-17fa-4080-b98d-19d23eaabb7b",
-        "__typename": "jsonapi_full_response_categories_links"
+      {
+        "__typename": "jsonapi_full_response_taxonomy_term--recipe_category",
+        "type": "taxonomy_term--recipe_category",
+        "id": "a587f1e4-b592-484d-8f58-137cad0e7cb0",
+        "attributes": {
+          "name": "Desserts",
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_attributes"
+        },
+        "relationships": "undefined",
+        "meta": "undefined",
+        "links": {
+          "self": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/a587f1e4-b592-484d-8f58-137cad0e7cb0"
+          },
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_links"
+        }
+      },
+      {
+        "__typename": "jsonapi_full_response_taxonomy_term--recipe_category",
+        "type": "taxonomy_term--recipe_category",
+        "id": "92972052-3377-47fc-a038-b61e56f3a8cb",
+        "attributes": {
+          "name": "Main courses",
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_attributes"
+        },
+        "relationships": "undefined",
+        "meta": "undefined",
+        "links": {
+          "self": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb"
+          },
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_links"
+        }
+      },
+      {
+        "__typename": "jsonapi_full_response_taxonomy_term--recipe_category",
+        "type": "taxonomy_term--recipe_category",
+        "id": "a23e37d3-98ab-4d2e-808a-dea71749f494",
+        "attributes": {
+          "name": "Snacks",
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_attributes"
+        },
+        "relationships": "undefined",
+        "meta": "undefined",
+        "links": {
+          "self": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/a23e37d3-98ab-4d2e-808a-dea71749f494"
+          },
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_links"
+        }
+      },
+      {
+        "__typename": "jsonapi_full_response_taxonomy_term--recipe_category",
+        "type": "taxonomy_term--recipe_category",
+        "id": "35211c28-3ff0-4b8c-95c8-b9bc8ddca733",
+        "attributes": {
+          "name": "Starters",
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_attributes"
+        },
+        "relationships": "undefined",
+        "meta": "undefined",
+        "links": {
+          "self": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/35211c28-3ff0-4b8c-95c8-b9bc8ddca733"
+          },
+          "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_links"
+        }
       }
+    ],
+    "meta": "undefined",
+    "links": {
+      "self": {
+        "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category?fields%5Bnode--page%5D=title%2Cid&fields%5Bnode--ds_example%5D=title%2Cid&fields%5Btaxonomy_term--recipe_category%5D=name%2Cid"
+      },
+      "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_body_links"
     },
-    {
-      "__typename": "jsonapi_full_response_categories",
-      "type": "categories",
-      "id": "fa40ad89-e749-44ed-8a96-e0bac344dc76",
-      "attributes": {
-        "name": "Main course",
-        "__typename": "jsonapi_full_response_categories_attributes"
-      },
-      "links": {
-        "self": "https://live-contentacms.pantheonsite.io/api/categories/fa40ad89-e749-44ed-8a96-e0bac344dc76",
-        "__typename": "jsonapi_full_response_categories_links"
-      }
-    },
-    {
-      "__typename": "jsonapi_full_response_categories",
-      "type": "categories",
-      "id": "e0ab7460-f144-47de-9aeb-f7658aa85315",
-      "attributes": {
-        "name": "Starter",
-        "__typename": "jsonapi_full_response_categories_attributes"
-      },
-      "links": {
-        "self": "https://live-contentacms.pantheonsite.io/api/categories/e0ab7460-f144-47de-9aeb-f7658aa85315",
-        "__typename": "jsonapi_full_response_categories_links"
-      }
-    },
-    {
-      "__typename": "jsonapi_full_response_categories",
-      "type": "categories",
-      "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6",
-      "attributes": {
-        "name": "Snack",
-        "__typename": "jsonapi_full_response_categories_attributes"
-      },
-      "links": {
-        "self": "https://live-contentacms.pantheonsite.io/api/categories/12bb3fb4-5ef4-48c6-b71f-730a576b84f6",
-        "__typename": "jsonapi_full_response_categories_links"
-      }
-    }
-  ],
+    "__typename": "jsonapi_full_response_taxonomy_term--recipe_category_body"
+  },
   "graphql": [
     {
-      "__typename": "categories",
-      "name": "Salad",
-      "id": "529406be-17fa-4080-b98d-19d23eaabb7b"
+      "__typename": "taxonomy_term--recipe_category",
+      "name": "Accompaniments",
+      "id": "3b2120bf-cacd-4313-808a-b31130a54434"
     },
     {
-      "__typename": "categories",
-      "name": "Main course",
-      "id": "fa40ad89-e749-44ed-8a96-e0bac344dc76"
+      "__typename": "taxonomy_term--recipe_category",
+      "name": "Desserts",
+      "id": "a587f1e4-b592-484d-8f58-137cad0e7cb0"
     },
     {
-      "__typename": "categories",
-      "name": "Starter",
-      "id": "e0ab7460-f144-47de-9aeb-f7658aa85315"
+      "__typename": "taxonomy_term--recipe_category",
+      "name": "Main courses",
+      "id": "92972052-3377-47fc-a038-b61e56f3a8cb"
     },
     {
-      "__typename": "categories",
-      "name": "Snack",
-      "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6"
+      "__typename": "taxonomy_term--recipe_category",
+      "name": "Snacks",
+      "id": "a23e37d3-98ab-4d2e-808a-dea71749f494"
+    },
+    {
+      "__typename": "taxonomy_term--recipe_category",
+      "name": "Starters",
+      "id": "35211c28-3ff0-4b8c-95c8-b9bc8ddca733"
     }
   ]
 }

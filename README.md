@@ -16,9 +16,9 @@ Create a new instance of Drupal State:
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
   defaultLocale: 'en', // optional
-  apiPrefix: 'api', // optional, defaults to jsonapi
+  apiPrefix: 'jsonapi', // optional, defaults to jsonapi
 });
 ```
 
@@ -31,11 +31,11 @@ that type will be returned.
 ```js
 // If the object doesn't exist in local state, it will be fetched from the API,
 // and then added to the store
-const recipesFromApi = await store.getObject({ objectName: 'recipes' });
+const recipesFromApi = await store.getObject({ objectName: 'node--recipe' });
 
 // If the object does exist in local state, it will be returned from the store
 // without requiring a fetch from the API
-const recipesFromStore = await store.getObject({ objectName: 'recipes' });
+const recipesFromStore = await store.getObject({ objectName: 'node--recipe' });
 ```
 
 It is also possible to provide a second argument of ID in order to retrieve a
@@ -45,14 +45,14 @@ single object of that type:
 // If the object doesn't exist in local state, it will be fetched from the API,
 // and then added to the store
 await store.getObject({
-  objectName: 'recipes',
+  objectName: 'node--recipe',
   id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
 });
 
 // If the object does exist in local state, it will be returned from the store
 // without requiring a fetch from the API
 await store.getObject({
-  objectName: 'recipes',
+  objectName: 'node--recipe',
   id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
 });
 ```
@@ -74,14 +74,14 @@ example, to include image relationships in the response:
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi',
 });
 
-store.params.addInclude(['image']);
-const recipes = await store.getObject({ objectName: 'recipes' });
+store.params.addInclude(['field_media_image']);
+const recipes = await store.getObject({ objectName: 'node--recipe' });
 
-// The resulting JSON:API request will be https://live-contentacms.pantheonsite.io/api/recipes?include=image
+// The resulting JSON:API request will be https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe?include=field_media_image
 ```
 
 All helper methods provided by the excellent
@@ -155,15 +155,15 @@ methods in the future.
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api', // apiPrefix defaults to 'jsonapi'
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi', // apiPrefix defaults to 'jsonapi'
   clientId: 'my-client-id',
   clientSecret: 'my-client-secret',
 });
 
 // The following API request will automatically be made with an authorization
 // header containing a valid token:
-const recipes = await store.getObject({ objectName: 'recipes' });
+const recipes = await store.getObject({ objectName: 'node--recipe' });
 ```
 
 (Note: in most cases sensitive information like secrets should be provided to
@@ -196,12 +196,10 @@ import {
   translatePath,
 } from '@gdwc/drupal-state';
 
-const apiIndexData = await fetchApiIndex(
-  'https://live-contentacms.pantheonsite.io/api'
-);
+const apiIndexData = await fetchApiIndex('https://dev-ds-demo.pantheonsite.io');
 
 const recipes = await fetchJsonapiEndpoint(
-  'https://live-contentacms.pantheonsite.io/api/recipes'
+  'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe'
 );
 
 const tokenRequestBody = {
@@ -215,7 +213,7 @@ const tokenPayload = await fetchtoken(
 );
 
 const translatedPath = await translatePath(
-  'https://live-contentacms.pantheonsite.io/router/translate-path',
+  'https://dev-ds-demo.pantheonsite.io/router/translate-path',
   '/recipes/fiery-chili-sauce'
 );
 ```
@@ -228,7 +226,7 @@ default isomorphic-fetch.
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
   fetchAdapter: myFetchFunction,
 });
 ```
@@ -240,8 +238,8 @@ results in some additional logging to the console.
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi',
   debug: true,
 });
 ```

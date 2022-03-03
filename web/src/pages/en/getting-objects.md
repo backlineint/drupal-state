@@ -12,25 +12,26 @@ collection of objects. Add the `id` parameter to get an individual object.**
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi',
 });
 
 // If the object doesn't exist in local state, it will be fetched from the API
 // and then added to the store
-const recipesFromApi = await store.getObject({ objectName: 'recipes' });
+const recipesFromApi = await store.getObject({ objectName: 'node--recipe' });
 
 // Since the object is already in local state as part of the recipes collection,
 // this will be returned from the store without requiring a fetch from Drupal.
 const recipeFromStore = await store.getObject({
-  objectName: 'recipes',
-  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 
-// If there is a collection with more than 50 entries, Drupal will automatically paginate results and return the first 50 items.
+// If there is a collection with more than 50 entries, Drupal will automatically
+// paginate results and return the first 50 items.
 // To fetch all items in a collection, use the `all` option
 const allArticlesFromApi = await store.getObject({
-  objectName: 'articles',
+  objectName: 'node--ds_example',
   all: true,
 });
 ```
@@ -50,20 +51,20 @@ retrieve this from an index of endpoints for all resources.
 
 ```js
 // Fetch the API index
-const apiIndex = await fetch('https://live-contentacms.pantheonsite.io/api')
+const apiIndex = await fetch('https://dev-ds-demo.pantheonsite.io')
   .then(response => response.json())
   .then(data => data)
   .catch(error => console.error('API index fetch failed', error));
 
 // With the result, we can determine the recipes endpoint
-console.log('recipes endpoint: ', apiIndex.links.recipes);
+console.log('recipes endpoint: ', apiIndex.links['node--recipes']);
 ```
 
 We can now fetch the recipes collection from the API.
 
 ```js
 // Fetch recipes collection from API
-const recipesFromApi = await fetch(apiIndex.links.recipes)
+const recipesFromApi = await fetch(apiIndex.links['node--recipe'].href)
   .then(response => response.json())
   .then(data => data)
   .catch(error => console.error('API fetch failed', error));
@@ -76,7 +77,7 @@ Let's say I wanted to access the instructions field for a recipe. We can access
 that field under the attributes for the recipe.
 
 ```js
-const instructions = recipesFromApi.data[0].attributes.instructions;
+const instructions = recipesFromApi.data[0].attributes.field_recipe_instruction;
 ```
 
 What if at some later point my application needs to get data for a specific
@@ -85,7 +86,7 @@ that will result in an additional request that could be avoided.
 
 ```js
 const recipeFromApi = await fetch(
-  `${apiIndex.links.recipes}/a542e833-edfe-44a3-a6f1-7358b115af4b`
+  `${apiIndex.links['node--recipe'].href}/33386d32-a87c-44b9-b66b-3dd0bfc38dca`
 )
   .then(response => response.json())
   .then(data => data)
@@ -100,7 +101,7 @@ the data store.
 ```js
 // Filter for the resource in application state
 const recipeFromState = recipesFromApi.data.filter(item => {
-  return item['id'] === 'a542e833-edfe-44a3-a6f1-7358b115af4b';
+  return item['id'] === '33386d32-a87c-44b9-b66b-3dd0bfc38dca';
 });
 ```
 
@@ -112,13 +113,13 @@ const recipeFromState = recipesFromApi.data.filter(item => {
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi',
 });
 
 // If the object doesn't exist in local state, it will be fetched from the API
 // and then added to the store
-const recipesFromApi = await store.getObject({ objectName: 'recipes' });
+const recipesFromApi = await store.getObject({ objectName: 'node--recipe' });
 ```
 
 The code above will return a collection of recipes and store them in local
@@ -138,8 +139,8 @@ retrieve an individual recipe from the store without an additional request.
 
 ```js
 const recipeFromStore = await store.getObject({
-  objectName: 'recipes',
-  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 ```
 
@@ -147,5 +148,5 @@ The resulting object is deserialized in order to simplify accessing data. For
 example, we can access the instructions field with:
 
 ```js
-const instructions = recipeFromStore.instructions;
+const instructions = recipeFromStore.field_recipe_instruction;
 ```

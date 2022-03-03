@@ -3,155 +3,157 @@ import DrupalState from '../DrupalState';
 describe('Correctly assemble endpoints including query params', () => {
   test('No parameters', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
     });
     expect(
       store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes'
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe'
       )
-    ).toEqual('https://live-contentacms.pantheonsite.io/api/recipes');
+    ).toEqual('https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe');
     expect(
-      store.assembleEndpoint('recipes', {
-        href: 'https://live-contentacms.pantheonsite.io/api/recipes',
+      store.assembleEndpoint('node--recipe', {
+        href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
       })
-    ).toEqual('https://live-contentacms.pantheonsite.io/api/recipes');
+    ).toEqual('https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe');
   });
 
   test('No parameters with ID', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
     });
     expect(
       store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes',
-        'a542e833-edfe-44a3-a6f1-7358b115af4b'
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
       )
     ).toEqual(
-      'https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b'
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca'
     );
     expect(
       store.assembleEndpoint(
-        'recipes',
-        { href: 'https://live-contentacms.pantheonsite.io/api/recipes' },
-        'a542e833-edfe-44a3-a6f1-7358b115af4b'
+        'node--recipe',
+        { href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe' },
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
       )
     ).toEqual(
-      'https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b'
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca'
     );
   });
 
   test('Parameters, ID and includes', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
     });
     store.params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes',
-        'a542e833-edfe-44a3-a6f1-7358b115af4b'
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
       )
     ).toEqual(
-      'https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b?include=image'
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image'
     );
     expect(
       store.assembleEndpoint(
-        'recipes',
-        { href: 'https://live-contentacms.pantheonsite.io/api/recipes' },
-        'a542e833-edfe-44a3-a6f1-7358b115af4b'
+        'node--recipe',
+        { href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe' },
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
       )
     ).toEqual(
-      'https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b?include=image'
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image'
     );
   });
 
   test('Parameters and includes, no ID', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
     });
     store.params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes'
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe'
       )
     ).toEqual(
-      'https://live-contentacms.pantheonsite.io/api/recipes?include=image'
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe?include=image'
     );
     expect(
-      store.assembleEndpoint('recipes', {
-        href: 'https://live-contentacms.pantheonsite.io/api/recipes',
+      store.assembleEndpoint('node--recipe', {
+        href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
       })
     ).toEqual(
-      'https://live-contentacms.pantheonsite.io/api/recipes?include=image'
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe?include=image'
     );
   });
 
   test('Query', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
     });
     expect(
       store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes',
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '',
         `{
           title
-          difficulty
-          id
-        }`
-      )
-    ).toEqual('recipes?fields%5Brecipes%5D=title%2Cdifficulty%2Cid');
-  });
-
-  test('Query with ID', async () => {
-    const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
-    });
-    expect(
-      store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes',
-        'a542e833-edfe-44a3-a6f1-7358b115af4b',
-        `{
-          title
-          difficulty
+          field_difficulty
           id
         }`
       )
     ).toEqual(
-      'recipes/a542e833-edfe-44a3-a6f1-7358b115af4b?fields%5Brecipes%5D=title%2Cdifficulty%2Cid'
+      'node/recipe?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
+    );
+  });
+
+  test('Query with ID', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+    });
+    expect(
+      store.assembleEndpoint(
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        `{
+          title
+          field_difficulty
+          id
+        }`
+      )
+    ).toEqual(
+      'node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
     );
   });
 
   test('Query with kitchen sink', async () => {
     const store: DrupalState = new DrupalState({
-      apiBase: 'https://live-contentacms.pantheonsite.io',
-      apiPrefix: 'api',
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
     });
     store.params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
-        'recipes',
-        'https://live-contentacms.pantheonsite.io/api/recipes',
-        'a542e833-edfe-44a3-a6f1-7358b115af4b',
+        'node--recipe',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
         `{
           title
-          difficulty
+          field_difficulty
           id
         }`
       )
     ).toEqual(
-      'recipes/a542e833-edfe-44a3-a6f1-7358b115af4b?include=image&fields%5Brecipes%5D=title%2Cdifficulty%2Cid'
+      'node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image&fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
     );
   });
 });

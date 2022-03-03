@@ -1,22 +1,27 @@
 [
   {
-    "__typename": "categories",
-    "name": "Salad",
-    "id": "529406be-17fa-4080-b98d-19d23eaabb7b"
+    "__typename": "taxonomy_term--recipe_category",
+    "name": "Accompaniments",
+    "id": "3b2120bf-cacd-4313-808a-b31130a54434"
   },
   {
-    "__typename": "categories",
-    "name": "Main course",
-    "id": "fa40ad89-e749-44ed-8a96-e0bac344dc76"
+    "__typename": "taxonomy_term--recipe_category",
+    "name": "Desserts",
+    "id": "a587f1e4-b592-484d-8f58-137cad0e7cb0"
   },
   {
-    "__typename": "categories",
-    "name": "Starter",
-    "id": "e0ab7460-f144-47de-9aeb-f7658aa85315"
+    "__typename": "taxonomy_term--recipe_category",
+    "name": "Main courses",
+    "id": "92972052-3377-47fc-a038-b61e56f3a8cb"
   },
   {
-    "__typename": "categories",
-    "name": "Snack",
-    "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6"
+    "__typename": "taxonomy_term--recipe_category",
+    "name": "Snacks",
+    "id": "a23e37d3-98ab-4d2e-808a-dea71749f494"
+  },
+  {
+    "__typename": "taxonomy_term--recipe_category",
+    "name": "Starters",
+    "id": "35211c28-3ff0-4b8c-95c8-b9bc8ddca733"
   }
 ]

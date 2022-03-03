@@ -7,13 +7,13 @@ import response from './data/collection.json';
 
 describe('fetchJsonapiEndpoint', () => {
   test('A valid collection response returns data', async () => {
-    fetchMock.mock('https://live-contentacms.pantheonsite.io/api/recipes', {
+    fetchMock.mock('https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe', {
       status: 200,
       body: response,
     });
     expect(
       await fetchJsonapiEndpoint(
-        'https://live-contentacms.pantheonsite.io/api/recipes'
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe'
       )
     ).toEqual(response);
   });
@@ -25,7 +25,7 @@ describe('fetchJsonapiEndpoint', () => {
     };
     fetchMock.mock(
       {
-        url: 'https://live-contentacms.pantheonsite.io/api/recipes',
+        url: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         headers: requestInit.headers,
       },
       {
@@ -35,7 +35,7 @@ describe('fetchJsonapiEndpoint', () => {
     );
     expect(
       await fetchJsonapiEndpoint(
-        'https://live-contentacms.pantheonsite.io/api/recipes',
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         requestInit
       )
     ).toEqual(response);
@@ -43,11 +43,11 @@ describe('fetchJsonapiEndpoint', () => {
 
   // TODO - would be nice to test the error message as well
   test('A fetch failure returns undefined', async () => {
-    fetchMock.mock('https://live-contentacms.pantheonsite.io/api', {
+    fetchMock.mock('https://dev-ds-demo.pantheonsite.io/jsonapi', {
       throws: new Error('fetch failed'),
     });
     expect(
-      await fetchJsonapiEndpoint('https://live-contentacms.pantheonsite.io/api')
+      await fetchJsonapiEndpoint('https://dev-ds-demo.pantheonsite.io/jsonapi')
     ).toEqual(undefined);
   });
 });

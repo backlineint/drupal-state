@@ -19,8 +19,8 @@ Create an instance of the store and specify the root of your API:
 
 ```js
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api', // optional, defaults to 'jsonapi'
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi', // optional, defaults to 'jsonapi'
 });
 ```
 
@@ -29,7 +29,7 @@ Get a collection of objects:
 ```js
 // If the object doesn't exist in local state, it will be fetched from the API
 // and then added to the store
-const recipesFromApi = await store.getObject({ objectName: 'recipes' });
+const recipesFromApi = await store.getObject({ objectName: 'node--recipe' });
 ```
 
 Get a single object:
@@ -39,7 +39,7 @@ Get a single object:
 // this will be returned from the store without requiring a fetch from Drupal.
 const recipeFromStore = await store.getObject({
   objectName: 'recipes',
-  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 ```
 

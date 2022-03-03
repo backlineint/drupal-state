@@ -3,9 +3,10 @@ import './style.css';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
-const store: any = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+const store: DrupalState = new DrupalState({
+  apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+  apiPrefix: 'jsonapi',
+  defaultLocale: 'en',
   debug: true,
 });
 
@@ -21,15 +22,15 @@ const store: any = new DrupalState({
 
 async function main(): Promise<void> {
   // Include images in response
-  store.params.addInclude(['image']);
+  store.params.addInclude(['field_media_image']);
 
   console.log(
     '--- If no resources are in state, create a new resource object ---'
   );
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      objectName: 'node--recipe',
+      id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
     })
   );
   console.log(
@@ -37,16 +38,16 @@ async function main(): Promise<void> {
   );
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+      objectName: 'node--recipe',
+      id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
     })
   );
 
   console.log('--- Fetch and add to the existing resource object ---');
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: '84cfaa18-faca-471f-bfa5-fbb8c199d039',
+      objectName: 'node--recipe',
+      id: '50c3e7c9-64a9-453c-9289-278132beb4a2',
     })
   );
   console.log(
@@ -54,28 +55,28 @@ async function main(): Promise<void> {
   );
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: '84cfaa18-faca-471f-bfa5-fbb8c199d039',
+      objectName: 'node--recipe',
+      id: '50c3e7c9-64a9-453c-9289-278132beb4a2',
     })
   );
 
   console.log('--- Fetch a collection ---');
   console.log(
     await store.getObject({
-      objectName: 'recipes',
+      objectName: 'node--recipe',
     })
   );
   console.log('--- Get collection from state if it already exists ---');
   console.log(
     await store.getObject({
-      objectName: 'recipes',
+      objectName: 'node--recipe',
     })
   );
   console.log('--- If a resource exists in collection state, use that ---');
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: '1c134a16-01ab-4133-ae1f-6e078fe1f64b',
+      objectName: 'node--recipe',
+      id: '21a95a3d-4a83-494f-b7b4-dcfb0f164a74',
     })
   );
 
@@ -84,8 +85,8 @@ async function main(): Promise<void> {
   // the query may not contain the ID.
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+      objectName: 'node--recipe',
+      id: 'da1359f4-2e60-462c-8909-47c3bce11fdf',
       query: `{
         title
         difficulty
@@ -93,14 +94,14 @@ async function main(): Promise<void> {
       }`,
     })
   );
-
+  store.params.clear(); // Remove image field include as it does not exist on pages
   console.log(
     '--- Fetch a resource with a query from state if it already exists ---'
   );
   console.log(
     await store.getObject({
-      objectName: 'recipes',
-      id: '912e092f-a7d5-41ae-9e92-e23ffa357b28',
+      objectName: 'node--recipe',
+      id: 'da1359f4-2e60-462c-8909-47c3bce11fdf',
       query: `{
         title
         difficulty
@@ -112,7 +113,7 @@ async function main(): Promise<void> {
   console.log('--- Fetch a collection with a query ---');
   console.log(
     await store.getObject({
-      objectName: 'pages',
+      objectName: 'node--page',
       query: `{
         title
         id
@@ -125,7 +126,7 @@ async function main(): Promise<void> {
   );
   console.log(
     await store.getObject({
-      objectName: 'pages',
+      objectName: 'node--page',
       query: `{
         title
         id
@@ -133,10 +134,18 @@ async function main(): Promise<void> {
     })
   );
 
+  // gets the first 50 results only
+  console.log('--- Fetch objects of a type ---');
+  console.log(
+    await store.getObject({
+      objectName: 'node--ds_example',
+    })
+  );
+  // get the remaining results
   console.log('--- Fetch _all_ objects of a type ---');
   console.log(
     await store.getObject({
-      objectName: 'files',
+      objectName: 'node--ds_example',
       all: true,
     })
   );
@@ -144,10 +153,10 @@ async function main(): Promise<void> {
   console.log('--- Fetch _all_ objects of a type with a query---');
   console.log(
     await store.getObject({
-      objectName: 'files',
+      objectName: 'node--ds_example',
       all: true,
       query: `{
-          filename
+          title
           id
         }`,
     })

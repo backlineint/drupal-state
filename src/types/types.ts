@@ -34,6 +34,7 @@ export declare type TJsonApiBodyDataRequired = {
   data: TJsonApiDataFilterable;
   graphql?: TJsonApiBody;
   included?: Array<TJsonApiData>;
+  links?: TJsonApiLinks;
 };
 
 /**
@@ -136,6 +137,8 @@ export interface ApiIndexResponse {
  */
 export interface jsonapiLinkObject {
   jsonapi: {
+    data: TJsonApiBody;
+    links: TJsonApiLinks;
     [key: string]: TJsonApiBody | TJsonApiLinks;
   };
   graphql: TJsonApiData;
@@ -193,4 +196,10 @@ export interface CollectionState {
  */
 export interface ResourceState {
   [key: string]: keyedResources;
+}
+
+export interface queryResponse {
+  data: TJsonApiBody;
+  graphql: jsonapiLinkObject['graphql'];
+  links?: TJsonApiLinks;
 }

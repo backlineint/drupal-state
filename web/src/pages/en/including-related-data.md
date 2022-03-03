@@ -12,19 +12,19 @@ result.**
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi',
 });
 
 // Add an include parameter to include a related object in the result
-store.params.addInclude(['category']);
+store.params.addInclude(['field_recipe_category']);
 const recipe = await store.getObject({
-  objectName: 'recipes',
-  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 
 // Fields for the recipe category are now available on the recipe object.
-const recipeCategory = recipe.category.name;
+const recipeCategory = recipe['field_recipe_category'][0].name;
 ```
 
 To better understand the advantages of Drupal State, below we will compare the
@@ -44,10 +44,10 @@ to the API request.
 [![Edit Including Related Data - Direct Fetch](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/including-related-data-direct-fetch-6yjfi?fontsize=14&hidenavigation=1&theme=dark)
 
 ```js
-// Add ?include=category to api query string in order to
+// Add ?include=field_recipe_category to api query string in order to
 // include the category entity in the response.
 const recipe = await fetch(
-  'https://live-contentacms.pantheonsite.io/api/recipes/5d439196-a151-4a2a-95bd-08c2aef302ce?include=category'
+  'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=field_recipe_category'
 )
   .then(response => response.json())
   .then(data => data)
@@ -62,32 +62,114 @@ The category name is now available in the response, but reliably accessing that
 data can be challenging. Here's a closer look at `recipe.included`
 
 ```json
-"included": [
-  {
-    "type": "categories",
-    "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6",
-    "attributes": {
-      "internalId": 4,
-      "name": "Snack",
-      "description": null,
-      "weight": 0,
-      "updatedAt": "2017-12-31T12:57:13+0100",
-      "path": {
-        "alias": null,
-        "pid": null,
-        "langcode": "en"
+{
+  "included": [
+    {
+      "type": "taxonomy_term--recipe_category",
+      "id": "92972052-3377-47fc-a038-b61e56f3a8cb",
+      "links": {
+        "self": {
+          "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb"
+        }
+      },
+      "attributes": {
+        "drupal_internal__tid": 31,
+        "drupal_internal__revision_id": 31,
+        "langcode": "en",
+        "revision_created": "2022-02-16T22:40:41+00:00",
+        "revision_log_message": null,
+        "status": true,
+        "name": "Main courses",
+        "description": null,
+        "weight": 0,
+        "changed": "2022-02-16T22:40:41+00:00",
+        "default_langcode": true,
+        "revision_translation_affected": true,
+        "path": {
+          "alias": "/recipe-category/main-courses",
+          "pid": 61,
+          "langcode": "en"
+        },
+        "content_translation_source": "und",
+        "content_translation_outdated": false,
+        "content_translation_created": "2022-02-16T22:40:41+00:00"
+      },
+      "relationships": {
+        "vid": {
+          "data": {
+            "type": "taxonomy_vocabulary--taxonomy_vocabulary",
+            "id": "b7084f66-91cc-4c28-ac05-d0b246223617",
+            "meta": {
+              "drupal_internal__target_id": "recipe_category"
+            }
+          },
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/vid"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/relationships/vid"
+            }
+          }
+        },
+        "revision_user": {
+          "data": null,
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/revision_user"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/relationships/revision_user"
+            }
+          }
+        },
+        "parent": {
+          "data": [
+            {
+              "type": "taxonomy_term--recipe_category",
+              "id": "virtual",
+              "meta": {
+                "links": {
+                  "help": {
+                    "href": "https://www.drupal.org/docs/8/modules/json-api/core-concepts#virtual",
+                    "meta": {
+                      "about": "Usage and meaning of the 'virtual' resource identifier."
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/parent"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/relationships/parent"
+            }
+          }
+        },
+        "content_translation_uid": {
+          "data": {
+            "type": "user--user",
+            "id": "2b379cf9-c5ba-49ee-af7f-7c2ac8a5966c",
+            "meta": {
+              "drupal_internal__target_id": 0
+            }
+          },
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/content_translation_uid"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb/relationships/content_translation_uid"
+            }
+          }
+        }
       }
-    },
-    "relationships": {
-      "parent": {
-        "data": []
-      }
-    },
-    "links": {
-      "self": "https://live-contentacms.pantheonsite.io/api/categories/12bb3fb4-5ef4-48c6-b71f-730a576b84f6"
     }
-  }
-]
+  ]
+}
 ```
 
 `included` is an array of objects. While in this example, there is only one
@@ -100,15 +182,24 @@ The `relationships` object in the response tells us the id of the category
 entity.
 
 ```json
-"relationships": {
-  "category": {
-    "data": {
-      "type": "categories",
-      "id": "12bb3fb4-5ef4-48c6-b71f-730a576b84f6"
-    },
+  "relationships": {
+  "field_recipe_category": {
+    "data": [
+      {
+        "type": "taxonomy_term--recipe_category",
+        "id": "92972052-3377-47fc-a038-b61e56f3a8cb",
+        "meta": {
+          "drupal_internal__target_id": 31
+        }
+      }
+    ],
     "links": {
-      "self": "https://live-contentacms.pantheonsite.io/api/recipes/5d439196-a151-4a2a-95bd-08c2aef302ce/relationships/category",
-      "related": "https://live-contentacms.pantheonsite.io/api/recipes/5d439196-a151-4a2a-95bd-08c2aef302ce/category"
+      "related": {
+        "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca/field_recipe_category?resourceVersion=id%3A2"
+      },
+      "self": {
+        "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca/relationships/field_recipe_category?resourceVersion=id%3A2"
+      }
     }
   }
 }
@@ -118,7 +209,7 @@ And we can use that id to retrieve the correct category entity from the
 `included` array.
 
 ```js
-const categoryId = recipe.data.relationships.category.data.id;
+const categoryId = recipe.data.relationships[field_recipe_category].data.id;
 
 // Filter for the category in the included array
 const category = recipe.included.filter(item => {
@@ -137,15 +228,15 @@ const categoryName = category[0].attributes.name;
 import { DrupalState } from '@gdwc/drupal-state';
 
 const store = new DrupalState({
-  apiBase: 'https://live-contentacms.pantheonsite.io',
-  apiPrefix: 'api',
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  apiPrefix: 'jsonapi',
 });
 
 // Add an include parameter to include a related object in the result
-store.params.addInclude(['category']);
+store.params.addInclude(['field_recipe_category']);
 const recipe = await store.getObject({
-  objectName: 'recipes',
-  id: 'a542e833-edfe-44a3-a6f1-7358b115af4b',
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 
 // Fields for the recipe category are now available on the recipe object.
@@ -160,85 +251,185 @@ array of included objects.
 
 ```json
 recipe: {
-  "type": "recipes",
-  "id": "a542e833-edfe-44a3-a6f1-7358b115af4b",
-  "internalId": 1,
-  "isPublished": true,
-  "title": "Frankfurter salad with mustard dressing",
-  "createdAt": "2017-12-31T12:57:13+0100",
-  "updatedAt": "2017-12-31T12:57:13+0100",
-  "isPromoted": true,
+  "type": "node--recipe",
+  "id": "33386d32-a87c-44b9-b66b-3dd0bfc38dca",
+  "drupal_internal__nid": 1,
+  "drupal_internal__vid": 2,
+  "langcode": "en",
+  "revision_timestamp": "2022-02-16T22:40:41+00:00",
+  "revision_log": null,
+  "status": true,
+  "title": "Deep mediterranean quiche",
+  "created": "2022-02-16T22:40:41+00:00",
+  "changed": "2022-02-16T22:40:41+00:00",
+  "promote": true,
+  "sticky": false,
+  "default_langcode": true,
+  "revision_translation_affected": null,
+  "moderation_state": "published",
   "path": {
-    "alias": null,
-    "pid": null,
+    "alias": "/recipes/deep-mediterranean-quiche",
+    "pid": 67,
     "langcode": "en"
   },
-  "difficulty": "easy",
-  "ingredients": [
-    "675 g (1.5 lb) small new salad potatoes such as Pink Fir Apple",
-    "3 eggs (not too fresh for hard-boiled eggs)",
-    "350 g (12 oz) frankfurters - Siamese cats love Frankfurters!",
-    "1 lettuce",
-    " chopped.  Any type will do",
-    " a Chinese cabbage worked well the last time I made this.",
-    "1 packet of young spinach leaves or rocket leaves",
-    " about 225 g (8 oz)",
-    "A handful of chives",
-    " chopped (if in season)",
-    "Dressing",
-    "3 tablespoons (30 ml) olive oil",
-    "1 tablespoon (15 ml) white wine vinegar",
-    "Pinch of sugar",
-    "Pinch of salt",
-    "Dash of lemon juice",
-    "2 teaspoons (10 ml) American squeezy mustard",
-    "1 teaspoon (5 ml) caraway seeds",
-    " crushed in a pestle and mortar"
+  "content_translation_source": "und",
+  "content_translation_outdated": false,
+  "field_cooking_time": 30,
+  "field_difficulty": "medium",
+  "field_ingredients": [
+    "For the pastry:",
+    "280g plain flour",
+    "140g butter",
+    "Cold water",
+    "For the filling:",
+    "1 onion",
+    "2 garlic cloves",
+    "Half a courgette",
+    "450ml soya milk",
+    "500g grated parmesan",
+    "2 eggs",
+    "200g sun dried tomatoes",
+    "100g feta"
   ],
-  "numberOfServices": null,
-  "preparationTime": 5,
-  "instructions": "Bring the potatoes to boil and simmer for 15 minutes in lightly salted water,Drain, cover and keep warm,Hard-boil the eggs for 12 minutes, refresh in cold water, peel and cut into quarters,With a very sharp knife, make a corkscrew shaped score around frankfurters from one end to the other,Bring to the boil and simmer for 5 minutes, drain and keep warm,Add the dressing ingredients to a bowl and whisk well until combined.  Alternatively use a salad shaker or a screw-topped jar,Mix half of the dressing with the spinach and lettuce leaves and the other half with the potatoes and the frankfurters,Divide the salad amongst 4 large plates and dress with the hard-boiled eggs,Season to taste and serve immediately",
-  "totalTime": 25,
+  "field_number_of_servings": 8,
+  "field_preparation_time": 40,
+  "field_recipe_instruction": {
+    "value": "Preheat the oven to 400°F/200°C. Starting with the pastry; rub the flour and butter together in a bowl until crumbling like breadcrumbs. Add water, a little at a time, until it forms a dough. Roll out the pastry on a floured board and gently spread over your tin. Place in the fridge for 20 minutes before blind baking for a further 10. Whilst the pastry is cooling, chop and gently cook the onions, garlic and courgette. In a large bowl, add the soya milk, half the parmesan, and the eggs. Gently mix. Once the pastry is cooked, spread the onions, garlic and sun dried tomatoes over the base and pour the eggs mix over. Sprinkle the remaining parmesan and careful lay the feta over the top. Bake for 30 minutes or until golden brown.",
+    "format": "basic_html",
+    "processed": "Preheat the oven to 400°F/200°C. Starting with the pastry; rub the flour and butter together in a bowl until crumbling like breadcrumbs. Add water, a little at a time, until it forms a dough. Roll out the pastry on a floured board and gently spread over your tin. Place in the fridge for 20 minutes before blind baking for a further 10. Whilst the pastry is cooling, chop and gently cook the onions, garlic and courgette. In a large bowl, add the soya milk, half the parmesan, and the eggs. Gently mix. Once the pastry is cooked, spread the onions, garlic and sun dried tomatoes over the base and pour the eggs mix over. Sprinkle the remaining parmesan and careful lay the feta over the top. Bake for 30 minutes or until golden brown."
+  },
+  "field_summary": {
+    "value": "An Italian inspired quiche with sun dried tomatoes and courgette. A perfect light meal for a summer's day.",
+    "format": "basic_html",
+    "processed": "An Italian inspired quiche with sun dried tomatoes and courgette. A perfect light meal for a summer's day."
+  },
   "links": {
-    "self": "https://live-contentacms.pantheonsite.io/api/recipes/a542e833-edfe-44a3-a6f1-7358b115af4b"
+    "self": {
+      "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?resourceVersion=id%3A2"
+    }
   },
-  "contentType": {
-    "type": "contentTypes",
-    "id": "ff85086b-db11-4ba6-8eaf-5197d6ad026c"
+  "node_type": {
+    "type": "node_type--node_type",
+    "id": "1c42f343-4d30-4fa3-a5c6-919daa61b952",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": "recipe"
+    }
   },
-  "owner": {
-    "type": "users",
-    "id": "e12c370f-a118-420b-b096-f5d7a08b5640"
+  "revision_uid": {
+    "type": "user--user",
+    "id": "a7d16dca-adbb-4e56-a32d-ebc72cf95226",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 5
+    }
   },
-  "category": {
-    "type": "categories",
-    "id": "529406be-17fa-4080-b98d-19d23eaabb7b",
-    "internalId": 1,
-    "name": "Salad",
-    "description": null,
-    "weight": 0,
-    "updatedAt": "2017-12-31T12:57:13+0100",
-    "path": {
-      "alias": null,
-      "pid": null,
-      "langcode": "en"
-    },
-    "links": {
-      "self": "https://live-contentacms.pantheonsite.io/api/categories/529406be-17fa-4080-b98d-19d23eaabb7b"
-    },
-    "parent": [],
-    "relationshipNames": ["parent"]
+  "uid": {
+    "type": "user--user",
+    "id": "a7d16dca-adbb-4e56-a32d-ebc72cf95226",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 5
+    }
   },
-  "image": {
-    "type": "images",
-    "id": "872aa7b3-1b1d-45d2-8bf9-5dd7cb07238f"
+  "field_media_image": {
+    "type": "media--image",
+    "id": "0d272ac0-cd03-42bf-aba9-9d403fc6680b",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 1
+    }
   },
-  "tags": [
+  "field_recipe_category": [
     {
-      "type": "tags",
-      "id": "df453b94-175f-422d-a090-bd5eb2f004f3"
+      "type": "taxonomy_term--recipe_category",
+      "id": "92972052-3377-47fc-a038-b61e56f3a8cb",
+      "drupal_internal__tid": 31,
+      "drupal_internal__revision_id": 31,
+      "langcode": "en",
+      "revision_created": "2022-02-16T22:40:41+00:00",
+      "revision_log_message": null,
+      "status": true,
+      "name": "Main courses",
+      "description": null,
+      "weight": 0,
+      "changed": "2022-02-16T22:40:41+00:00",
+      "default_langcode": true,
+      "revision_translation_affected": true,
+      "path": {
+        "alias": "/recipe-category/main-courses",
+        "pid": 61,
+        "langcode": "en"
+      },
+      "content_translation_source": "und",
+      "content_translation_outdated": false,
+      "content_translation_created": "2022-02-16T22:40:41+00:00",
+      "links": {
+        "self": {
+          "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/taxonomy_term/recipe_category/92972052-3377-47fc-a038-b61e56f3a8cb"
+        }
+      },
+      "resourceIdObjMeta": {
+        "drupal_internal__target_id": 31
+      },
+      "vid": {
+        "type": "taxonomy_vocabulary--taxonomy_vocabulary",
+        "id": "b7084f66-91cc-4c28-ac05-d0b246223617",
+        "resourceIdObjMeta": {
+          "drupal_internal__target_id": "recipe_category"
+        }
+      },
+      "revision_user": null,
+      "parent": [
+        {
+          "type": "taxonomy_term--recipe_category",
+          "id": "virtual",
+          "resourceIdObjMeta": {
+            "links": {
+              "help": {
+                "href": "https://www.drupal.org/docs/8/modules/json-api/core-concepts#virtual",
+                "meta": {
+                  "about": "Usage and meaning of the 'virtual' resource identifier."
+                }
+              }
+            }
+          }
+        }
+      ],
+      "content_translation_uid": {
+        "type": "user--user",
+        "id": "2b379cf9-c5ba-49ee-af7f-7c2ac8a5966c",
+        "resourceIdObjMeta": {
+          "drupal_internal__target_id": 0
+        }
+      },
+      "relationshipNames": [
+        "vid",
+        "revision_user",
+        "parent",
+        "content_translation_uid"
+      ]
     }
   ],
-  "relationshipNames": ["contentType", "owner", "category", "image", "tags"]
+  "field_tags": [
+    {
+      "type": "taxonomy_term--tags",
+      "id": "ee3f8fd1-873f-46fa-bb15-3e1e6647e693",
+      "resourceIdObjMeta": {
+        "drupal_internal__target_id": 22
+      }
+    },
+    {
+      "type": "taxonomy_term--tags",
+      "id": "4dbb782c-86c2-4ac1-b896-55b10be37fff",
+      "resourceIdObjMeta": {
+        "drupal_internal__target_id": 13
+      }
+    }
+  ],
+  "relationshipNames": [
+    "node_type",
+    "revision_uid",
+    "uid",
+    "field_media_image",
+    "field_recipe_category",
+    "field_tags"
+  ]
 }
 ```

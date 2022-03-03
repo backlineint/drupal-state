@@ -1,24 +1,30 @@
 {
-  "data": {
-    "type": "recipes",
-    "id": "912e092f-a7d5-41ae-9e92-e23ffa357b28",
-    "attributes": {
-      "title": "Chorizo pasta",
-      "difficulty": "easy"
-    },
-    "links": {
-      "self": "https:\/\/live-contentacms.pantheonsite.io\/api\/recipes\/912e092f-a7d5-41ae-9e92-e23ffa357b28"
-    }
-  },
   "jsonapi": {
     "version": "1.0",
     "meta": {
       "links": {
-        "self": "http:\/\/jsonapi.org\/format\/1.0\/"
+        "self": {
+          "href": "http://jsonapi.org/format/1.0/"
+        }
       }
     }
   },
+  "data": {
+    "type": "node--recipe",
+    "id": "59895e1a-f6ca-4a88-9cac-488b85e48ef8",
+    "links": {
+      "self": {
+        "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/59895e1a-f6ca-4a88-9cac-488b85e48ef8?resourceVersion=id%3A14"
+      }
+    },
+    "attributes": {
+      "title": "Thai green curry",
+      "field_difficulty": "medium"
+    }
+  },
   "links": {
-    "self": "https:\/\/live-contentacms.pantheonsite.io\/api\/recipes\/912e092f-a7d5-41ae-9e92-e23ffa357b28?fields%5Brecipes%5D=title%2Cdifficulty%2Cid"
+    "self": {
+      "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/59895e1a-f6ca-4a88-9cac-488b85e48ef8?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid"
+    }
   }
 }

@@ -1,6 +1,6 @@
 {
-  "__typename": "recipes",
-  "title": "Majorcan vegetable bake",
-  "difficulty": "easy",
-  "id": "84cfaa18-faca-471f-bfa5-fbb8c199d039"
+  "__typename": "node--recipe",
+  "title": "Victoria sponge cake",
+  "field_difficulty": "easy",
+  "id": "510cec29-bc95-4a64-a519-0ca6084529db"
 }
