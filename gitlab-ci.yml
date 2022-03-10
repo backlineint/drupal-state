@@ -26,6 +26,15 @@ jest:
   stage: test
   script:
     - npm run test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+eslint:
+  stage: test
+  script:
+    - npm run eslint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 deploy-docs:
   stage: deploy
