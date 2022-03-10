@@ -265,15 +265,13 @@ class DrupalState {
    * @param query the specified GraphQL query
    * @param objectName Name of object to retrieve. Ex: node--article
    * @param res response object
-   * @param all if ture, include links in the returned object
    * @returns data fetched from JSON:API endpoint
    */
   async conditionalFetch(
     endpoint: string,
     query: string | boolean = false,
     objectName: string | boolean = false,
-    res: ServerResponse | boolean = false,
-    all = false
+    res: ServerResponse | boolean = false
   ): Promise<TJsonApiBody | queryResponse | void> {
     let requestInit = {};
     let authHeader = '';
@@ -302,18 +300,12 @@ class DrupalState {
 
         const data = response.data as keyedResources;
         const object = data[queryObjectName] as jsonapiLinkObject;
-        // add links only if fetching 'all' pages
-        let result: queryResponse;
-        all
-          ? (result = {
-              data: object.jsonapi.data,
-              graphql: object.graphql,
-              links: object.jsonapi.links,
-            })
-          : (result = {
-              data: object.jsonapi.data,
-              graphql: object.graphql,
-            });
+
+        const result: queryResponse = {
+          data: object.jsonapi.data,
+          graphql: object.graphql,
+          links: object.jsonapi.links,
+        };
 
         return new Promise((resolve, reject) => {
           resolve(result);
@@ -538,11 +530,6 @@ class DrupalState {
         : this.dataFormatter.deserialize(resourceData);
     } // End if (id) block
 
-    // get length of collectionState.data
-    // so that if we fetch an object once and it is in state
-    // and we fetch it again later with all:true, we fetch
-    // the remaining pages
-
     // if there's a query, we want to fetch that
     // data with the query even if there's
     // data in collectionState
@@ -565,8 +552,7 @@ class DrupalState {
         endpoint,
         query,
         objectName,
-        res,
-        all
+        res
       )) as keyedResources;
 
       const fetchedCollectionState = {} as CollectionState;
@@ -578,10 +564,10 @@ class DrupalState {
       // aka >50 items available,
       // fetch them and add to store
       if (all) {
-        let links = collectionData.links as TJsonApiLinks;
+        let links = collectionData?.links as TJsonApiLinks;
         // the shape of { links } is not consistent so normalize it here
         const normalizeNextLink = (linkObj: TJsonApiLinks): string => {
-          if (!linkObj.next) {
+          if (linkObj === undefined || !linkObj.next) {
             return '';
           } else if (typeof linkObj.next === 'string') {
             return linkObj.next;
@@ -593,6 +579,10 @@ class DrupalState {
         const nextLink = normalizeNextLink(links);
 
         if (nextLink) {
+          !this.debug ||
+            console.log(
+              `Found 'next' link - attempting to fetch next page of results for ${objectName}`
+            );
           // helper function to parse the next page endpoint in case there is a query
           const getNextPageEndpoint = (nextLink: string): string => {
             let nextPageEndpoint: string;
@@ -614,8 +604,7 @@ class DrupalState {
               nextPageEndpoint,
               query,
               objectName,
-              res,
-              all
+              res
             )) as keyedResources;
 
             const currentState = this.getState() as CollectionState;

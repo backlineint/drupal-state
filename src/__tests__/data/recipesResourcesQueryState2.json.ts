@@ -50,5 +50,11 @@ export default {
       field_difficulty: 'easy',
       id: '510cec29-bc95-4a64-a519-0ca6084529db',
     },
+    links: {
+      __typename: 'jsonapi_full_response_node--recipe_body_links',
+      self: {
+        href: 'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/510cec29-bc95-4a64-a519-0ca6084529db?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid',
+      },
+    },
   },
 };
