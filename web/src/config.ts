@@ -44,8 +44,9 @@ export const SIDEBAR = {
     { text: 'GraphQL Queries (Experimental)', link: 'en/graphql-queries' },
     { text: 'Authorization', link: 'en/authorization' },
 
-    { text: 'Additional Features', header: true },
+    { text: 'Common Use Cases', header: true },
     { text: 'Getting Objects by Path', link: 'en/get-object-by-path' },
+    { text: 'Getting Menu Items', link: 'en/getting-menu-items' },
     { text: 'Utilities', link: 'en/utilities' },
 
     { text: 'Project Direction', header: true },

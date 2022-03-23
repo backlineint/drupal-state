@@ -66,6 +66,7 @@ async function main(): Promise<void> {
       objectName: 'node--recipe',
     })
   );
+
   console.log('--- Get collection from state if it already exists ---');
   console.log(
     await store.getObject({
@@ -156,11 +157,17 @@ async function main(): Promise<void> {
       objectName: 'node--ds_example',
       all: true,
       query: `{
-          title
-          id
-        }`,
+        title
+        id
+      }`,
     })
   );
+
+  // It is possible to fetch menu data using the jsonapi_menu_items module along with jsonapi_hypermedia
+  // jsonapi_hypermedia module: https://www.drupal.org/project/jsonapi_hypermedia
+  // jsonapi_menu_items module: https://www.drupal.org/project/jsonapi_menu_items
+  console.log('--- Fetch Menu items---');
+  console.log(await store.getObject({ objectName: 'menu_items--main' }));
 
   console.log(store.getState());
   // Uncomment to use authenticated store - currently depends on local environment
