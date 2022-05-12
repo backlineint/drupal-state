@@ -1,6 +1,6 @@
 {
   "name": "@gdwc/drupal-state",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "files": [
     "lib.{js,ts}",
     "dist",
