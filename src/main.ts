@@ -8,6 +8,23 @@ const store: DrupalState = new DrupalState({
   apiPrefix: 'jsonapi',
   defaultLocale: 'en',
   debug: true,
+  // Example custom error handler
+  // onError: err => {
+  //   // if there is a status code it will be at the end of the error message
+  //   const [statusCode] = err?.message?.match(/([0-5]{3})$/gm) || [null];
+  //   let renderErr;
+  //   if (statusCode === '404') {
+  //     renderErr = `<h2>${err.message}</h2>`;
+  //   } else if (statusCode === '500') {
+  //     renderErr = `<h2>Something went wrong. Please try again later!</h2>`;
+  //   } else {
+  //     renderErr = `<pre>${JSON.stringify(err.message ? err.message : err, null, 2)}<pre>`;
+  //   }
+  //   // set error and statusCode to global state
+  //   store.setState({ error: err, statusCode: statusCode });
+  //   app.innerHTML += renderErr + '<br>';
+  //   return;
+  // },
 });
 
 // Uncomment to use authenticated store - currently depends on local environment
@@ -18,6 +35,10 @@ const store: DrupalState = new DrupalState({
 //   clientId: 'my-client-id',
 //   clientSecret: 'mysecret',
 //   debug: true,
+//   onError: (err: Error) => {
+//     console.log("An exception was caught!!!")
+//     console.error(err)
+//   }
 // });
 
 async function main(): Promise<void> {

@@ -2,6 +2,7 @@ import defaultFetch from './defaultFetch';
 
 import { fetchAdapter, stringIndex } from '../types/types';
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
+import type DrupalState from '../DrupalState';
 
 /**
  * Fetch a token from Drupal
@@ -13,7 +14,10 @@ import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
 const fetchToken = (
   apiUrl: string,
   tokenFetchBody: stringIndex,
-  fetch: fetchAdapter = defaultFetch
+  fetch: fetchAdapter = defaultFetch,
+  onError: DrupalState['onError'] = (err: Error) => {
+    throw err;
+  }
 ): Promise<void | TJsonApiBody> => {
   // Convert body object to parameter string
   const body = Object.keys(tokenFetchBody)
@@ -27,9 +31,18 @@ const fetchToken = (
     },
     body,
   })
-    .then(response => response.json() as Promise<TJsonApiBody>)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          `Unable to fetch token.\nThe server responded with status code ${response.status}`
+        );
+      }
+      return response.ok && (response.json() as Promise<TJsonApiBody>);
+    })
     .then(data => data)
-    .catch(error => console.error('Token fetch failed', error));
+    .catch(error => {
+      onError(error);
+    });
   return tokenPayload;
 };
 

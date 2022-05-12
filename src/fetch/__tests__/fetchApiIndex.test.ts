@@ -16,7 +16,7 @@ describe('fetchApiIndex', () => {
       await fetchApiIndex('https://dev-ds-demo.pantheonsite.io/jsonapi')
     ).toEqual(links);
   });
-  test('An invalid index response does not', async () => {
+  test('An invalid index response throws an error', async () => {
     fetchMock.mock(
       'https://dev-ds-demo.pantheonsite.io/jsonapi',
       {
@@ -25,19 +25,15 @@ describe('fetchApiIndex', () => {
       },
       { overwriteRoutes: true }
     );
-    expect(
-      await fetchApiIndex('https://dev-ds-demo.pantheonsite.io/jsonapi')
-    ).toEqual(false);
-  });
-  // TODO - would be nice to test the error message as well
-  test('A fetch failure returns undefined', async () => {
-    fetchMock.mock(
-      'https://dev-ds-demo.pantheonsite.io/jsonapi',
-      { throws: new Error('fetch failed') },
-      { overwriteRoutes: true }
-    );
-    expect(
-      await fetchApiIndex('https://dev-ds-demo.pantheonsite.io/jsonapi')
-    ).toEqual(undefined);
+    try {
+      const result = await fetchApiIndex(
+        'https://dev-ds-demo.pantheonsite.io/jsonapi'
+      );
+      expect(result).toThrow();
+    } catch (error) {
+      expect(error instanceof Error && error.message).toEqual(
+        `Failed to fetch API index.\nTried fetching: https://dev-ds-demo.pantheonsite.io/jsonapi\nServer responded with status code: 500`
+      );
+    }
   });
 });

@@ -37,16 +37,25 @@ const testCustomFetch = (
   return fetch(apiUrl, requestInit);
 };
 
+const mockCustomOnError = jest.fn((err: Error) => {
+  console.log('There was an error!');
+  console.error(err.message);
+});
+
 describe('drupalState', () => {
   beforeEach(() => {
     fetchMock.mockClear();
   });
 
   test('Constructor sets properties accordingly', async () => {
+    const customErrorHandler = (err: Error) => {
+      throw err;
+    };
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       clientId: 'test-client-id',
       clientSecret: 'test-client-secret',
+      onError: customErrorHandler,
     });
     expect(store.apiBase).toEqual('https://dev-ds-demo.pantheonsite.io');
     expect(store.apiPrefix).toEqual('jsonapi/');
@@ -62,6 +71,7 @@ describe('drupalState', () => {
       tokenType: '',
     });
     expect(store.debug).toEqual(false);
+    expect(store['onError']).toEqual(customErrorHandler);
   });
   test('Get resource object from local resource state if it exists', async () => {
     const store: DrupalState = new DrupalState({
@@ -352,5 +362,32 @@ describe('drupalState', () => {
       })
     ).toEqual(recipesResourceObject1);
     expect(fetchMock).toBeCalledTimes(1);
+  });
+  test('Custom onError handler should be called if an error is thrown', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      fetchAdapter: testCustomFetch,
+      debug: true,
+      onError: mockCustomOnError,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recpe',
+      {
+        status: 404,
+        body: {},
+      },
+      { overwriteRoutes: true }
+    );
+    const result = await store.getObject({
+      objectName: 'node--recie',
+    });
+    try {
+      expect(result).toThrowError();
+      expect(result).toEqual(undefined);
+    } catch (error) {
+      expect(mockCustomOnError).toBeCalledTimes(1);
+    }
   });
 });

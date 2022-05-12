@@ -1,6 +1,7 @@
 import defaultFetch from './defaultFetch';
 
 import { GenericIndex, ApiIndexResponse, fetchAdapter } from '../types/types';
+import type DrupalState from '../DrupalState';
 
 /**
  * Get an index of resource links for the API
@@ -10,12 +11,25 @@ import { GenericIndex, ApiIndexResponse, fetchAdapter } from '../types/types';
  */
 const fetchApiIndex = (
   apiRoot: string,
-  fetch: fetchAdapter = defaultFetch
+  fetch: fetchAdapter = defaultFetch,
+  onError: DrupalState['onError'] = (err: Error) => {
+    throw err;
+  }
 ): Promise<void | GenericIndex> => {
   const apiIndex = fetch(apiRoot)
-    .then(response => response.json() as Promise<ApiIndexResponse>)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch API index.\nTried fetching: ${apiRoot}\nServer responded with status code: ${response.status}`
+        );
+      }
+      return response.json() as Promise<ApiIndexResponse>;
+    })
     .then(data => data.links || false)
-    .catch(error => console.error('API index fetch failed', error));
+    .catch(error => {
+      // Pass error to custom onError handler
+      onError(error);
+    });
   return apiIndex as Promise<GenericIndex>;
 };
 

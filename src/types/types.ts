@@ -72,6 +72,7 @@ export interface DrupalStateConfig {
   clientSecret?: string;
   fetchAdapter?: fetchAdapter;
   debug?: boolean;
+  onError?: (err: Error) => void;
 }
 
 /**

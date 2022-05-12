@@ -4,6 +4,7 @@ import defaultFetch from './defaultFetch';
 
 import { TJsonApiBody } from 'jsona/lib/JsonaTypes';
 import { fetchAdapter } from '../types/types';
+import type DrupalState from '../DrupalState';
 
 /**
  * helper function to make it easier to resolve a path to an entity ID
@@ -20,11 +21,15 @@ const translatePath = async (
   requestInit = {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _res: ServerResponse | boolean = false,
-  fetch: fetchAdapter = defaultFetch
+  fetch: fetchAdapter = defaultFetch,
+  onError: DrupalState['onError'] = (err: Error) => {
+    throw err;
+  }
 ): Promise<void | TJsonApiBody> => {
   const response = (await fetchJsonapiEndpoint(
     apiUrl + '?path=' + path + '&_format=json',
     requestInit,
+    onError,
     _res,
     fetch
   )) as TJsonApiBody;

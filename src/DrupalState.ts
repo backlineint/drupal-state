@@ -14,7 +14,6 @@ import {
   gql,
   InMemoryCache,
   ApolloLink,
-  ApolloError,
 } from '@apollo/client/core';
 import Jsona from 'jsona';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
@@ -75,6 +74,8 @@ class DrupalState {
    * DrupalJsonApiParams - see [https://www.npmjs.com/package/drupal-jsonapi-params](https://www.npmjs.com/package/drupal-jsonapi-params)
    */
   params: DrupalJsonApiParams;
+  // Custom error handler
+  onError: (err: Error) => void;
 
   constructor({
     apiBase,
@@ -84,6 +85,7 @@ class DrupalState {
     clientSecret,
     fetchAdapter = defaultFetch,
     debug = false,
+    onError,
   }: DrupalStateConfig) {
     this.apiBase = apiBase;
     this.apiPrefix = apiPrefix;
@@ -118,6 +120,11 @@ class DrupalState {
       link: jsonApiLink,
       cache: new InMemoryCache(),
     }) as ApolloClientWithHeaders;
+
+    const defaultErrorHandler = (err: Error) => {
+      throw err;
+    };
+    this.onError = onError || defaultErrorHandler;
   }
 
   /**
@@ -158,13 +165,17 @@ class DrupalState {
     let endpoint = '';
 
     // TODO - probably need some additional error handling here
-    if (index === undefined || typeof index === undefined) {
-      throw new Error(
-        `Error: The following index is not a string. Check the object name, id and, apiBase:\n\t index: ${JSON.stringify(
-          index
-        )}\n\t id: ${id}\n\t objectName: ${objectName}`
+    if (!index || index === undefined || typeof index === undefined) {
+      this.onError(
+        new Error(
+          `Could not assemble endpoint. Check the index, object name, and id.\n\tapiBase:\n\tindex: ${JSON.stringify(
+            index
+          )}\n\tid: ${id}\n\tobjectName: ${objectName}`
+        )
       );
-    } else if (typeof index === 'string') {
+      return '';
+    }
+    if (typeof index === 'string') {
       endpoint = index;
     } else {
       endpoint = index.href as string;
@@ -224,7 +235,8 @@ class DrupalState {
       const tokenResponse = (await fetchToken(
         `${this.apiBase}/oauth/token`,
         tokenRequestBody,
-        this.fetchAdapter
+        this.fetchAdapter,
+        this.onError
       )) as TokenResponseObject;
       this.token = {
         accessToken: tokenResponse.access_token,
@@ -239,9 +251,8 @@ class DrupalState {
    * Wraps {@link fetch/fetchApiIndex} function so it can be overridden.
    */
   async fetchApiIndex(apiRoot: string): Promise<void | GenericIndex> {
-    return await fetchApiIndex(apiRoot, this.fetchAdapter);
+    return await fetchApiIndex(apiRoot, this.fetchAdapter, this.onError);
   }
-
   /**
    *
    * Wraps {@link fetch/fetchJsonapiEndpoint} function so it can be overridden.
@@ -249,18 +260,20 @@ class DrupalState {
   async fetchJsonapiEndpoint(
     endpoint: string,
     requestInit = {},
+    onError: (err: Error) => void,
     res: ServerResponse | boolean
   ): Promise<void | Response> {
     return await fetchJsonapiEndpoint(
       endpoint,
       requestInit,
+      onError,
       res,
       this.fetchAdapter
     );
   }
 
   /**
-   * If a query is provided, fetches data using apollo-link-json-api, otherwise uses out fetch method.
+   * If a query is provided, fetches data using apollo-link-json-api, otherwise uses our fetch method.
    * @param endpoint the assembled JSON:API endpoint
    * @param query the specified GraphQL query
    * @param objectName Name of object to retrieve. Ex: node--article
@@ -289,15 +302,14 @@ class DrupalState {
         this.client.link.headers = { Authorization: authHeader };
         const queryObjectName = camelize(objectName as string);
         const gqlQuery = gql`{
-              ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
-                {
-                  jsonapi
-                  graphql
-                  ${query}
-                }
-              }`;
+                ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
+                  {
+                    jsonapi
+                    graphql
+                    ${query}
+                  }
+                }`;
         const response = await this.client.query({ query: gqlQuery });
-
         const data = response.data as keyedResources;
         const object = data[queryObjectName] as jsonapiLinkObject;
 
@@ -307,25 +319,15 @@ class DrupalState {
           links: object.jsonapi.links,
         };
 
-        return new Promise((resolve, reject) => {
-          resolve(result);
-          if (response.errors || response.error) {
-            reject(response.errors || response.error);
-          }
-        });
-      } catch (errors: unknown) {
-        if (errors instanceof ApolloError) {
-          errors.graphQLErrors.forEach((e, i) =>
-            console.error(`Error ${i + 1}: ${JSON.stringify(e, null, 2)}`)
-          );
-        } else {
-          console.error(errors);
-        }
+        return result;
+      } catch (error) {
+        this.onError(error as Error);
       }
     } else {
       return (await this.fetchJsonapiEndpoint(
         endpoint,
         requestInit,
+        this.onError,
         res
       )) as TJsonApiBody;
     }
@@ -345,14 +347,13 @@ class DrupalState {
     if (!dsApiIndex) {
       // Fetch the API index from Drupal
       const dsApiIndexData = await this.fetchApiIndex(this.apiRoot);
+      this.setState({ dsApiIndex: dsApiIndexData });
       // TODO - consider adding this to the DrupalState class rather than adding
       // data that we rely on to the store.
-      this.setState({ dsApiIndex: dsApiIndexData });
 
       const updatedState = this.getState() as DsState;
       return updatedState.dsApiIndex as GenericIndex;
     }
-
     return dsApiIndex;
   }
 
@@ -371,7 +372,7 @@ class DrupalState {
     path,
     res,
     query = false,
-  }: GetObjectByPathParams): Promise<PartialState<State>> {
+  }: GetObjectByPathParams): Promise<PartialState<State> | void> {
     const currentState = this.getState() as DsState;
     const dsPathTranslations = currentState.dsPathTranslations as GenericIndex;
     if (!dsPathTranslations?.[`${path}`]) {
@@ -395,9 +396,15 @@ class DrupalState {
         path,
         requestInit,
         false,
-        this.fetchAdapter
+        this.fetchAdapter,
+        this.onError
       )) as TJsonApiBody;
-      if (response) {
+
+      if (!response) {
+        // If there is no response, return early
+        // because `id` will be undefined later.
+        return;
+      } else {
         const pathTranslationsState = currentState['dsPathTranslations'];
 
         if (pathTranslationsState) {
@@ -451,7 +458,7 @@ class DrupalState {
     res = false,
     query = false,
     all = false,
-  }: GetObjectParams): Promise<PartialState<State>> {
+  }: GetObjectParams): Promise<PartialState<State> | void> {
     const state = this.getState() as DsState;
     // Check for collection in the store
     const collectionState = state[objectName] as TJsonApiBodyDataRequired;
@@ -491,6 +498,23 @@ class DrupalState {
       // Resource isn't in state, so fetch it from Drupal
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
+      if (!dsApiIndex) {
+        this.onError(
+          new Error(
+            `Unable to fetch the API Index.\nCheck that ${this.apiRoot} is a valid jsonapi index`
+          )
+        );
+        return;
+      }
+
+      if (!dsApiIndex[objectName]) {
+        this.onError(
+          new Error(
+            `Invalid objectName.\nCheck that ${objectName} is a valid node in your Drupal instance`
+          )
+        );
+        return;
+      }
       const endpoint = this.assembleEndpoint(
         objectName,
         dsApiIndex[objectName],
@@ -541,6 +565,24 @@ class DrupalState {
       !this.debug ||
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
+
+      if (!dsApiIndex) {
+        this.onError(
+          new Error(
+            `Unable to fetch the API Index.\nCheck that ${this.apiRoot} is a valid jsonapi index`
+          )
+        );
+        return;
+      }
+
+      if (!dsApiIndex[objectName]) {
+        this.onError(
+          new Error(
+            `Invalid objectName.\nCheck that ${objectName} is a valid node in your Drupal instance or local store`
+          )
+        );
+        return;
+      }
       const endpoint = this.assembleEndpoint(
         objectName,
         dsApiIndex[objectName],
@@ -635,7 +677,6 @@ class DrupalState {
             : this.dataFormatter.deserialize(results[objectName]);
         }
       }
-
       return query
         ? collectionData.graphql
         : this.dataFormatter.deserialize(collectionData);
