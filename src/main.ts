@@ -184,6 +184,15 @@ async function main(): Promise<void> {
     })
   );
 
+  console.log('-- Ignore the store and force fetch data from Drupal --');
+  console.log(
+    await store.getObject({
+      objectName: 'node--recipe',
+      id: '50c3e7c9-64a9-453c-9289-278132beb4a2',
+      refresh: true,
+    })
+  );
+
   // It is possible to fetch menu data using the jsonapi_menu_items module along with jsonapi_hypermedia
   // jsonapi_hypermedia module: https://www.drupal.org/project/jsonapi_hypermedia
   // jsonapi_menu_items module: https://www.drupal.org/project/jsonapi_menu_items

@@ -155,6 +155,7 @@ export interface GetObjectParams {
   res?: ServerResponse | boolean;
   query?: string | boolean;
   all?: boolean;
+  refresh?: boolean;
 }
 
 /**
@@ -165,6 +166,7 @@ export interface GetObjectByPathParams {
   path: string;
   res?: ServerResponse | boolean;
   query?: string | boolean;
+  refresh?: boolean;
 }
 
 /**

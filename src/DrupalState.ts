@@ -364,6 +364,7 @@ class DrupalState {
    * @param path Path Alias of a specific resource
    * @param res response object
    * @param query user provided GraphQL query
+   * @param refresh a boolean value. If true, ignore local state.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    */
@@ -372,10 +373,11 @@ class DrupalState {
     path,
     res,
     query = false,
+    refresh = false,
   }: GetObjectByPathParams): Promise<PartialState<State> | void> {
     const currentState = this.getState() as DsState;
     const dsPathTranslations = currentState.dsPathTranslations as GenericIndex;
-    if (!dsPathTranslations?.[`${path}`]) {
+    if (refresh || !dsPathTranslations?.[`${path}`]) {
       !this.debug ||
         console.log(
           `No match for ${path} in dsPathTranslations - calling translatePath.`
@@ -405,9 +407,14 @@ class DrupalState {
         // because `id` will be undefined later.
         return;
       } else {
-        const pathTranslationsState = currentState['dsPathTranslations'];
+        const pathTranslationsState =
+          currentState.dsPathTranslations as GenericIndex;
 
         if (pathTranslationsState) {
+          if (refresh && pathTranslationsState[`${path}`]) {
+            // Remove old response so refreshed response can be used.
+            delete pathTranslationsState[`${path}`];
+          }
           // If dsPathTranslaitons exists in state, add the new path to it.
           const updatedPathTranslationState = {
             ...pathTranslationsState,
@@ -437,6 +444,7 @@ class DrupalState {
       id: id,
       res,
       query,
+      refresh,
     });
     return object;
   }
@@ -449,6 +457,7 @@ class DrupalState {
    * @param res response object
    * @param query user provided GraphQL query
    * @param all a boolean value. If true, fetch all objects in a collection.
+   * @param refresh a boolean value. If true, ignore local state.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    */
@@ -458,6 +467,7 @@ class DrupalState {
     res = false,
     query = false,
     all = false,
+    refresh = false,
   }: GetObjectParams): Promise<PartialState<State> | void> {
     const state = this.getState() as DsState;
     // Check for collection in the store
@@ -465,7 +475,9 @@ class DrupalState {
 
     // If an id is provided, find and return a resource
     if (id) {
-      const resourceState = state[`${objectName}Resources`] as keyedResources;
+      const resourceState = !refresh
+        ? (state[`${objectName}Resources`] as keyedResources)
+        : false;
 
       // If requested resource is in the resource store, return that
       if (resourceState) {
@@ -481,7 +493,7 @@ class DrupalState {
       // If requested resource is in the collection store, return that
       // We can't ensure that ID will be in a response if a query was defined,
       // so we have to fetch from Drupal in that case.
-      if (collectionState?.data && !query) {
+      if (collectionState?.data && !query && !refresh) {
         // If the collection is in the store, check for the resource
         const matchedResourceState = collectionState.data.filter(item => {
           return item['id'] === id;
@@ -558,6 +570,7 @@ class DrupalState {
     // data with the query even if there's
     // data in collectionState
     if (
+      refresh ||
       !collectionState ||
       (query && !collectionState.graphql) ||
       (collectionState.links?.next && !collectionState.links?.last && all)

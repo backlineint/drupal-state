@@ -64,6 +64,26 @@ describe('getObjectByPath', () => {
     expect(fetchMock).toBeCalledTimes(2);
   });
 
+  test('Re-fetch an object by path where translate-path and recipe are both in state but refresh is set to true', async () => {
+    const store: DrupalState = new DrupalState(dsConfig);
+    store.setState({ dsApiIndex: demoApiIndex.links });
+
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+        refresh: true,
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(fetchMock).toBeCalledTimes(4);
+  });
+
   test('getObjectByPath supports queries', async () => {
     const store: DrupalState = new DrupalState(dsConfig);
     store.setState({ dsApiIndex: demoApiIndex.links });

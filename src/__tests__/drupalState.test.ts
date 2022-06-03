@@ -130,6 +130,29 @@ describe('drupalState', () => {
     expect(fetchMock).toBeCalledTimes(1);
   });
 
+  test('Re-fetch resource if it exists in state but refresh is set to true', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      })
+    ).toEqual(recipesResourceObject1);
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        refresh: true,
+      })
+    ).toEqual(recipesResourceObject1);
+    expect(fetchMock).toBeCalledTimes(2);
+  });
+
   test('Add resource object to local resource state if resource state already exists', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
@@ -235,6 +258,24 @@ describe('drupalState', () => {
       recipesCollectionObject1
     );
     expect(fetchMock).toBeCalledTimes(2);
+  });
+
+  test('Re-fetch object if it exists in local storage but refresh is set to true', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      debug: true,
+    });
+    expect(await store.getObject({ objectName: 'node--recipe' })).toEqual(
+      recipesCollectionObject1
+    );
+    expect(
+      await store.getObject({ objectName: 'node--recipe', refresh: true })
+    ).toEqual(recipesCollectionObject1);
+
+    // Refresh parameter does not ignore API index local storage.
+    // We expect one call to API Index and two calls to the object.
+    expect(fetchMock).toBeCalledTimes(3);
   });
 
   test('Get API Index from local state if it exists', async () => {
