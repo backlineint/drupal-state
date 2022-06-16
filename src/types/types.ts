@@ -167,6 +167,7 @@ export interface GetObjectByPathParams {
   objectName: string;
   path: string;
   res?: ServerResponse | boolean;
+  params?: string | DrupalJsonApiParams | boolean;
   query?: string | boolean;
   refresh?: boolean;
 }

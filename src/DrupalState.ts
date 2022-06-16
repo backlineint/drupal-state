@@ -369,6 +369,7 @@ class DrupalState {
    * @param objectName Name of object to retrieve. Ex: node--article
    * @param path Path Alias of a specific resource
    * @param res response object
+   * @param params user provided JSON:API parameter string or DrupalJsonApiParams object
    * @param query user provided GraphQL query
    * @param refresh a boolean value. If true, ignore local state.
    * @returns a promise containing deserialized JSON:API data for the requested
@@ -378,6 +379,7 @@ class DrupalState {
     objectName,
     path,
     res,
+    params = false,
     query = false,
     refresh = false,
   }: GetObjectByPathParams): Promise<PartialState<State> | void> {
@@ -449,6 +451,7 @@ class DrupalState {
       objectName: objectName,
       id: id,
       res,
+      params,
       query,
       refresh,
     });
