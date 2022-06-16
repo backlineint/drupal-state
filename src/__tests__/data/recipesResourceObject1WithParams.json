@@ -1,0 +1,15 @@
+{
+  "__typename": "node--recipe",
+  "title": "Watercress soup",
+  "field_difficulty": "easy",
+  "field_media_image": {
+    "__typename": "media--image",
+    "field_media_image": {
+      "__typename": "file--file",
+      "uri": {
+        "url": "/sites/default/files/watercress-soup-umami.jpg"
+      }
+    }
+  },
+  "id": "21a95a3d-4a83-494f-b7b4-dcfb0f164a74"
+}

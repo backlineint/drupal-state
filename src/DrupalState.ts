@@ -164,7 +164,11 @@ class DrupalState {
 
     if (params) {
       if (typeof params === 'string' && params[0] === '?') {
-        this.onError(new Error(`Do not start params string with "?".`));
+        this.onError(
+          new Error(
+            `Invalid params: Params must not start with "?". \nRemove the preceding "?" or use https://www.npmjs.com/package/drupal-jsonapi-params`
+          )
+        );
         return '';
       } else {
         drupalJsonApiParams.initialize(params);

@@ -11,8 +11,10 @@ import categoriesCollectionQueryResponse from './data/categoriesCollectionQueryR
 import categoriesCollectionObjectQuery from './data/categoriesCollectionObjectQuery.json';
 import recipesResourcesQueryState1 from './data/recipesResourcesQueryState1.json';
 import recipesResourceQueryObject1 from './data/recipesResourceQueryObject1.json';
+import recipeResourceObject1WithParams from './data/recipesResourceObject1WithParams.json';
 import recipesResourcesQueryState2 from './data/recipesResourcesQueryState2.json';
 import recipesResourceQueryData1 from './data/recipesResourceQueryData1.json';
+import recipesResourceQueryData1WithParams from './data/recipesResourceQueryData1WithParams.json';
 import recipesResourceQueryData2 from './data/recipesResourceQueryData2.json';
 import nodePageResourceQueryData from './data/nodePageResourceQueryData.json';
 import recipesResourceQueryObject2 from './data/recipesResourceQueryObject2.json';
@@ -68,7 +70,8 @@ describe('drupalState', () => {
       {
         status: 200,
         body: recipesResourceQueryData1,
-      }
+      },
+      { overwriteRoutes: true }
     );
     expect(
       await store.getObject({
@@ -81,6 +84,44 @@ describe('drupalState', () => {
         }`,
       })
     ).toEqual(recipesResourceQueryObject1);
+    expect(fetchMock).toBeCalledTimes(1);
+  });
+
+  test('Fetch resource with params if it does not exist in state', async () => {
+    debugger;
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      defaultLocale: 'en',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/21a95a3d-4a83-494f-b7b4-dcfb0f164a74?include=field_media_image.field_media_image&fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cfield_media_image%2Cid',
+      {
+        status: 200,
+        body: recipesResourceQueryData1WithParams,
+      }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '21a95a3d-4a83-494f-b7b4-dcfb0f164a74',
+        query: `{
+          title
+          field_difficulty
+          field_media_image {
+            field_media_image {
+              uri {
+                url
+              }
+            }
+          }
+          id
+        }`,
+        params: 'include=field_media_image.field_media_image',
+      })
+    ).toEqual(recipeResourceObject1WithParams);
     expect(fetchMock).toBeCalledTimes(1);
   });
 

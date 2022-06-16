@@ -192,4 +192,34 @@ describe('Correctly assemble endpoints including query params', () => {
       )}\n\tid: 33386d32-a87c-44b9-b66b-3dd0bfc38dca\n\tobjectName: node--recipe`
     );
   });
+
+  test('Query string with preceding "?" should throw an error', () => {
+    const mockOnError = jest.fn((err: Error) => {
+      throw err;
+    });
+
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      onError: mockOnError,
+    });
+
+    const queryString = '?includes=field_media_image.field_media_image';
+    try {
+      expect(
+        store.assembleEndpoint(
+          'node--recipe',
+          '',
+          '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+          queryString
+        )
+      ).toThrowError();
+    } catch (error) {
+      expect(error instanceof Error);
+      expect(error instanceof Error && error.message).toEqual(
+        `Invalid params: Params must not start with "?". \nRemove the preceding "?" or use https://www.npmjs.com/package/drupal-jsonapi-params`
+      );
+      expect(mockOnError).toBeCalledTimes(1);
+    }
+  });
 });

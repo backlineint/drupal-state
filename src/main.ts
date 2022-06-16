@@ -1,3 +1,4 @@
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 import DrupalState from './DrupalState';
 import './style.css';
 
@@ -42,8 +43,14 @@ const store: DrupalState = new DrupalState({
 // });
 
 async function main(): Promise<void> {
-  // Include images in response
-  store.params.addInclude(['field_media_image']);
+  // You can use DrupalJsonApiParams to construct JSON:API query string parameters...
+  // see https://www.npmjs.com/package/drupal-jsonapi-params for documentation
+  const jsonApiParams = new DrupalJsonApiParams();
+  jsonApiParams.addInclude(['field_media_image.field_media_image']);
+
+  // ...or use a query string of your own construction.
+  // see https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/fetching-resources-get for more information
+  const myQueryStringParams = 'include=field_media_image.field_media_image';
 
   console.log(
     '--- If no resources are in state, create a new resource object ---'
@@ -52,6 +59,7 @@ async function main(): Promise<void> {
     await store.getObject({
       objectName: 'node--recipe',
       id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      params: jsonApiParams,
     })
   );
   console.log(
@@ -69,6 +77,7 @@ async function main(): Promise<void> {
     await store.getObject({
       objectName: 'node--recipe',
       id: '50c3e7c9-64a9-453c-9289-278132beb4a2',
+      params: myQueryStringParams,
     })
   );
   console.log(
@@ -85,6 +94,7 @@ async function main(): Promise<void> {
   console.log(
     await store.getObject({
       objectName: 'node--recipe',
+      params: myQueryStringParams,
     })
   );
 
@@ -111,12 +121,35 @@ async function main(): Promise<void> {
       id: 'da1359f4-2e60-462c-8909-47c3bce11fdf',
       query: `{
         title
-        difficulty
+        field_difficulty
         id
       }`,
     })
   );
-  store.params.clear(); // Remove image field include as it does not exist on pages
+
+  console.log('--- Fetch a resource with a query and params ---');
+  // Note: query based resources can't be retrieved from collection state because
+  // the query may not contain the ID.
+  console.log(
+    await store.getObject({
+      objectName: 'node--recipe',
+      id: '21a95a3d-4a83-494f-b7b4-dcfb0f164a74',
+      query: `{
+        title
+        field_difficulty
+        field_media_image {
+          field_media_image {
+            uri {
+              url
+            }
+          }
+        }
+        id
+      }`,
+      params: jsonApiParams,
+    })
+  );
+
   console.log(
     '--- Fetch a resource with a query from state if it already exists ---'
   );
@@ -126,7 +159,7 @@ async function main(): Promise<void> {
       id: 'da1359f4-2e60-462c-8909-47c3bce11fdf',
       query: `{
         title
-        difficulty
+        field_difficulty
         id
       }`,
     })
@@ -190,6 +223,7 @@ async function main(): Promise<void> {
       objectName: 'node--recipe',
       id: '50c3e7c9-64a9-453c-9289-278132beb4a2',
       refresh: true,
+      params: jsonApiParams,
     })
   );
 

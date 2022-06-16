@@ -1,0 +1,205 @@
+{
+  "jsonapi": {
+    "version": "1.0",
+    "meta": {
+      "links": {
+        "self": {
+          "href": "http://jsonapi.org/format/1.0/"
+        }
+      }
+    }
+  },
+  "data": {
+    "type": "node--recipe",
+    "id": "21a95a3d-4a83-494f-b7b4-dcfb0f164a74",
+    "links": {
+      "self": {
+        "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/21a95a3d-4a83-494f-b7b4-dcfb0f164a74?resourceVersion=id%3A8"
+      }
+    },
+    "attributes": {
+      "title": "Watercress soup",
+      "field_difficulty": "easy"
+    },
+    "relationships": {
+      "field_media_image": {
+        "data": {
+          "type": "media--image",
+          "id": "0b05fd68-5f33-42ba-b192-09599e546ab3",
+          "meta": {
+            "drupal_internal__target_id": 4
+          }
+        },
+        "links": {
+          "related": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/21a95a3d-4a83-494f-b7b4-dcfb0f164a74/field_media_image?resourceVersion=id%3A8"
+          },
+          "self": {
+            "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/21a95a3d-4a83-494f-b7b4-dcfb0f164a74/relationships/field_media_image?resourceVersion=id%3A8"
+          }
+        }
+      }
+    }
+  },
+  "included": [
+    {
+      "type": "media--image",
+      "id": "0b05fd68-5f33-42ba-b192-09599e546ab3",
+      "links": {
+        "self": {
+          "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3?resourceVersion=id%3A4"
+        }
+      },
+      "attributes": {
+        "drupal_internal__mid": 4,
+        "drupal_internal__vid": 4,
+        "langcode": "en",
+        "revision_created": "2022-02-16T22:40:41+00:00",
+        "revision_log_message": null,
+        "status": true,
+        "name": "Watercress soup",
+        "created": "2022-02-16T22:40:41+00:00",
+        "changed": "2022-02-16T22:40:41+00:00",
+        "default_langcode": true,
+        "revision_translation_affected": true,
+        "path": {
+          "alias": null,
+          "pid": null,
+          "langcode": "en"
+        },
+        "content_translation_source": "und",
+        "content_translation_outdated": false
+      },
+      "relationships": {
+        "bundle": {
+          "data": {
+            "type": "media_type--media_type",
+            "id": "b406ce03-3b87-4116-8ba6-5eb234ed9bff",
+            "meta": {
+              "drupal_internal__target_id": "image"
+            }
+          },
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/bundle?resourceVersion=id%3A4"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/relationships/bundle?resourceVersion=id%3A4"
+            }
+          }
+        },
+        "revision_user": {
+          "data": null,
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/revision_user?resourceVersion=id%3A4"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/relationships/revision_user?resourceVersion=id%3A4"
+            }
+          }
+        },
+        "uid": {
+          "data": {
+            "type": "user--user",
+            "id": "2b379cf9-c5ba-49ee-af7f-7c2ac8a5966c",
+            "meta": {
+              "drupal_internal__target_id": 0
+            }
+          },
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/uid?resourceVersion=id%3A4"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/relationships/uid?resourceVersion=id%3A4"
+            }
+          }
+        },
+        "thumbnail": {
+          "data": {
+            "type": "file--file",
+            "id": "af0b69bd-46e7-4616-bdaa-8956c67c2011",
+            "meta": {
+              "alt": "Watercress soup with a sprig of coriander as garnish in a white bowl with green trim",
+              "title": null,
+              "width": 768,
+              "height": 512,
+              "drupal_internal__target_id": 7
+            }
+          },
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/thumbnail?resourceVersion=id%3A4"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/relationships/thumbnail?resourceVersion=id%3A4"
+            }
+          }
+        },
+        "field_media_image": {
+          "data": {
+            "type": "file--file",
+            "id": "af0b69bd-46e7-4616-bdaa-8956c67c2011",
+            "meta": {
+              "alt": "Watercress soup with a sprig of coriander as garnish in a white bowl with green trim",
+              "title": null,
+              "width": 768,
+              "height": 512,
+              "drupal_internal__target_id": 7
+            }
+          },
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/field_media_image?resourceVersion=id%3A4"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/media/image/0b05fd68-5f33-42ba-b192-09599e546ab3/relationships/field_media_image?resourceVersion=id%3A4"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "file--file",
+      "id": "af0b69bd-46e7-4616-bdaa-8956c67c2011",
+      "links": {
+        "self": {
+          "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/file/file/af0b69bd-46e7-4616-bdaa-8956c67c2011"
+        }
+      },
+      "attributes": {
+        "drupal_internal__fid": 7,
+        "langcode": "en",
+        "filename": "watercress-soup-umami.jpg",
+        "uri": {
+          "value": "public://watercress-soup-umami.jpg",
+          "url": "/sites/default/files/watercress-soup-umami.jpg"
+        },
+        "filemime": "image/jpeg",
+        "filesize": 31072,
+        "status": true,
+        "created": "2022-02-16T22:40:41+00:00",
+        "changed": "2022-02-16T22:40:41+00:00"
+      },
+      "relationships": {
+        "uid": {
+          "data": null,
+          "links": {
+            "related": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/file/file/af0b69bd-46e7-4616-bdaa-8956c67c2011/uid"
+            },
+            "self": {
+              "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/file/file/af0b69bd-46e7-4616-bdaa-8956c67c2011/relationships/uid"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "links": {
+    "self": {
+      "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/21a95a3d-4a83-494f-b7b4-dcfb0f164a74?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cfield_media_image%2Cid&include=field_media_image.field_media_image"
+    }
+  }
+}
