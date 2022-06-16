@@ -3,24 +3,36 @@ title: Including Related Data
 layout: ../../layouts/MainLayout.astro
 ---
 
-**tldr; Use `params.addInclude()` to include related objects in the deserialized
-result.**
+**tldr; Build your own query string or use the drupal-jsonapi-params library to
+include related objects in the deserialized result.**
 
 [![Edit Including Related Data](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/including-related-data-quj2h?fontsize=14&hidenavigation=1&theme=dark)
 
 ```js
 import { DrupalState } from '@gdwc/drupal-state';
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 const store = new DrupalState({
   apiBase: 'https://dev-ds-demo.pantheonsite.io',
   apiPrefix: 'jsonapi',
 });
 
+// create a new instance of DrupalJsonApiParams
+const params = new DrupalJsonApiParams();
+// or you may wish to use another library or construct your own query string parameters.
+// Make sure the query string is valid and does not start with a "?"
+// see https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/fetching-resources-get for valid requests
+// const paramsString = "include=field_recipe_category"
+
 // Add an include parameter to include a related object in the result
-store.params.addInclude(['field_recipe_category']);
+params.addInclude(['field_recipe_category']);
 const recipe = await store.getObject({
   objectName: 'node--recipe',
   id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+  // The object has the same name as the key, so we can omit the key.
+  params,
+  // If you are using a paramString or an object with a different name:
+  // params: paramsString
 });
 
 // Fields for the recipe category are now available on the recipe object.
@@ -232,11 +244,10 @@ const store = new DrupalState({
   apiPrefix: 'jsonapi',
 });
 
-// Add an include parameter to include a related object in the result
-store.params.addInclude(['field_recipe_category']);
 const recipe = await store.getObject({
   objectName: 'node--recipe',
   id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+  params: 'include=field_recipe_category',
 });
 
 // Fields for the recipe category are now available on the recipe object.

@@ -27,6 +27,32 @@ const recipeFromStore = await store.getObject({
   id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 
+// To fetch an object with query string parameters, there are two options.
+// pass in your query string parameters constructed as a string
+// see https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/fetching-resources-get for more information
+// on building query string parameters for Drupal's JSON:API
+const recipeWithParams = await store.getObject({
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+  params: 'include=field_recipe_category',
+});
+
+// You may have complicated query string parameters. In such cases we suggest using the
+// drupal-jsonapi-params library https://www.npmjs.com/package/drupal-jsonapi-params
+// which is also a dependency of this library.
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
+
+// instantiate a new instance of DrupalJsonApiParams and add an include
+const params = new DrupalJsonApiParams();
+params.addInclude('field_recipe_category');
+
+const recipeWithParams = await store.getObject({
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+  // The object has the same name as the key, so we can omit the key.
+  params,
+});
+
 // In some cases the data in the store is stale and a fresh fetch is required.
 // To force Drupal to refresh the data, use the `refresh` option.
 const recipeFromDrupal = await store.getObject({

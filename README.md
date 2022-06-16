@@ -78,22 +78,12 @@ const store = new DrupalState({
   apiPrefix: 'jsonapi',
 });
 
-store.params.addInclude(['field_media_image']);
-const recipes = await store.getObject({ objectName: 'node--recipe' });
+const recipes = await store.getObject({
+  objectName: 'node--recipe',
+  params: 'include=field_media_image',
+});
 
 // The resulting JSON:API request will be https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe?include=field_media_image
-```
-
-All helper methods provided by the excellent
-[Drupal JSON:API Params package](https://www.npmjs.com/package/drupal-jsonapi-params)
-are available so it is possible to filter, sort, use sparse fieldsets,
-pagination, and so on.
-
-The param object persists for the life of the data store, so it may also be
-cleared if necessary in order to structure a new query string.
-
-```js
-store.params.clear();
 ```
 
 ### GraphQL Queries (Experimental)

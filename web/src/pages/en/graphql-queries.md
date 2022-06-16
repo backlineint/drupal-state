@@ -11,14 +11,17 @@ thus reducing the response payload automatically.**
 
 ```js
 import { DrupalState } from '@gdwc/drupal-state';
+// You may use the drupal-json-api library to help build query string params
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 const store = new DrupalState({
   apiBase: 'https://dev-ds-demo.pantheonsite.io',
   apiPrefix: 'jsonapi',
 });
 
+const params = new DrupalJsonApiParams();
 // Add an include parameter to include relationship data
-store.params.addInclude(['field_recipe_category']);
+params.addInclude(['field_recipe_category']);
 // Provide a GraphQL query to get only the fields you need.
 // Queries can even apply to relationship data.
 const recipe = await store.getObject({
@@ -34,6 +37,7 @@ const recipe = await store.getObject({
       }
     }
   `,
+  params: params,
 });
 ```
 
@@ -273,8 +277,6 @@ const store = new DrupalState({
   apiPrefix: 'jsonapi',
 });
 
-// Add an include parameter to include relationship data
-store.params.addInclude(['field_recipe_category']);
 // Provide a GraphQL query to get only the fields you need.
 // Queries can even apply to relationship data.
 const recipe = await store.getObject({
@@ -290,6 +292,7 @@ const recipe = await store.getObject({
       }
     }
   `,
+  params: 'include=field_recipe_category',
 });
 ```
 

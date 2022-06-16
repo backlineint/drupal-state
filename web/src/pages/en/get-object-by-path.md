@@ -11,8 +11,10 @@ the provided path**
 const recipeByPath = await store.getObjectByPath({
   objectName: 'node--recipe',
   path: '/recipes/fiery-chili-sauce',
-  // optional paramter to force the data to be fetched from Drupal even if it exists in the local store.
+  // optional parameter to force the data to be fetched from Drupal even if it exists in the local store.
   refresh: true,
+  // optional parameter to include JSON:API query string params to the endpoint to be fetched
+  params: 'include=field_recipe_category',
 });
 ```
 
