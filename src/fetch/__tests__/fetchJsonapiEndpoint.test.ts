@@ -40,14 +40,21 @@ describe('fetchJsonapiEndpoint', () => {
       )
     ).toEqual(response);
   });
-
-  // TODO - would be nice to test the error message as well
-  test('A fetch failure returns undefined', async () => {
+  test('A fetch failure throws an error', async () => {
     fetchMock.mock('https://dev-ds-demo.pantheonsite.io/jsonapi', {
-      throws: new Error('fetch failed'),
+      status: 404,
+      body: {},
     });
-    expect(
-      await fetchJsonapiEndpoint('https://dev-ds-demo.pantheonsite.io/jsonapi')
-    ).toEqual(undefined);
+    try {
+      const result = await fetchJsonapiEndpoint(
+        'https://dev-ds-demo.pantheonsite.io/jsonapi'
+      );
+      expect(result).toEqual(undefined);
+      expect(result).toThrow();
+    } catch (error) {
+      expect(error instanceof Error && error.message).toEqual(
+        `Failed to fetch JSON:API endpoint.\nTried fetching: https://dev-ds-demo.pantheonsite.io/jsonapi\nServer responded with status code: 404`
+      );
+    }
   });
 });

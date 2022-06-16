@@ -48,6 +48,7 @@ export const SIDEBAR = {
     { text: 'Getting Objects by Path', link: 'en/get-object-by-path' },
     { text: 'Getting Menu Items', link: 'en/getting-menu-items' },
     { text: 'Utilities', link: 'en/utilities' },
+    { text: 'Error Handling', link: 'en/error-handling' },
 
     { text: 'Project Direction', header: true },
     { text: 'Mission Statement', link: 'en/mission-statement' },

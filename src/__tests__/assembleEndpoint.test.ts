@@ -156,4 +156,22 @@ describe('Correctly assemble endpoints including query params', () => {
       'node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image&fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
     );
   });
+
+  test('Undefined index should throw an error', () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+    });
+    expect(() => {
+      store.assembleEndpoint(
+        'node--recipe',
+        '',
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
+      );
+    }).toThrowError(
+      `Could not assemble endpoint. Check the index, object name, and id.\n\tapiBase:\n\tindex: ${JSON.stringify(
+        ''
+      )}\n\tid: 33386d32-a87c-44b9-b66b-3dd0bfc38dca\n\tobjectName: node--recipe`
+    );
+  });
 });

@@ -26,6 +26,7 @@ import ds_exampleQueryResponsePage2 from './data/ds_exampleQueryResponsePage2.js
 import ds_exampleQueryResponsePage3 from './data/ds_exampleQueryResponsePage3.json';
 import ds_exampleQueryResponsePage4 from './data/ds_exampleQueryResponsePage4.json';
 import ds_exampleCollectionObjects from './data/ds_exampleCollectionObjects.json';
+import { ApolloError } from '@apollo/client';
 
 describe('drupalState', () => {
   beforeEach(() => {
@@ -384,5 +385,44 @@ describe('drupalState', () => {
       })
     ).toEqual(ds_exampleCollectionObjectQuery);
     expect(fetchMock).toBeCalledTimes(4);
+  });
+  test('ApolloErrors are caught and thrown', async () => {
+    const mockOnError = jest.fn((err: Error) => {
+      throw err;
+    });
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      defaultLocale: 'en',
+      debug: true,
+      onError: mockOnError,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/59895e1a-f6ca-4a88-9cac-488b85e48ef8?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid',
+      {
+        status: 200,
+        throw: new ApolloError({}),
+      },
+      {
+        overwriteRoutes: true,
+      }
+    );
+    try {
+      expect(
+        await store.getObject({
+          objectName: 'node--recipe',
+          id: '59895e1a-f6ca-4a88-9cac-488b85e48ef8',
+          query: `{
+            title
+            field_difficulty
+            id
+          }`,
+        })
+      ).toThrow();
+    } catch (error) {
+      expect(error instanceof ApolloError);
+      expect(mockOnError).toBeCalledTimes(1);
+    }
   });
 });
