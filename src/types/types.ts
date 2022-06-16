@@ -154,7 +154,7 @@ export interface GetObjectParams {
   objectName: string;
   id?: string;
   res?: ServerResponse | boolean;
-  params?: string | DrupalJsonApiParams | boolean;
+  params?: string | DrupalJsonApiParams;
   query?: string | boolean;
   all?: boolean;
   refresh?: boolean;
@@ -167,7 +167,7 @@ export interface GetObjectByPathParams {
   objectName: string;
   path: string;
   res?: ServerResponse | boolean;
-  params?: string | DrupalJsonApiParams | boolean;
+  params?: string | DrupalJsonApiParams;
   query?: string | boolean;
   refresh?: boolean;
 }

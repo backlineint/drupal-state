@@ -148,6 +148,7 @@ class DrupalState {
    * @param objectName - The resource type we're fetching.
    * @param index a JSON:API resource endpoint
    * @param id id of an individual resource
+   * @param params user provided JSON:API parameter string or DrupalJsonApiParams object
    * @param query user provided GraphQL query
    * @returns a full endpoint URL or a relative endpoint URL is a query is provided
    */
@@ -379,7 +380,7 @@ class DrupalState {
     objectName,
     path,
     res,
-    params = false,
+    params,
     query = false,
     refresh = false,
   }: GetObjectByPathParams): Promise<PartialState<State> | void> {
@@ -475,7 +476,7 @@ class DrupalState {
     objectName,
     id,
     res = false,
-    params = false,
+    params,
     query = false,
     all = false,
     refresh = false,
