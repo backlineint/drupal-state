@@ -163,10 +163,11 @@ class DrupalState {
     let endpoint = '';
 
     if (params) {
-      if (typeof params === 'string') {
-        drupalJsonApiParams.initializeWithQueryString(params);
-      } else if (typeof params === 'object' && 'getQueryObject' in params) {
-        drupalJsonApiParams.initializeWithQueryObject(params.getQueryObject());
+      if (typeof params === 'string' && params[0] === '?') {
+        this.onError(new Error(`Do not start params string with "?".`));
+        return '';
+      } else {
+        drupalJsonApiParams.initialize(params);
       }
     }
 
