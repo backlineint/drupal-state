@@ -156,7 +156,7 @@ class DrupalState {
     objectName: string,
     index: string | GenericIndex,
     id = '',
-    params?: string | DrupalJsonApiParams | boolean,
+    params?: string | DrupalJsonApiParams,
     query?: string | boolean
   ): string {
     const drupalJsonApiParams = new DrupalJsonApiParams();

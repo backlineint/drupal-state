@@ -117,7 +117,7 @@ describe('Correctly assemble endpoints including query params', () => {
         'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '',
-        false,
+        '',
         `{
           title
           field_difficulty
@@ -139,7 +139,7 @@ describe('Correctly assemble endpoints including query params', () => {
         'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
-        false,
+        '',
         `{
           title
           field_difficulty
