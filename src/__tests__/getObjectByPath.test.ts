@@ -64,6 +64,26 @@ describe('getObjectByPath', () => {
     expect(fetchMock).toBeCalledTimes(2);
   });
 
+  test('Re-fetch an object by path where translate-path and recipe are both in state but refresh is set to true', async () => {
+    const store: DrupalState = new DrupalState(dsConfig);
+    store.setState({ dsApiIndex: demoApiIndex.links });
+
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+        refresh: true,
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(fetchMock).toBeCalledTimes(4);
+  });
+
   test('getObjectByPath supports queries', async () => {
     const store: DrupalState = new DrupalState(dsConfig);
     store.setState({ dsApiIndex: demoApiIndex.links });
@@ -137,5 +157,33 @@ describe('getObjectByPath', () => {
     const currentState = store.getState() as DsState;
     expect(currentState.dsPathTranslations).toEqual(translatePathState2);
     expect(fetchMock).toBeCalledTimes(3);
+  });
+  test('An undefined response from translatePath should throw an error', async () => {
+    const store: DrupalState = new DrupalState(dsConfig);
+    // Set the demo index in state so we don't have to fetch it - tests for this
+    // are covered elsewhere.
+    store.setState({ dsApiIndex: demoApiIndex.links });
+
+    // getObjectByPath will now make two fetch requests, so we need to mock them.
+    fetchMock.mock(
+      'https://demo-decoupled-bridge.lndo.site/router/translate-path?path=/recipes/fiery-chii-sauce&_format=json',
+      {
+        status: 404,
+        body: {},
+      }
+    );
+    try {
+      const result = await store.getObjectByPath({
+        objectName: 'node--recipe',
+        // force error in path
+        path: '/recipes/fiery-chii-sauce',
+      });
+      expect(result).toEqual(undefined);
+      expect(result).toThrow();
+    } catch (error) {
+      expect(error instanceof Error && error.message).toEqual(
+        `Failed to fetch JSON:API endpoint.\nTried fetching: https://demo-decoupled-bridge.lndo.site/router/translate-path?path=/recipes/fiery-chii-sauce&_format=json\nServer responded with status code: 404`
+      );
+    }
   });
 });

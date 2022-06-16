@@ -27,6 +27,14 @@ const recipeFromStore = await store.getObject({
   id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
 });
 
+// In some cases the data in the store is stale and a fresh fetch is required.
+// To force Drupal to refresh the data, use the `refresh` option.
+const recipeFromDrupal = await store.getObject({
+  objectName: 'node--recipe',
+  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+  refresh: true,
+});
+
 // If there is a collection with more than 50 entries, Drupal will automatically
 // paginate results and return the first 50 items.
 // To fetch all items in a collection, use the `all` option

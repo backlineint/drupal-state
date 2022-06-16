@@ -48,22 +48,25 @@ describe('translatePath', () => {
       )
     ).toEqual(response);
   });
-
-  // TODO - would be nice to test the error message as well
-  test('A fetch failure returns undefined', async () => {
+  test('A fetch failure throws an error', async () => {
     fetchMock.mock(
       'https://demo-decoupled-bridge.lndo.site/router/translate-path?path=/recipes/fiery-chili-sauce&_format=json',
       {
-        throws: new Error('fetch failed'),
+        status: 404,
+        body: {},
       }
     );
-    expect(
-      await translatePath(
+    try {
+      const result = await await translatePath(
         'https://demo-decoupled-bridge.lndo.site/router/translate-path',
-        '/recipes/fiery-chili-sauce',
-        {},
-        false
-      )
-    ).toEqual(undefined);
+        '/recipes/fiery-chili-sauce'
+      );
+      expect(result).toEqual(undefined);
+      expect(result).toThrow();
+    } catch (error) {
+      expect(error instanceof Error && error.message).toEqual(
+        `Failed to fetch JSON:API endpoint.\nTried fetching: https://demo-decoupled-bridge.lndo.site/router/translate-path?path=/recipes/fiery-chili-sauce&_format=json\nServer responded with status code: 404`
+      );
+    }
   });
 });
