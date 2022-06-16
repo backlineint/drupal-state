@@ -1,3 +1,4 @@
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 import DrupalState from '../DrupalState';
 
 describe('Correctly assemble endpoints including query params', () => {
@@ -49,12 +50,14 @@ describe('Correctly assemble endpoints including query params', () => {
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',
     });
-    store.params.addInclude(['image']);
+    const params = new DrupalJsonApiParams();
+    params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
         'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        params
       )
     ).toEqual(
       'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image'
@@ -63,7 +66,8 @@ describe('Correctly assemble endpoints including query params', () => {
       store.assembleEndpoint(
         'node--recipe',
         { href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe' },
-        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
+        '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        'include=image'
       )
     ).toEqual(
       'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image'
@@ -75,19 +79,29 @@ describe('Correctly assemble endpoints including query params', () => {
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',
     });
-    store.params.addInclude(['image']);
+    const params = new DrupalJsonApiParams();
+    params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
         'node--recipe',
-        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe'
+        {
+          href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
+        },
+        '',
+        params
       )
     ).toEqual(
       'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe?include=image'
     );
     expect(
-      store.assembleEndpoint('node--recipe', {
-        href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-      })
+      store.assembleEndpoint(
+        'node--recipe',
+        {
+          href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
+        },
+        '',
+        'include=image'
+      )
     ).toEqual(
       'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe?include=image'
     );
@@ -103,6 +117,7 @@ describe('Correctly assemble endpoints including query params', () => {
         'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '',
+        false,
         `{
           title
           field_difficulty
@@ -124,6 +139,7 @@ describe('Correctly assemble endpoints including query params', () => {
         'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        false,
         `{
           title
           field_difficulty
@@ -140,12 +156,14 @@ describe('Correctly assemble endpoints including query params', () => {
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',
     });
-    store.params.addInclude(['image']);
+    const params = new DrupalJsonApiParams();
+    params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
         'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        params,
         `{
           title
           field_difficulty

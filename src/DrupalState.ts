@@ -70,10 +70,6 @@ class DrupalState {
   destroy: Destroy;
   client: ApolloClientWithHeaders;
   private dataFormatter: Jsona;
-  /**
-   * DrupalJsonApiParams - see [https://www.npmjs.com/package/drupal-jsonapi-params](https://www.npmjs.com/package/drupal-jsonapi-params)
-   */
-  params: DrupalJsonApiParams;
   // Custom error handler
   onError: (err: Error) => void;
 
@@ -98,7 +94,6 @@ class DrupalState {
     this.fetchAdapter = fetchAdapter;
     this.debug = debug;
     this.dataFormatter = new Jsona();
-    this.params = new DrupalJsonApiParams();
 
     !this.debug || console.log('Debug mode:', debug);
 
@@ -160,9 +155,19 @@ class DrupalState {
     objectName: string,
     index: string | GenericIndex,
     id = '',
+    params?: string | DrupalJsonApiParams | boolean,
     query?: string | boolean
   ): string {
+    const drupalJsonApiParams = new DrupalJsonApiParams();
     let endpoint = '';
+
+    if (params) {
+      if (typeof params === 'string') {
+        drupalJsonApiParams.initializeWithQueryString(params);
+      } else if (typeof params === 'object' && 'getQueryObject' in params) {
+        drupalJsonApiParams.initializeWithQueryObject(params.getQueryObject());
+      }
+    }
 
     // TODO - probably need some additional error handling here
     if (!index || index === undefined || typeof index === undefined) {
@@ -205,13 +210,14 @@ class DrupalState {
         });
       });
 
-      this.params.addFields(objectName, fields);
+      drupalJsonApiParams.addFields(objectName, fields);
+
       // Check here to make sure apiRoot has trailing slash?
       endpoint = endpoint.replace(this.apiRoot, '');
     }
 
-    if (this.params.getQueryString()) {
-      endpoint += `?${this.params.getQueryString()}`;
+    if (drupalJsonApiParams.getQueryString()) {
+      endpoint += `?${drupalJsonApiParams.getQueryString()}`;
     }
 
     return endpoint;
@@ -455,6 +461,7 @@ class DrupalState {
    * @param objectName Name of object to retrieve. Ex: node--article
    * @param id id of a specific resource
    * @param res response object
+   * @param params user provided JSON:API parameter string or DrupalJsonApiParams object
    * @param query user provided GraphQL query
    * @param all a boolean value. If true, fetch all objects in a collection.
    * @param refresh a boolean value. If true, ignore local state.
@@ -465,6 +472,7 @@ class DrupalState {
     objectName,
     id,
     res = false,
+    params = false,
     query = false,
     all = false,
     refresh = false,
@@ -531,6 +539,7 @@ class DrupalState {
         objectName,
         dsApiIndex[objectName],
         id,
+        params,
         query
       );
 
@@ -600,6 +609,7 @@ class DrupalState {
         objectName,
         dsApiIndex[objectName],
         id,
+        params,
         query
       );
 

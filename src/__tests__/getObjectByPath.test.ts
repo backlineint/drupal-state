@@ -133,7 +133,6 @@ describe('getObjectByPath', () => {
     ).toEqual(recipesResourceQueryByPath);
     expect(fetchMock).toBeCalledTimes(1);
 
-    store.params.clear();
     fetchMock.mock(
       'https://demo-decoupled-bridge.lndo.site/router/translate-path?path=/recipes/fiery-chili-sauce&_format=json',
       {

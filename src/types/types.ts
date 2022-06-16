@@ -10,6 +10,7 @@ import {
   ApolloLink,
   NormalizedCacheObject,
 } from '@apollo/client/core';
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 // Type Aliases
 
@@ -153,6 +154,7 @@ export interface GetObjectParams {
   objectName: string;
   id?: string;
   res?: ServerResponse | boolean;
+  params?: string | DrupalJsonApiParams | boolean;
   query?: string | boolean;
   all?: boolean;
   refresh?: boolean;
