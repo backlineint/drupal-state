@@ -16,7 +16,7 @@ Include related data:
 
 ```js
 // Using a DrupalJsonApiParams...
-import { DrupalJsonApiParams } from 'drupal-json-api-params;;
+import { DrupalJsonApiParams } from 'drupal-json-api-params;
 
 const params = new DrupalJsonApiParams();
 // Add an include parameter to include a related object in the result
