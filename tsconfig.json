@@ -19,7 +19,7 @@
   "exclude": ["./**/__tests__", "./src/main.ts"],
   "typedocOptions": {
     "entryPoints": ["./src"],
-    "exclude": ["./src/main.ts", "**/*.test.ts"],
+    "exclude": ["./src/main.ts", "**/*.test.ts", "**/*.json.ts"],
     "out": "web/dist/en/api"
   }
 }
