@@ -5,6 +5,7 @@ global.Headers = fetchMock.Headers;
 
 import { ServerResponse } from 'http';
 import fetch from 'isomorphic-fetch';
+import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 import DrupalState from '../DrupalState';
 
@@ -153,6 +154,38 @@ describe('drupalState', () => {
     expect(fetchMock).toBeCalledTimes(2);
   });
 
+  test('Re-fetch resource if it exists in state but uses different parameters', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?filter%5Bstatus%5D=1',
+      {
+        status: 200,
+        body: recipesResourceData1,
+      }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      })
+    ).toEqual(recipesResourceObject1);
+    const params = new DrupalJsonApiParams();
+    params.addFilter('status', '1');
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        params,
+      })
+    ).toEqual(recipesResourceObject1);
+    expect(fetchMock).toBeCalledTimes(2);
+  });
+
   test('Add resource object to local resource state if resource state already exists', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
@@ -296,6 +329,37 @@ describe('drupalState', () => {
       recipesCollectionObject1
     );
     expect(fetchMock).toBeCalledTimes(1);
+  });
+
+  test('Re-fetch object if it exists in state but uses different parameters', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe?filter%5Bstatus%5D=1',
+      {
+        status: 200,
+        body: recipes,
+      },
+      { overwriteRoutes: true }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+      })
+    ).toEqual(recipesCollectionObject1);
+    const params = new DrupalJsonApiParams();
+    params.addFilter('status', '1');
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        params,
+      })
+    ).toEqual(recipesCollectionObject1);
+    expect(fetchMock).toBeCalledTimes(2);
   });
 
   test('Fetch resource with authentication', async () => {

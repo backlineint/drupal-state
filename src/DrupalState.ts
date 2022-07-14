@@ -486,19 +486,38 @@ class DrupalState {
     all = false,
     refresh = false,
   }: GetObjectParams): Promise<PartialState<State> | void> {
+    if (
+      params !== undefined &&
+      typeof params !== 'string' &&
+      !(params instanceof DrupalJsonApiParams)
+    ) {
+      this.onError(
+        new Error(
+          `Invalid params: Params must be a string or instance of DrupalJsonApiParams (https://www.npmjs.com/package/drupal-jsonapi-params)`
+        )
+      );
+      return;
+    }
     const state = this.getState() as DsState;
+    const paramString =
+      typeof params === 'string' ? params : params?.getQueryString();
+    const collectionKey = paramString
+      ? `${objectName}-${paramString}`
+      : objectName;
+    const resourceKey = `${objectName}Resources`;
     // Check for collection in the store
-    const collectionState = state[objectName] as TJsonApiBodyDataRequired;
+    const collectionState = state[collectionKey] as TJsonApiBodyDataRequired;
 
     // If an id is provided, find and return a resource
     if (id) {
+      const resourceId = paramString ? `${id}-${paramString}` : id;
       const resourceState = !refresh
-        ? (state[`${objectName}Resources`] as keyedResources)
+        ? (state[resourceKey] as keyedResources)
         : false;
 
       // If requested resource is in the resource store, return that
       if (resourceState) {
-        const resource = resourceState[id] as keyedResources;
+        const resource = resourceState[resourceId] as keyedResources;
         if (resource) {
           !this.debug || console.log(`Matched resource ${id} in state`);
           return resource?.graphql
@@ -559,24 +578,24 @@ class DrupalState {
         res
       )) as keyedResources;
 
-      const objectResourceState = state[`${objectName}Resources`];
+      const objectResourceState = state[resourceKey];
 
       if (objectResourceState) {
         // If the resource state exists, add the new resource to it.
         const updatedResourceState = {
           ...objectResourceState,
-          [id]: resourceData,
+          [resourceId]: resourceData,
         };
 
         this.setState({
-          [`${objectName}Resources`]: updatedResourceState,
+          [resourceKey]: updatedResourceState,
         });
       } else {
         const newResourceState = {
-          [id]: resourceData,
+          [resourceId]: resourceData,
         };
 
-        this.setState({ [`${objectName}Resources`]: newResourceState });
+        this.setState({ [resourceKey]: newResourceState });
       }
 
       return query
@@ -630,7 +649,7 @@ class DrupalState {
       )) as keyedResources;
 
       const fetchedCollectionState = {} as CollectionState;
-      fetchedCollectionState[objectName] = collectionData;
+      fetchedCollectionState[collectionKey] = collectionData;
 
       this.setState(fetchedCollectionState);
       // if the all flag is present
@@ -684,11 +703,11 @@ class DrupalState {
             const currentState = this.getState() as CollectionState;
             // using deepmerge to merge arrays instead of overwriting them
             const mergedCollection: keyedResources = deepmerge(
-              currentState[objectName],
+              currentState[collectionKey],
               nextPage
             );
 
-            currentState[objectName] = mergedCollection;
+            currentState[collectionKey] = mergedCollection;
             this.setState(currentState);
 
             return nextPage.links as TJsonApiLinks;
