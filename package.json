@@ -105,10 +105,10 @@
     "isomorphic-fetch": "^3.0.0",
     "jest": "^27.0.6",
     "jest-junit": "^12.2.0",
-    "jsona": "^1.9.7",
+    "jsona": "1.9.7",
     "patch-package": "^6.4.7",
     "qs": "^6.10.1",
     "ts-jest": "^27.0.5",
-    "zustand": "^3.5.7"
+    "zustand": "3.7.2"
   }
 }
