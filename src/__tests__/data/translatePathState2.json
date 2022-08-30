@@ -1,21 +1,22 @@
 {
   "/recipes/victoria-sponge-cake": {
-    "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/victoria-sponge-cake",
+    "resolved": "https://dev-ds-demo.pantheonsite.io/en/recipes/victoria-sponge-cake",
     "isHomePath": false,
     "entity": {
-      "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/victoria-sponge-cake",
+      "canonical": "https://dev-ds-demo.pantheonsite.io/en/recipes/victoria-sponge-cake",
       "type": "node",
       "bundle": "recipe",
       "id": "5",
-      "uuid": "1d857bf9-163b-48b2-990b-cc5dd234c76d"
+      "uuid": "510cec29-bc95-4a64-a519-0ca6084529db",
+      "langcode": "en"
     },
     "label": "Victoria sponge cake",
     "jsonapi": {
-      "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/1d857bf9-163b-48b2-990b-cc5dd234c76d",
+      "individual": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/510cec29-bc95-4a64-a519-0ca6084529db",
       "resourceName": "node--recipe",
       "pathPrefix": "jsonapi",
       "basePath": "/jsonapi",
-      "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+      "entryPoint": "https://dev-ds-demo.pantheonsite.io/en/jsonapi"
     },
     "meta": {
       "deprecated": {
@@ -24,22 +25,23 @@
     }
   },
   "/recipes/fiery-chili-sauce": {
-    "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+    "resolved": "https://dev-ds-demo.pantheonsite.io/en/recipes/fiery-chili-sauce",
     "isHomePath": false,
     "entity": {
-      "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+      "canonical": "https://dev-ds-demo.pantheonsite.io/en/recipes/fiery-chili-sauce",
       "type": "node",
       "bundle": "recipe",
       "id": "9",
-      "uuid": "33f4a373-433e-447b-afc4-705776065639"
+      "uuid": "da1359f4-2e60-462c-8909-47c3bce11fdf",
+      "langcode": "en"
     },
     "label": "Fiery chili sauce",
     "jsonapi": {
-      "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/33f4a373-433e-447b-afc4-705776065639",
+      "individual": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/da1359f4-2e60-462c-8909-47c3bce11fdf",
       "resourceName": "node--recipe",
       "pathPrefix": "jsonapi",
       "basePath": "/jsonapi",
-      "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+      "entryPoint": "https://dev-ds-demo.pantheonsite.io/en/jsonapi"
     },
     "meta": {
       "deprecated": {

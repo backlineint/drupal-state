@@ -20,8 +20,8 @@ import recipesResourceObject2 from './data/recipesResourceObject2.json';
 import indexResponse from '../fetch/__tests__/data/apiIndex.json';
 import spanishApiIndex from './data/spanishApiIndex.json';
 import tokenResponse from '../fetch/__tests__/data/token.json';
-import nodePageSpanishResourceQueryData from './data/nodePageSpanishResourceQueryData.json';
-import nodePageSpanishResourceQueryObject from './data/nodePageSpanishResourceQueryObject.json';
+import nodePageSpanishResourceData from './data/nodePageSpanishResourceData.json';
+import nodePageSpanishResourceObject from './data/nodePageSpanishResourceObject.json';
 import multiPageFetch1 from './data/multiPageFetch1.json';
 import multiPageFetch2 from './data/multiPageFetch2.json';
 import multiPageFetch3 from './data/multiPageFetch3.json';
@@ -413,22 +413,18 @@ describe('drupalState', () => {
     });
     store.setState({ dsApiIndex: spanishApiIndex });
     fetchMock.mock(
-      'https://demo-decoupled-bridge.lndo.site/es/jsonapi/node/page/04fe66ed-1161-47f4-8a3f-6450eb9a8fa9?fields%5Bnode--page%5D=title%2Cid',
+      'https://demo-decoupled-bridge.lndo.site/es/jsonapi/node/page/c1a87e33-06a7-4c76-97dd-85b8d6fcd45b',
       {
         status: 200,
-        body: nodePageSpanishResourceQueryData,
+        body: nodePageSpanishResourceData,
       }
     );
     expect(
       await store.getObject({
         objectName: 'node--page',
-        id: '04fe66ed-1161-47f4-8a3f-6450eb9a8fa9',
-        query: `{
-          title
-          id
-        }`,
+        id: 'c1a87e33-06a7-4c76-97dd-85b8d6fcd45b',
       })
-    ).toEqual(nodePageSpanishResourceQueryObject);
+    ).toEqual(nodePageSpanishResourceObject);
     expect(fetchMock).toBeCalledTimes(1);
   });
 
@@ -485,14 +481,47 @@ describe('drupalState', () => {
       },
       { overwriteRoutes: true }
     );
-    const result = await store.getObject({
-      objectName: 'node--recie',
+
+    store
+      .getObject({
+        objectName: 'node--recie',
+      })
+      .catch(e => {
+        expect(e).toEqual(
+          `Invalid objectName.\nCheck that node--recie is a valid node in your Drupal instance or local store`
+        );
+        expect(mockCustomOnError).toBeCalledTimes(1);
+      });
+  });
+
+  test('should log a message if query is used, but continue to fetch', async () => {
+    const log = jest.spyOn(console, 'warn');
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      fetchAdapter: testCustomFetch,
+      debug: true,
     });
-    try {
-      expect(result).toThrowError();
-      expect(result).toEqual(undefined);
-    } catch (error) {
-      expect(mockCustomOnError).toBeCalledTimes(1);
-    }
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      {
+        status: 200,
+        body: recipesResourceData1,
+      },
+      { overwriteRoutes: true }
+    );
+
+    const recipes = await store.getObject({
+      objectName: 'node--recipe',
+      id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      query: `{
+        id
+        title
+      }`,
+    });
+
+    expect(recipes).toEqual(recipesResourceObject1);
+    expect(log).toBeCalledTimes(1);
   });
 });

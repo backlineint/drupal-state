@@ -40,6 +40,8 @@ const recipeWithParams = await store.getObject({
 // You may have complicated query string parameters. In such cases we suggest using the
 // drupal-jsonapi-params library https://www.npmjs.com/package/drupal-jsonapi-params
 // which is also a dependency of this library.
+// Note: DrupalState currently supports v1.x of drupal-jsonapi-params
+// you may encounter errors if trying to use v2.x
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 // instantiate a new instance of DrupalJsonApiParams and add an include

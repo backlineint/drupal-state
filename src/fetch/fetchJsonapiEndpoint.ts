@@ -8,7 +8,7 @@ import type DrupalState from '../DrupalState';
  * @param apiUrl the api url for the JSON:API endpoint
  * @param requestInit fetch initialization object
  * @param onError custom error handler defaults to throw error
- * @param _res response object
+ * @param res response object
  * @param fetch fetch compatible function
  * @returns a promise containing the data for the JSON:API response
  */
@@ -19,10 +19,10 @@ const fetchJsonapiEndpoint = (
     throw err;
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _res?: ServerResponse | boolean,
+  res?: ServerResponse | boolean,
   fetch: fetchAdapter = defaultFetch
 ): Promise<void | Response> => {
-  const collection = fetch(apiUrl, requestInit, _res)
+  const collection = fetch(apiUrl, requestInit, res)
     .then(response => {
       if (!response.ok) {
         throw new Error(

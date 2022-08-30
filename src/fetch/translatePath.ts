@@ -20,7 +20,7 @@ const translatePath = async (
   path: string,
   requestInit = {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _res: ServerResponse | boolean = false,
+  res: ServerResponse | boolean = false,
   fetch: fetchAdapter = defaultFetch,
   onError: DrupalState['onError'] = (err: Error) => {
     throw err;
@@ -30,7 +30,7 @@ const translatePath = async (
     apiUrl + '?path=' + path + '&_format=json',
     requestInit,
     onError,
-    _res,
+    res,
     fetch
   )) as TJsonApiBody;
   return response;

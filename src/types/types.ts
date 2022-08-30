@@ -4,12 +4,6 @@ import {
   TJsonApiData,
   TJsonApiLinks,
 } from 'jsona/lib/JsonaTypes';
-import { SelectionSetNode } from 'graphql/language/ast';
-import {
-  ApolloClient,
-  ApolloLink,
-  NormalizedCacheObject,
-} from '@apollo/client/core';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
 
 // Type Aliases
@@ -33,16 +27,8 @@ export type keyedResources = {
  */
 export declare type TJsonApiBodyDataRequired = {
   data: TJsonApiDataFilterable;
-  graphql?: TJsonApiBody;
   included?: Array<TJsonApiData>;
   links?: TJsonApiLinks;
-};
-
-/**
- * Allows iteration on a DefinitionNode object
- */
-export type IterableDefinitionNode = {
-  selectionSet: SelectionSetNode;
 };
 
 // Interfaces
@@ -96,21 +82,6 @@ export interface TokenObject {
 }
 
 /**
- * Extends ApolloLink to allow access to headers object
- */
-export interface ApolloLinkWithHeaders extends ApolloLink {
-  headers: Record<string, unknown>;
-}
-
-/**
- * Extends ApolloClient to allow access to headers object
- */
-export interface ApolloClientWithHeaders
-  extends ApolloClient<NormalizedCacheObject> {
-  link: ApolloLinkWithHeaders;
-}
-
-/**
  * Generically represents the shape of a Drupal State object
  */
 export interface DsState {
@@ -143,7 +114,6 @@ export interface jsonapiLinkObject {
     links: TJsonApiLinks;
     [key: string]: TJsonApiBody | TJsonApiLinks;
   };
-  graphql: TJsonApiData;
   __typename: string;
 }
 
@@ -204,8 +174,12 @@ export interface ResourceState {
   [key: string]: keyedResources;
 }
 
-export interface queryResponse {
-  data: TJsonApiBody;
-  graphql: jsonapiLinkObject['graphql'];
-  links?: TJsonApiLinks;
-}
+/**
+ * A type predicate to determine if a string or GenericIndex has an href
+ * @param {GenericIndex | string} index - a string or GenericIndex
+ * @returns true if index is a string or has an href property
+ */
+export const isGenericIndex = (
+  index: GenericIndex | string
+): index is GenericIndex | string =>
+  typeof index === 'string' || 'href' in index;

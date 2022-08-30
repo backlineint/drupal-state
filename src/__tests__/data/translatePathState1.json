@@ -1,21 +1,22 @@
 {
   "/recipes/victoria-sponge-cake": {
-    "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/victoria-sponge-cake",
+    "resolved": "https://dev-ds-demo.pantheonsite.io/en/recipes/victoria-sponge-cake",
     "isHomePath": false,
     "entity": {
-      "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/victoria-sponge-cake",
+      "canonical": "https://dev-ds-demo.pantheonsite.io/en/recipes/victoria-sponge-cake",
       "type": "node",
       "bundle": "recipe",
       "id": "5",
-      "uuid": "1d857bf9-163b-48b2-990b-cc5dd234c76d"
+      "uuid": "510cec29-bc95-4a64-a519-0ca6084529db",
+      "langcode": "en"
     },
     "label": "Victoria sponge cake",
     "jsonapi": {
-      "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/1d857bf9-163b-48b2-990b-cc5dd234c76d",
+      "individual": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/510cec29-bc95-4a64-a519-0ca6084529db",
       "resourceName": "node--recipe",
       "pathPrefix": "jsonapi",
       "basePath": "/jsonapi",
-      "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+      "entryPoint": "https://dev-ds-demo.pantheonsite.io/en/jsonapi"
     },
     "meta": {
       "deprecated": {

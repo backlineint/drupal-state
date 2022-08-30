@@ -112,83 +112,6 @@ async function main(): Promise<void> {
     })
   );
 
-  console.log('--- Fetch a resource with a query ---');
-  // Note: query based resources can't be retrieved from collection state because
-  // the query may not contain the ID.
-  console.log(
-    await store.getObject({
-      objectName: 'node--recipe',
-      id: 'da1359f4-2e60-462c-8909-47c3bce11fdf',
-      query: `{
-        title
-        field_difficulty
-        id
-      }`,
-    })
-  );
-
-  console.log('--- Fetch a resource with a query and params ---');
-  // Note: query based resources can't be retrieved from collection state because
-  // the query may not contain the ID.
-  console.log(
-    await store.getObject({
-      objectName: 'node--recipe',
-      id: '21a95a3d-4a83-494f-b7b4-dcfb0f164a74',
-      query: `{
-        title
-        field_difficulty
-        field_media_image {
-          field_media_image {
-            uri {
-              url
-            }
-          }
-        }
-        id
-      }`,
-      params: jsonApiParams,
-    })
-  );
-
-  console.log(
-    '--- Fetch a resource with a query from state if it already exists ---'
-  );
-  console.log(
-    await store.getObject({
-      objectName: 'node--recipe',
-      id: 'da1359f4-2e60-462c-8909-47c3bce11fdf',
-      query: `{
-        title
-        field_difficulty
-        id
-      }`,
-    })
-  );
-
-  console.log('--- Fetch a collection with a query ---');
-  console.log(
-    await store.getObject({
-      objectName: 'node--page',
-      query: `{
-        title
-        id
-      }`,
-    })
-  );
-
-  console.log(
-    '--- Fetch a collection with a query from state if it already exists ---'
-  );
-  console.log(
-    await store.getObject({
-      objectName: 'node--page',
-      query: `{
-        title
-        id
-      }`,
-    })
-  );
-
   // gets the first 50 results only
   console.log('--- Fetch objects of a type ---');
   console.log(
@@ -202,18 +125,6 @@ async function main(): Promise<void> {
     await store.getObject({
       objectName: 'node--ds_example',
       all: true,
-    })
-  );
-
-  console.log('--- Fetch _all_ objects of a type with a query---');
-  console.log(
-    await store.getObject({
-      objectName: 'node--ds_example',
-      all: true,
-      query: `{
-        title
-        id
-      }`,
     })
   );
 
@@ -264,17 +175,6 @@ async function main(): Promise<void> {
   // console.log(
   //   await authStore.getObject({
   //     objectName: 'taxonomy_vocabulary--taxonomy_vocabulary',
-  //   })
-  // );
-
-  // console.log('--- Get pages with authentication and a query ---');
-  // console.log(
-  //   await authStore.getObject({
-  //     objectName: 'node--page',
-  //     query: `{
-  //       title
-  //       id
-  //     }`,
   //   })
   // );
 

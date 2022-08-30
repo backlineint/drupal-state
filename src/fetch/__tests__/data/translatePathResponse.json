@@ -1,20 +1,21 @@
 {
-  "resolved": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+  "resolved": "https://dev-ds-demo.pantheonsite.io/en/recipes/fiery-chili-sauce",
   "isHomePath": false,
   "entity": {
-    "canonical": "https://demo-decoupled-bridge.lndo.site/en/recipes/fiery-chili-sauce",
+    "canonical": "https://dev-ds-demo.pantheonsite.io/en/recipes/fiery-chili-sauce",
     "type": "node",
     "bundle": "recipe",
     "id": "9",
-    "uuid": "33f4a373-433e-447b-afc4-705776065639"
+    "uuid": "da1359f4-2e60-462c-8909-47c3bce11fdf",
+    "langcode": "en"
   },
   "label": "Fiery chili sauce",
   "jsonapi": {
-    "individual": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/33f4a373-433e-447b-afc4-705776065639",
+    "individual": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/da1359f4-2e60-462c-8909-47c3bce11fdf",
     "resourceName": "node--recipe",
     "pathPrefix": "jsonapi",
     "basePath": "/jsonapi",
-    "entryPoint": "https://demo-decoupled-bridge.lndo.site/en/jsonapi"
+    "entryPoint": "https://dev-ds-demo.pantheonsite.io/en/jsonapi"
   },
   "meta": {
     "deprecated": {

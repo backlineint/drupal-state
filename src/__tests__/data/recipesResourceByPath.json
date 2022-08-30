@@ -1,15 +1,15 @@
 {
   "type": "node--recipe",
-  "id": "33f4a373-433e-447b-afc4-705776065639",
+  "id": "da1359f4-2e60-462c-8909-47c3bce11fdf",
   "drupal_internal__nid": 9,
   "drupal_internal__vid": 18,
   "langcode": "en",
-  "revision_timestamp": "2021-12-08T17:08:02+00:00",
+  "revision_timestamp": "2022-02-16T22:40:41+00:00",
   "revision_log": null,
   "status": true,
   "title": "Fiery chili sauce",
-  "created": "2021-12-08T17:08:02+00:00",
-  "changed": "2021-12-08T17:08:02+00:00",
+  "created": "2022-02-16T22:40:41+00:00",
+  "changed": "2022-02-16T22:40:41+00:00",
   "promote": true,
   "sticky": false,
   "default_langcode": true,
@@ -52,35 +52,53 @@
   },
   "links": {
     "self": {
-      "href": "https://demo-decoupled-bridge.lndo.site/en/jsonapi/node/recipe/33f4a373-433e-447b-afc4-705776065639?resourceVersion=id%3A18"
+      "href": "https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/da1359f4-2e60-462c-8909-47c3bce11fdf?resourceVersion=id%3A18"
     }
   },
   "node_type": {
     "type": "node_type--node_type",
-    "id": "38fd9fe6-42ad-40d7-9125-aed2dc0b6115"
+    "id": "1c42f343-4d30-4fa3-a5c6-919daa61b952",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": "recipe"
+    }
   },
   "revision_uid": {
     "type": "user--user",
-    "id": "63e543f9-2b57-4f14-a92c-d601e0c073ac"
+    "id": "a7d16dca-adbb-4e56-a32d-ebc72cf95226",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 5
+    }
   },
   "uid": {
     "type": "user--user",
-    "id": "63e543f9-2b57-4f14-a92c-d601e0c073ac"
+    "id": "a7d16dca-adbb-4e56-a32d-ebc72cf95226",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 5
+    }
   },
   "field_media_image": {
     "type": "media--image",
-    "id": "b0a822cc-4ac2-4d6c-9ce7-29f53dee5fce"
+    "id": "47bd4d02-3720-43dc-829d-8c8afb64e3ed",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 9
+    }
   },
   "field_recipe_category": [
     {
       "type": "taxonomy_term--recipe_category",
-      "id": "b994f849-01db-4ca8-b5a6-adb2adf347fe"
+      "id": "3b2120bf-cacd-4313-808a-b31130a54434",
+      "resourceIdObjMeta": {
+        "drupal_internal__target_id": 29
+      }
     }
   ],
   "field_tags": [
     {
       "type": "taxonomy_term--tags",
-      "id": "70903b3d-f8f7-4b82-9dc8-aa22ede2fa32"
+      "id": "322ed7e0-193d-4ad0-b674-76554060b404",
+      "resourceIdObjMeta": {
+        "drupal_internal__target_id": 28
+      }
     }
   ],
   "relationshipNames": [

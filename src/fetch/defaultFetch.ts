@@ -5,7 +5,7 @@ import fetch from 'isomorphic-fetch';
  * fetch data from a JSON:API endpoint
  * @param apiUrl the api url for the JSON:API endpoint
  * @param requestInit fetch initialization object
- * @param res response object
+ * @param _res response object
  * @returns a promise containing the data for the JSON:API response
  */
 const defaultFetch = (

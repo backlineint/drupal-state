@@ -1,0 +1,58 @@
+{
+  "type": "node--page",
+  "id": "c1a87e33-06a7-4c76-97dd-85b8d6fcd45b",
+  "drupal_internal__nid": 18,
+  "drupal_internal__vid": 36,
+  "langcode": "es",
+  "revision_timestamp": "2022-02-16T22:40:41+00:00",
+  "revision_log": null,
+  "status": true,
+  "title": "Acerca de Umami",
+  "created": "2022-02-16T22:40:41+00:00",
+  "changed": "2022-02-16T22:40:41+00:00",
+  "promote": false,
+  "sticky": false,
+  "default_langcode": false,
+  "revision_translation_affected": true,
+  "moderation_state": "published",
+  "path": {
+    "alias": "/acerca-de-umami",
+    "pid": 102,
+    "langcode": "es"
+  },
+  "content_translation_source": "und",
+  "content_translation_outdated": false,
+  "body": {
+    "value": "<p> Umami es una revista ficticia de alimentos que se ha creado para demostrar cómo se puede construir un sitio de Drupal con la funcionalidad que se proporciona 'fuera de la caja'. </p> <p> Para obtener más información, visite <a href='https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile'>https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile</a>.</p> ",
+    "format": "basic_html",
+    "processed": "<p> Umami es una revista ficticia de alimentos que se ha creado para demostrar cómo se puede construir un sitio de Drupal con la funcionalidad que se proporciona 'fuera de la caja'. </p>\n<p> Para obtener más información, visite <a href=\"https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile\">https://www.drupal.org/docs/8/umami-drupal-8-demonstration-installation-profile</a>.</p>\n",
+    "summary": null
+  },
+  "links": {
+    "self": {
+      "href": "https://dev-ds-demo.pantheonsite.io/es/jsonapi/node/page/c1a87e33-06a7-4c76-97dd-85b8d6fcd45b?resourceVersion=id%3A36"
+    }
+  },
+  "node_type": {
+    "type": "node_type--node_type",
+    "id": "6ad42f92-c629-42d9-b17d-678909e36541",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": "page"
+    }
+  },
+  "revision_uid": {
+    "type": "user--user",
+    "id": "16d81c33-1154-47d8-987f-5190ff683ffa",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 8
+    }
+  },
+  "uid": {
+    "type": "user--user",
+    "id": "16d81c33-1154-47d8-987f-5190ff683ffa",
+    "resourceIdObjMeta": {
+      "drupal_internal__target_id": 8
+    }
+  },
+  "relationshipNames": ["node_type", "revision_uid", "uid"]
+}

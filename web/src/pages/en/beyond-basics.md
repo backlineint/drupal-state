@@ -15,7 +15,7 @@ const store = new DrupalState({
 Include related data:
 
 ```js
-// Using a DrupalJsonApiParams...
+// Using a DrupalJsonApiParams v1.x...
 import { DrupalJsonApiParams } from 'drupal-json-api-params;
 
 const params = new DrupalJsonApiParams();
@@ -38,32 +38,6 @@ const recipe = await store.getObject({
   objectName: 'node--recipe',
   id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
   params,
-});
-```
-
-Specify fields using a GraphQL query (experimental):
-
-```js
-import { DrupalJsonApiParams } from 'drupal-json-api-params;;
-
-const params = new DrupalJsonApiParams();
-// Add an include parameter to include relationship data
-params.addInclude(['field_recipe_category']);
-// Provide a GraphQL query to get only the fields you need.
-// Queries can even apply to relationship data.
-const recipe = await store.getObject({
-  objectName: 'node--recipe',
-  id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
-  query: `
-    {
-      title
-      field_difficulty
-      field_recipe_instruction
-      field_recipe_category {
-        name
-      }
-    }
-  `,
 });
 ```
 

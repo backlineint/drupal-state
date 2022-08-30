@@ -8,16 +8,8 @@ import create, {
   State,
   PartialState,
 } from 'zustand/vanilla';
-import { JsonApiLink } from 'apollo-link-json-api';
-import {
-  ApolloClient,
-  gql,
-  InMemoryCache,
-  ApolloLink,
-} from '@apollo/client/core';
 import Jsona from 'jsona';
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params';
-import { camelize } from 'humps';
 import { default as deepmerge } from 'deepmerge';
 
 import fetchApiIndex from './fetch/fetchApiIndex';
@@ -37,15 +29,12 @@ import {
   GenericIndex,
   GetObjectParams,
   GetObjectByPathParams,
-  IterableDefinitionNode,
-  jsonapiLinkObject,
   TokenObject,
   TokenResponseObject,
-  ApolloClientWithHeaders,
   dsPathTranslations,
   fetchAdapter,
   ResourceState,
-  queryResponse,
+  isGenericIndex,
 } from './types/types';
 
 class DrupalState {
@@ -68,7 +57,6 @@ class DrupalState {
   setState: SetState<State>;
   subscribe: Subscribe<State>;
   destroy: Destroy;
-  client: ApolloClientWithHeaders;
   private dataFormatter: Jsona;
   // Custom error handler
   onError: (err: Error) => void;
@@ -105,17 +93,6 @@ class DrupalState {
     this.subscribe = subscribe;
     this.destroy = destroy;
 
-    // TODO - fix JsonApiLink type defs - unknown feels like a hack.
-    const jsonApiLink = new JsonApiLink({
-      uri: this.apiRoot,
-      customFetch: this.fetchAdapter,
-    }) as unknown as ApolloLink;
-
-    this.client = new ApolloClient({
-      link: jsonApiLink,
-      cache: new InMemoryCache(),
-    }) as ApolloClientWithHeaders;
-
     const defaultErrorHandler = (err: Error) => {
       throw err;
     };
@@ -145,19 +122,15 @@ class DrupalState {
   // Todo - Various error handling
   /**
    * Assembles a correctly formatted JSON:API endpoint URL.
-   * @param objectName - The resource type we're fetching.
-   * @param index a JSON:API resource endpoint
+   * @param indexHref a JSON:API resource endpoint
    * @param id id of an individual resource
    * @param params user provided JSON:API parameter string or DrupalJsonApiParams object
-   * @param query user provided GraphQL query
-   * @returns a full endpoint URL or a relative endpoint URL is a query is provided
+   * @returns a full endpoint URL
    */
   assembleEndpoint(
-    objectName: string,
-    index: string | GenericIndex,
+    indexHref: string,
     id = '',
-    params?: string | DrupalJsonApiParams,
-    query?: string | boolean
+    params?: string | DrupalJsonApiParams
   ): string {
     const drupalJsonApiParams = new DrupalJsonApiParams();
     let endpoint = '';
@@ -176,56 +149,26 @@ class DrupalState {
     }
 
     // TODO - probably need some additional error handling here
-    if (!index || index === undefined || typeof index === undefined) {
+    if (!isGenericIndex(indexHref) || !indexHref) {
       this.onError(
         new Error(
-          `Could not assemble endpoint. Check the index, object name, and id.\n\tapiBase:\n\tindex: ${JSON.stringify(
-            index
-          )}\n\tid: ${id}\n\tobjectName: ${objectName}`
+          `Could not assemble endpoint. Check the hrefIndex, and id.\napiBase: ${JSON.stringify(
+            this.apiBase ?? null
+          )}\nindex: ${JSON.stringify(indexHref) ?? null}\nid: ${id ?? null}`
         )
       );
       return '';
     }
-    if (typeof index === 'string') {
-      endpoint = index;
-    } else {
-      endpoint = index.href as string;
+    if (typeof indexHref === 'string') {
+      endpoint = indexHref;
     }
     if (id) {
       endpoint += `/${id}`;
     }
 
-    if (query) {
-      // if a query exists we don't want the apiBase on the endpoint
-      // as it will make the gqlQuery in conditionalFetch fail
-      endpoint = endpoint.replace(
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `${this.apiBase}${`/${this.defaultLocale}` || ''}/${this.apiPrefix}`,
-        ''
-      );
-
-      const fields: string[] = [];
-      const gqlObject = gql(query as string);
-
-      gqlObject.definitions.forEach(definition => {
-        const iterableDefinitions = definition as IterableDefinitionNode;
-        iterableDefinitions.selectionSet.selections.forEach(selection => {
-          if (selection.kind === 'Field') {
-            fields.push(selection.name.value);
-          }
-        });
-      });
-
-      drupalJsonApiParams.addFields(objectName, fields);
-
-      // Check here to make sure apiRoot has trailing slash?
-      endpoint = endpoint.replace(this.apiRoot, '');
-    }
-
     if (drupalJsonApiParams.getQueryString()) {
       endpoint += `?${drupalJsonApiParams.getQueryString()}`;
     }
-
     return endpoint;
   }
 
@@ -285,19 +228,15 @@ class DrupalState {
   }
 
   /**
-   * If a query is provided, fetches data using apollo-link-json-api, otherwise uses our fetch method.
+   * Fetches data using  our fetch method.
    * @param endpoint the assembled JSON:API endpoint
-   * @param query the specified GraphQL query
-   * @param objectName Name of object to retrieve. Ex: node--article
    * @param res response object
    * @returns data fetched from JSON:API endpoint
    */
-  async conditionalFetch(
+  async fetchData(
     endpoint: string,
-    query: string | boolean = false,
-    objectName: string | boolean = false,
     res: ServerResponse | boolean = false
-  ): Promise<TJsonApiBody | queryResponse | void> {
+  ): Promise<TJsonApiBody | void> {
     let requestInit = {};
     let authHeader = '';
     if (this.clientId && this.clientSecret) {
@@ -308,41 +247,12 @@ class DrupalState {
         headers: headers,
       };
     }
-
-    if (query) {
-      try {
-        this.client.link.headers = { Authorization: authHeader };
-        const queryObjectName = camelize(objectName as string);
-        const gqlQuery = gql`{
-                ${queryObjectName} @jsonapi(path: "${endpoint}", includeJsonapi: true)
-                  {
-                    jsonapi
-                    graphql
-                    ${query}
-                  }
-                }`;
-        const response = await this.client.query({ query: gqlQuery });
-        const data = response.data as keyedResources;
-        const object = data[queryObjectName] as jsonapiLinkObject;
-
-        const result: queryResponse = {
-          data: object.jsonapi.data,
-          graphql: object.graphql,
-          links: object.jsonapi.links,
-        };
-
-        return result;
-      } catch (error) {
-        this.onError(error as Error);
-      }
-    } else {
-      return (await this.fetchJsonapiEndpoint(
-        endpoint,
-        requestInit,
-        this.onError,
-        res
-      )) as TJsonApiBody;
-    }
+    return (await this.fetchJsonapiEndpoint(
+      endpoint,
+      requestInit,
+      this.onError,
+      res
+    )) as TJsonApiBody;
   }
 
   /**
@@ -370,25 +280,41 @@ class DrupalState {
   }
 
   /**
-   * Get an object by path alias from local state if it exists, or fetch it from Drupal if
-   * it doesn't exist in local state.
-   * @param objectName Name of object to retrieve. Ex: node--article
-   * @param path Path Alias of a specific resource
-   * @param res response object
-   * @param params user provided JSON:API parameter string or DrupalJsonApiParams object
-   * @param query user provided GraphQL query
-   * @param refresh a boolean value. If true, ignore local state.
+   * Get an object by path alias from local state if it exists, or fetch it from Drupal
+   * if it doesn't exist in local state.
+   * @remarks The query option was experimental and is now deprecated
+   * @param options.objectName - Name of object to retrieve.
+   * @param options.path - Alias of a specific resource
+   * @param options.res - response object
+   * @param options.params - user provided JSON:API parameter string or DrupalJsonApiParams object
+   * @param options.refresh - a boolean value. If true, ignore local state.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
+   *
+   * @example
+   * ```
+   * await store.getObjectByPath({
+   *    objectName: 'node--article',
+   *    path: '/articles/my-article',
+   *    res: ServerResponse,
+   *    params: 'include=field_media_image',
+   *    refresh: true,
+   * )}
+   * ```
    */
   async getObjectByPath({
     objectName,
     path,
     res,
     params,
-    query = false,
     refresh = false,
+    query = false,
   }: GetObjectByPathParams): Promise<PartialState<State> | void> {
+    if (query) {
+      console.warn(
+        `The \`query\` option is deprecated; Fetching without query...`
+      );
+    }
     const currentState = this.getState() as DsState;
     const dsPathTranslations = currentState.dsPathTranslations as GenericIndex;
     if (refresh || !dsPathTranslations?.[`${path}`]) {
@@ -429,7 +355,7 @@ class DrupalState {
             // Remove old response so refreshed response can be used.
             delete pathTranslationsState[`${path}`];
           }
-          // If dsPathTranslaitons exists in state, add the new path to it.
+          // If dsPathTranslations exists in state, add the new path to it.
           const updatedPathTranslationState = {
             ...pathTranslationsState,
             [path]: response,
@@ -442,7 +368,6 @@ class DrupalState {
           const newPathTranslationState = {
             [path]: response,
           };
-
           this.setState({ ['dsPathTranslations']: newPathTranslationState });
         }
       }
@@ -454,11 +379,10 @@ class DrupalState {
     const id = pathTranslations[`${path}`].entity.uuid;
 
     const object = await this.getObject({
-      objectName: objectName,
-      id: id,
+      objectName,
+      id,
       res,
       params,
-      query,
       refresh,
     });
     return object;
@@ -467,25 +391,43 @@ class DrupalState {
   /**
    * Get an object from local state if it exists, or fetch it from Drupal if
    * it doesn't exist in local state.
-   * @param objectName Name of object to retrieve. Ex: node--article
-   * @param id id of a specific resource
-   * @param res response object
-   * @param params user provided JSON:API parameter string or DrupalJsonApiParams object
-   * @param query user provided GraphQL query
-   * @param all a boolean value. If true, fetch all objects in a collection.
-   * @param refresh a boolean value. If true, ignore local state.
+   * @remarks The query option was experimental and is now deprecated
+   * @param options.objectName - Name of object to fetch
+   * @param options.id - id of a specific resource
+   * @param options.res response object
+   * @param options.params user provided JSON:API parameter string or DrupalJsonApiParams object
+   * @param options.all a boolean value. If true, fetch all objects in a collection.
+   * @param options.refresh a boolean value. If true, ignore local state.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
+   *
+   * @example
+   *    * @example
+   * ```
+   * await store.getObject({
+   *    objectName: 'node--article',
+   *    id: 'some-article-uuid-here',
+   *    res: ServerResponse,
+   *    params: 'include=field_media_image',
+   *    refresh: true,
+   * )}
+   * ```
    */
   async getObject({
     objectName,
     id,
     res = false,
     params,
-    query = false,
     all = false,
     refresh = false,
+    query = false,
   }: GetObjectParams): Promise<PartialState<State> | void> {
+    if (query) {
+      console.warn(
+        `The \`query\` option is deprecated; Fetching without query...`
+      );
+    }
+
     if (
       params !== undefined &&
       typeof params !== 'string' &&
@@ -527,9 +469,7 @@ class DrupalState {
       }
 
       // If requested resource is in the collection store, return that
-      // We can't ensure that ID will be in a response if a query was defined,
-      // so we have to fetch from Drupal in that case.
-      if (collectionState?.data && !query && !refresh) {
+      if (collectionState?.data && !refresh) {
         // If the collection is in the store, check for the resource
         const matchedResourceState = collectionState.data.filter(item => {
           return item['id'] === id;
@@ -564,17 +504,13 @@ class DrupalState {
         return;
       }
       const endpoint = this.assembleEndpoint(
-        objectName,
-        dsApiIndex[objectName],
+        (dsApiIndex[objectName] as GenericIndex).href as string,
         id,
-        params,
-        query
+        params
       );
 
-      const resourceData = (await this.conditionalFetch(
+      const resourceData = (await this.fetchData(
         endpoint,
-        query,
-        `${objectName}Resources`,
         res
       )) as keyedResources;
 
@@ -598,18 +534,12 @@ class DrupalState {
         this.setState({ [resourceKey]: newResourceState });
       }
 
-      return query
-        ? resourceData.graphql
-        : this.dataFormatter.deserialize(resourceData);
+      return this.dataFormatter.deserialize(resourceData);
     } // End if (id) block
 
-    // if there's a query, we want to fetch that
-    // data with the query even if there's
-    // data in collectionState
     if (
       refresh ||
       !collectionState ||
-      (query && !collectionState.graphql) ||
       (collectionState.links?.next && !collectionState.links?.last && all)
     ) {
       !this.debug ||
@@ -634,17 +564,13 @@ class DrupalState {
         return;
       }
       const endpoint = this.assembleEndpoint(
-        objectName,
-        dsApiIndex[objectName],
+        (dsApiIndex[objectName] as GenericIndex).href as string,
         id,
-        params,
-        query
+        params
       );
 
-      const collectionData = (await this.conditionalFetch(
+      const collectionData = (await this.fetchData(
         endpoint,
-        query,
-        objectName,
         res
       )) as keyedResources;
 
@@ -660,11 +586,19 @@ class DrupalState {
         let links = collectionData?.links as TJsonApiLinks;
         // the shape of { links } is not consistent so normalize it here
         const normalizeNextLink = (linkObj: TJsonApiLinks): string => {
-          if (linkObj === undefined || !linkObj.next) {
+          // There is a likely a better way to narrow this type...
+          if (linkObj === undefined || !('next' in linkObj)) {
             return '';
-          } else if (typeof linkObj.next === 'string') {
+          } else if ('next' in linkObj && typeof linkObj.next === 'string') {
             return linkObj.next;
-          } else if (typeof linkObj.next?.href === 'string') {
+            //TODO: type predicate for next link
+          } else if (
+            linkObj.next !== null &&
+            linkObj.next !== undefined &&
+            typeof linkObj.next !== 'string' &&
+            'href' in linkObj?.next &&
+            typeof linkObj.next.href === 'string'
+          ) {
             return linkObj.next.href;
           }
           return '';
@@ -676,27 +610,12 @@ class DrupalState {
             console.log(
               `Found 'next' link - attempting to fetch next page of results for ${objectName}`
             );
-          // helper function to parse the next page endpoint in case there is a query
-          const getNextPageEndpoint = (nextLink: string): string => {
-            let nextPageEndpoint: string;
-            if (query && objectName.includes('--')) {
-              const querySafeName = objectName.split('--').join('/');
-              nextPageEndpoint = `${querySafeName}${id ? `/${id}` : ''}?${
-                nextLink.split('?')[1]
-              }`;
-            } else {
-              nextPageEndpoint = nextLink;
-            }
-            return nextPageEndpoint;
-          };
 
           // helper function to fetch and add next page's data to the store
           const getNextPage = async (nextPageEndpoint: string) => {
             if (nextPageEndpoint === '') return {} as TJsonApiLinks;
-            const nextPage = (await this.conditionalFetch(
+            const nextPage = (await this.fetchData(
               nextPageEndpoint,
-              query,
-              objectName,
               res
             )) as keyedResources;
 
@@ -712,7 +631,7 @@ class DrupalState {
 
             return nextPage.links as TJsonApiLinks;
           };
-          let nextPageEndpoint = getNextPageEndpoint(nextLink);
+          let nextPageEndpoint = nextLink;
           // if current page has a next page, get that data too
           let results;
           do {
@@ -720,24 +639,17 @@ class DrupalState {
             results = this.getState() as ResourceState;
             links = currentLinks;
             const nextLink = normalizeNextLink(currentLinks);
-            nextPageEndpoint = getNextPageEndpoint(nextLink);
+            nextPageEndpoint = nextLink;
           } while (links.next);
 
-          return query
-            ? results[objectName].graphql
-            : this.dataFormatter.deserialize(results[objectName]);
+          return this.dataFormatter.deserialize(results[objectName]);
         }
       }
-      return query
-        ? collectionData.graphql
-        : this.dataFormatter.deserialize(collectionData);
+      return this.dataFormatter.deserialize(collectionData);
     } else {
       !this.debug || console.log(`Matched collection ${objectName} in state`);
-      const gqlCollectionState = collectionState as keyedResources;
 
-      return query
-        ? gqlCollectionState.graphql
-        : this.dataFormatter.deserialize(collectionState);
+      return this.dataFormatter.deserialize(collectionState);
     }
   }
 }

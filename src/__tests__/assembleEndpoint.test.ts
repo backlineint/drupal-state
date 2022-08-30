@@ -9,14 +9,13 @@ describe('Correctly assemble endpoints including query params', () => {
     });
     expect(
       store.assembleEndpoint(
-        'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe'
       )
     ).toEqual('https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe');
     expect(
-      store.assembleEndpoint('node--recipe', {
-        href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-      })
+      store.assembleEndpoint(
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe'
+      )
     ).toEqual('https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe');
   });
 
@@ -27,7 +26,6 @@ describe('Correctly assemble endpoints including query params', () => {
     });
     expect(
       store.assembleEndpoint(
-        'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
       )
@@ -36,8 +34,7 @@ describe('Correctly assemble endpoints including query params', () => {
     );
     expect(
       store.assembleEndpoint(
-        'node--recipe',
-        { href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe' },
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
       )
     ).toEqual(
@@ -54,7 +51,6 @@ describe('Correctly assemble endpoints including query params', () => {
     params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
-        'node--recipe',
         'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
         params
@@ -64,8 +60,7 @@ describe('Correctly assemble endpoints including query params', () => {
     );
     expect(
       store.assembleEndpoint(
-        'node--recipe',
-        { href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe' },
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
         'include=image'
       )
@@ -83,10 +78,7 @@ describe('Correctly assemble endpoints including query params', () => {
     params.addInclude(['image']);
     expect(
       store.assembleEndpoint(
-        'node--recipe',
-        {
-          href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-        },
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '',
         params
       )
@@ -95,10 +87,7 @@ describe('Correctly assemble endpoints including query params', () => {
     );
     expect(
       store.assembleEndpoint(
-        'node--recipe',
-        {
-          href: 'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-        },
+        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
         '',
         'include=image'
       )
@@ -106,120 +95,19 @@ describe('Correctly assemble endpoints including query params', () => {
       'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe?include=image'
     );
   });
-
-  test('Query', async () => {
-    const store: DrupalState = new DrupalState({
-      apiBase: 'https://dev-ds-demo.pantheonsite.io',
-      apiPrefix: 'jsonapi',
-    });
-    expect(
-      store.assembleEndpoint(
-        'node--recipe',
-        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-        '',
-        '',
-        `{
-          title
-          field_difficulty
-          id
-        }`
-      )
-    ).toEqual(
-      'node/recipe?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
-    );
-  });
-
-  test('Query with ID', async () => {
-    const store: DrupalState = new DrupalState({
-      apiBase: 'https://dev-ds-demo.pantheonsite.io',
-      apiPrefix: 'jsonapi',
-    });
-    expect(
-      store.assembleEndpoint(
-        'node--recipe',
-        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-        '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
-        '',
-        `{
-          title
-          field_difficulty
-          id
-        }`
-      )
-    ).toEqual(
-      'node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
-    );
-  });
-
-  test('Query with kitchen sink', async () => {
+  test('should throw an error if the indexHref is not valid', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',
     });
     const params = new DrupalJsonApiParams();
     params.addInclude(['image']);
-    expect(
+    expect(() =>
       store.assembleEndpoint(
-        'node--recipe',
-        'https://dev-ds-demo.pantheonsite.io/jsonapi/node/recipe',
-        '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
-        params,
-        `{
-          title
-          field_difficulty
-          id
-        }`
-      )
-    ).toEqual(
-      'node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca?include=image&fields%5Bnode--recipe%5D=title%2Cfield_difficulty%2Cid'
-    );
-  });
-
-  test('Undefined index should throw an error', () => {
-    const store: DrupalState = new DrupalState({
-      apiBase: 'https://dev-ds-demo.pantheonsite.io',
-      apiPrefix: 'jsonapi',
-    });
-    expect(() => {
-      store.assembleEndpoint(
-        'node--recipe',
+        '', // force error with invalid endpoint
         '',
-        '33386d32-a87c-44b9-b66b-3dd0bfc38dca'
-      );
-    }).toThrowError(
-      `Could not assemble endpoint. Check the index, object name, and id.\n\tapiBase:\n\tindex: ${JSON.stringify(
-        ''
-      )}\n\tid: 33386d32-a87c-44b9-b66b-3dd0bfc38dca\n\tobjectName: node--recipe`
-    );
-  });
-
-  test('Query string with preceding "?" should throw an error', () => {
-    const mockOnError = jest.fn((err: Error) => {
-      throw err;
-    });
-
-    const store: DrupalState = new DrupalState({
-      apiBase: 'https://dev-ds-demo.pantheonsite.io',
-      apiPrefix: 'jsonapi',
-      onError: mockOnError,
-    });
-
-    const queryString = '?includes=field_media_image.field_media_image';
-    try {
-      expect(
-        store.assembleEndpoint(
-          'node--recipe',
-          '',
-          '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
-          queryString
-        )
-      ).toThrowError();
-    } catch (error) {
-      expect(error instanceof Error);
-      expect(error instanceof Error && error.message).toEqual(
-        `Invalid params: Params must not start with "?". \nRemove the preceding "?" or use https://www.npmjs.com/package/drupal-jsonapi-params`
-      );
-      expect(mockOnError).toBeCalledTimes(1);
-    }
+        params
+      )
+    ).toThrow();
   });
 });

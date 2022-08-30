@@ -41,9 +41,6 @@ Features include:
   `fetchJsonApiEndpoint` if you only need some of the features of Drupal
   State.**
 
-- ✅ **Write GraphQL queries against Drupal's Core JSON:API endpoints.
-  (Experimental)**
-
 - ✅ **Easily source data from API endpoints that require authorization**
 
 Plus much more on the roadmap. Have a feature request? Submit it in
