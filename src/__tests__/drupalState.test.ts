@@ -27,6 +27,11 @@ import multiPageFetch2 from './data/multiPageFetch2.json';
 import multiPageFetch3 from './data/multiPageFetch3.json';
 import multiPageFetch4 from './data/multiPageFetch4.json';
 import multiPageFetchResults from './data/multiPageFetchResults.json';
+import multiPageFetchResultsWithParams from './data/multiPageFetchResultsWithParams.json';
+import multiPageFetchWithParams1 from './data/multiPageFetchWithParams1.json';
+import multiPageFetchWithParams2 from './data/multiPageFetchWithParams2.json';
+import multiPageFetchWithParams3 from './data/multiPageFetchWithParams3.json';
+import multiPageFetchWithParams4 from './data/multiPageFetchWithParams4.json';
 
 const testCustomFetch = (
   apiUrl: RequestInfo,
@@ -267,6 +272,56 @@ describe('drupalState', () => {
         all: true,
       })
     ).toStrictEqual(multiPageFetchResults);
+    expect(fetchMock).toBeCalledTimes(4);
+  });
+
+  test('Fetch all Objects of a specific type with params', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
+      debug: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?fields%5Bnode--ds_example%5D=title%2Cbody',
+      {
+        status: 200,
+        body: multiPageFetchWithParams1,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?fields%5Bnode--ds_example%5D=title%2Cbody&page%5Boffset%5D=50&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: multiPageFetchWithParams2,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?fields%5Bnode--ds_example%5D=title%2Cbody&page%5Boffset%5D=100&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: multiPageFetchWithParams3,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?fields%5Bnode--ds_example%5D=title%2Cbody&page%5Boffset%5D=150&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: multiPageFetchWithParams4,
+      },
+      { overwriteRoutes: true }
+    );
+
+    expect(
+      await store.getObject({
+        objectName: 'node--ds_example',
+        all: true,
+        params: 'fields[node--ds_example]=title,body',
+      })
+    ).toStrictEqual(multiPageFetchResultsWithParams);
     expect(fetchMock).toBeCalledTimes(4);
   });
 

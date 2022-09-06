@@ -443,6 +443,7 @@ class DrupalState {
     const state = this.getState() as DsState;
     const paramString =
       typeof params === 'string' ? params : params?.getQueryString();
+    // The collectionKey is used to index a collection in state
     const collectionKey = paramString
       ? `${objectName}-${paramString}`
       : objectName;
@@ -642,7 +643,7 @@ class DrupalState {
             nextPageEndpoint = nextLink;
           } while (links.next);
 
-          return this.dataFormatter.deserialize(results[objectName]);
+          return this.dataFormatter.deserialize(results[collectionKey]);
         }
       }
       return this.dataFormatter.deserialize(collectionData);

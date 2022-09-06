@@ -128,6 +128,15 @@ async function main(): Promise<void> {
     })
   );
 
+  console.log('--- Fetch _all_ objects of a type with params---');
+  console.log(
+    await store.getObject({
+      objectName: 'node--ds_example',
+      all: true,
+      params: 'fields[node--ds_example]=title,body',
+    })
+  );
+
   console.log('-- Ignore the store and force fetch data from Drupal --');
   console.log(
     await store.getObject({
