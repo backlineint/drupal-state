@@ -348,7 +348,7 @@ describe('drupalState', () => {
     expect(fetchMock).toBeCalledTimes(2);
   });
 
-  test('Re-fetch object if it exists in local storage but refresh is set to true', async () => {
+  test('Re-fetch collection object if it exists in local state but refresh is set to true', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',
