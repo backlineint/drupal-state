@@ -70,6 +70,13 @@ const allArticlesFromApi = await store.getObject({
   objectName: 'node--ds_example',
   all: true,
 });
+
+// If your DrupalState store has valid credentials, all requests are authorized by default
+// To make a request anonymous, use the `anon` option and set it to true
+const anonRequest = await store.getObject({
+  objectName: 'node--recipe',
+  anon: true,
+});
 ```
 
 To better understand the advantages of Drupal State, below we will compare the
