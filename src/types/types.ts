@@ -117,29 +117,63 @@ export interface jsonapiLinkObject {
   __typename: string;
 }
 
+interface SharedParams {
+  /**
+   * The name of the object in Drupal
+   * @example 'node--article'
+   */
+  objectName: string;
+  /**
+   * If included, the server response is passed to allow DrupalState to set headers
+   * among other things.
+   * @see {@link https://nodejs.org/docs/latest-v16.x/api/http.html#class-httpserverresponse}
+   */
+  res?: ServerResponse | boolean;
+  /**
+   * A string of Drupal JSON:API parameters.
+   * @example 'include=field_media_image,
+   * Or an instance of DrupalJsonApi Params.
+   * @see {@link https://www.npmjs.com/package/drupal-jsonapi-params}
+   */
+  params?: string | DrupalJsonApiParams;
+  /**
+   * If true, data will be fetched from Drupal regardless of its existence in state
+   */
+  refresh?: boolean;
+  /**
+   * If true and valid credentials are passed in when creating the instance of
+   * DrupalState, the request will be made anonymously
+   */
+  anon?: boolean;
+  /**
+   * @deprecated since 4.0.0
+   */
+  query?: string | boolean;
+}
 /**
  * Describes get object parameters.
  */
-export interface GetObjectParams {
-  objectName: string;
+export interface GetObjectParams extends SharedParams {
+  /**
+   * The id of the object in Drupal
+   */
   id?: string;
-  res?: ServerResponse | boolean;
-  params?: string | DrupalJsonApiParams;
-  query?: string | boolean;
+  /**
+   * If true, DrupalState fetches all pages of an object if there is more than one.
+   */
   all?: boolean;
-  refresh?: boolean;
 }
 
 /**
  * Describes get object by Path alias.
  */
-export interface GetObjectByPathParams {
-  objectName: string;
+export interface GetObjectByPathParams extends SharedParams {
+  /**
+   * The path to the object that Decoupled Router resolves to
+   * @see {@link https://www.drupal.org/project/decoupled_router}
+   * @example '/recipes/fiery-chili-sauce'
+   */
   path: string;
-  res?: ServerResponse | boolean;
-  params?: string | DrupalJsonApiParams;
-  query?: string | boolean;
-  refresh?: boolean;
 }
 
 /**

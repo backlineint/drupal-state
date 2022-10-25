@@ -231,15 +231,17 @@ class DrupalState {
    * Fetches data using  our fetch method.
    * @param endpoint the assembled JSON:API endpoint
    * @param res response object
+   * @param anon make the request anonymously if true
    * @returns data fetched from JSON:API endpoint
    */
   async fetchData(
     endpoint: string,
-    res: ServerResponse | boolean = false
+    res: ServerResponse | boolean = false,
+    anon = false
   ): Promise<TJsonApiBody | void> {
     let requestInit = {};
     let authHeader = '';
-    if (this.clientId && this.clientSecret) {
+    if (this.clientId && this.clientSecret && !anon) {
       const headers = new Headers();
       authHeader = await this.getAuthHeader();
       headers.append('Authorization', authHeader);
@@ -288,6 +290,7 @@ class DrupalState {
    * @param options.res - response object
    * @param options.params - user provided JSON:API parameter string or DrupalJsonApiParams object
    * @param options.refresh - a boolean value. If true, ignore local state.
+   * @param options.anon - a boolean value. If true, send the request without the authentication header if valid credentials exist.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    *
@@ -308,6 +311,7 @@ class DrupalState {
     res,
     params,
     refresh = false,
+    anon = false,
     query = false,
   }: GetObjectByPathParams): Promise<PartialState<State> | void> {
     if (query) {
@@ -325,7 +329,7 @@ class DrupalState {
       // TODO - abstract helper method to assemble requestInit and authHeader
       let requestInit = {};
       let authHeader = '';
-      if (this.clientId && this.clientSecret) {
+      if (this.clientId && this.clientSecret && !anon) {
         const headers = new Headers();
         authHeader = await this.getAuthHeader();
         headers.append('Authorization', authHeader);
@@ -394,10 +398,11 @@ class DrupalState {
    * @remarks The query option was experimental and is now deprecated
    * @param options.objectName - Name of object to fetch
    * @param options.id - id of a specific resource
-   * @param options.res response object
-   * @param options.params user provided JSON:API parameter string or DrupalJsonApiParams object
-   * @param options.all a boolean value. If true, fetch all objects in a collection.
-   * @param options.refresh a boolean value. If true, ignore local state.
+   * @param options.res - response object
+   * @param options.params - user provided JSON:API parameter string or DrupalJsonApiParams object
+   * @param options.all - a boolean value. If true, fetch all objects in a collection.
+   * @param options.refresh - a boolean value. If true, ignore local state.
+   * @param options.anon - a boolean value. If true, send the request without the authentication header if valid credentials exist.
    * @returns a promise containing deserialized JSON:API data for the requested
    * object
    *
@@ -420,6 +425,7 @@ class DrupalState {
     params,
     all = false,
     refresh = false,
+    anon = false,
     query = false,
   }: GetObjectParams): Promise<PartialState<State> | void> {
     if (query) {
@@ -512,7 +518,8 @@ class DrupalState {
 
       const resourceData = (await this.fetchData(
         endpoint,
-        res
+        res,
+        anon
       )) as keyedResources;
 
       const objectResourceState = state[resourceKey];
@@ -572,7 +579,8 @@ class DrupalState {
 
       const collectionData = (await this.fetchData(
         endpoint,
-        res
+        res,
+        anon
       )) as keyedResources;
 
       const fetchedCollectionState = {} as CollectionState;

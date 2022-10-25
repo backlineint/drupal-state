@@ -348,7 +348,7 @@ describe('drupalState', () => {
     expect(fetchMock).toBeCalledTimes(2);
   });
 
-  test('Re-fetch object if it exists in local storage but refresh is set to true', async () => {
+  test('Re-fetch collection object if it exists in local state but refresh is set to true', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',
@@ -425,15 +425,8 @@ describe('drupalState', () => {
       clientSecret: 'mysecret',
       debug: true,
     });
+    const getAuthHeaderSpy = jest.spyOn(store, 'getAuthHeader');
     store.setState({ dsApiIndex: indexResponse.links });
-    fetchMock.mock(
-      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca',
-      {
-        status: 200,
-        body: recipesResourceData1,
-      },
-      { overwriteRoutes: true }
-    );
     fetchMock.mock(
       {
         url: 'https://dev-ds-demo.pantheonsite.io/oauth/token',
@@ -447,8 +440,13 @@ describe('drupalState', () => {
         body: tokenResponse,
       }
     );
-    expect(await store['getAuthHeader']()).toEqual(
-      `${tokenResponse.token_type} ${tokenResponse.access_token}`
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      {
+        status: 200,
+        body: recipesResourceData1,
+      },
+      { overwriteRoutes: true }
     );
     expect(
       await store.getObject({
@@ -456,7 +454,37 @@ describe('drupalState', () => {
         id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
       })
     ).toEqual(recipesResourceObject1);
+    expect(getAuthHeaderSpy).toHaveBeenCalledTimes(1);
     expect(fetchMock).toBeCalledTimes(2);
+  });
+
+  test('should fetch resource anonymously', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      clientId: '9adc9c69-fa3b-4c21-9cef-fbd345d1a269',
+      clientSecret: 'mysecret',
+      debug: true,
+    });
+    const getAuthHeaderSpy = jest.spyOn(store, 'getAuthHeader');
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      {
+        status: 200,
+        body: recipesResourceData1,
+      },
+      { overwriteRoutes: true }
+    );
+    expect(getAuthHeaderSpy).toHaveBeenCalledTimes(0);
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+        anon: true,
+      })
+    ).toEqual(recipesResourceObject1);
+    expect(fetchMock).toBeCalledTimes(1);
   });
 
   test('A locale is honored if specified', async () => {
