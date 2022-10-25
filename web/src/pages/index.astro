@@ -1,6 +1,5 @@
-<script>
-  // Redirect your homepage to the first page of documentation.
-  // Need to account for additional subdirectory if on gitlab pages.
-  const isGitlab = window.location.hostname.includes('pages.drupalcode.org');
-  window.location.pathname = isGitlab ? `/drupal_state/en/introduction` : `/en/introduction`;
+<script is:inline>
+	// Redirect your homepage to the first page of documentation.
+	// If you have a landing page, remove this script and add it here!
+	window.location.pathname = `/en/introduction`;
 </script>
