@@ -458,7 +458,7 @@ describe('drupalState', () => {
     expect(fetchMock).toBeCalledTimes(2);
   });
 
-  test('should fetch resource anonymously', async () => {
+  test('should fetch resource anonymously when using anon:true', async () => {
     const store: DrupalState = new DrupalState({
       apiBase: 'https://dev-ds-demo.pantheonsite.io',
       apiPrefix: 'jsonapi',

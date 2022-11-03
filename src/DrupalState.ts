@@ -388,6 +388,7 @@ class DrupalState {
       res,
       params,
       refresh,
+      anon,
     });
     return object;
   }

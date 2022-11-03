@@ -22,6 +22,7 @@ const dsConfig = {
   apiBase: 'https://dev-ds-demo.pantheonsite.io',
   apiPrefix: 'jsonapi',
   defaultLocale: 'en',
+  debug: true,
 };
 
 describe('getObjectByPath', () => {
@@ -161,5 +162,36 @@ describe('getObjectByPath', () => {
         Tried fetching: https://dev-ds-demo.pantheonsite.io/router/translate-path?path=/recipes/fiery-chii-sauce&_format=json
         Server responded with status code: 404`);
       });
+  });
+  test('should fetch a resource anonymously when anon: true', async () => {
+    const store: DrupalState = new DrupalState({
+      ...dsConfig,
+      clientId: '9adc9c69-fa3b-4c21-9cef-fbd345d1a269',
+      clientSecret: 'mysecret',
+    });
+    const getAuthHeaderSpy = jest.spyOn(store, 'getAuthHeader');
+    store.setState({ dsApiIndex: demoApiIndex.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/router/translate-path?path=/recipes/fiery-chili-sauce&_format=json',
+      {
+        status: 200,
+        body: translatePathResponse,
+      }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/recipe/da1359f4-2e60-462c-8909-47c3bce11fdf',
+      {
+        status: 200,
+        body: recipesResourceData,
+      }
+    );
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+        anon: true,
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(getAuthHeaderSpy).toBeCalledTimes(0);
   });
 });

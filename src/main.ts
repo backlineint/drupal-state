@@ -187,6 +187,22 @@ async function main(): Promise<void> {
   //   })
   // );
 
+  // console.log('-- Fetch an object anonymously --');
+  // console.log(
+  //   await authStore.getObject({
+  //     objectName: 'node-recipe',
+  //     anon: true,
+  //   })
+  // );
+
+  // console.log('-- Also works with getObjectByPath --');
+  // console.log(
+  //   await authStore.getObjectByPath({
+  //     objectName: 'node-recipe',
+  //     path: '/recipes/fiery-chili-sauce',
+  //     anon: true,
+  //   })
+  // );
   // You also have direct access to the Zustand store if necessary
   store.setState({ custom: 'custom state' });
 }
