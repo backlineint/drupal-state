@@ -1,11 +1,18 @@
 import type { FunctionalComponent } from 'preact';
-import { h, Fragment } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
+import type { MarkdownHeading } from 'astro';
 
-const TableOfContents: FunctionalComponent<{ headers: any[] }> = ({ headers = [] }) => {
-	const itemOffsets = useRef([]);
-	const [activeId, setActiveId] = useState<string>(undefined);
+type ItemOffsets = {
+	id: string;
+	topOffset: number;
+};
 
+const TableOfContents: FunctionalComponent<{ headings: MarkdownHeading[] }> = ({
+	headings = [],
+}) => {
+	const itemOffsets = useRef<ItemOffsets[]>([]);
+	// FIXME: Not sure what this state is doing. It was never set to anything truthy.
+	const [activeId] = useState<string>('');
 	useEffect(() => {
 		const getItemOffsets = () => {
 			const titles = document.querySelectorAll('article :is(h1, h2, h3, h4)');
@@ -25,16 +32,20 @@ const TableOfContents: FunctionalComponent<{ headers: any[] }> = ({ headers = []
 
 	return (
 		<>
-			<h2 class="heading">On this page</h2>
+			<h2 className="heading">On this page</h2>
 			<ul>
-				<li class={`header-link depth-2 ${activeId === 'overview' ? 'active' : ''}`.trim()}>
+				<li className={`heading-link depth-2 ${activeId === 'overview' ? 'active' : ''}`.trim()}>
 					<a href="#overview">Overview</a>
 				</li>
-				{headers
+				{headings
 					.filter(({ depth }) => depth > 1 && depth < 4)
-					.map((header) => (
-						<li class={`header-link depth-${header.depth} ${activeId === header.slug ? 'active' : ''}`.trim()}>
-							<a href={`#${header.slug}`}>{header.text}</a>
+					.map((heading) => (
+						<li
+							className={`heading-link depth-${heading.depth} ${
+								activeId === heading.slug ? 'active' : ''
+							}`.trim()}
+						>
+							<a href={`#${heading.slug}`}>{heading.text}</a>
 						</li>
 					))}
 			</ul>
