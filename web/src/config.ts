@@ -37,11 +37,11 @@ export const GITHUB_EDIT_URL = `https://git.drupalcode.org/project/drupal_state/
 export const COMMUNITY_INVITE_URL = `https://www.drupal.org/project/drupal_state`;
 
 // See "Algolia" section of the README for more information.
-// export const ALGOLIA = {
-//   indexName: 'XXXXXXXXXX',
-//   appId: 'XXXXXXXXXX',
-//   apiKey: 'XXXXXXXXXX',
-// };
+export const ALGOLIA = {
+  indexName: 'XXXXXXXXXX',
+  appId: 'XXXXXXXXXX',
+  apiKey: 'XXXXXXXXXX',
+};
 
 export type Sidebar = Record<
   typeof KNOWN_LANGUAGE_CODES[number],
