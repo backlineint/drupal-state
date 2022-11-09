@@ -28,6 +28,14 @@ const store: DrupalState = new DrupalState({
   // },
 });
 
+const withoutStore: DrupalState = new DrupalState({
+  apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+  apiPrefix: 'jsonapi',
+  defaultLocale: 'en',
+  debug: true,
+  noStore: true,
+});
+
 // Uncomment to use authenticated store - currently depends on local environment
 // const authStore: any = new DrupalState({
 //   apiBase: 'https://demo-decoupled-bridge.lndo.site',
@@ -205,6 +213,32 @@ async function main(): Promise<void> {
   // );
   // You also have direct access to the Zustand store if necessary
   store.setState({ custom: 'custom state' });
+
+  console.log('--- Fetch version of resource - without store ---');
+  console.log(
+    await withoutStore.getObject({
+      objectName: 'node--recipe',
+      id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+    })
+  );
+
+  console.log('--- Fetch _all_ objects of a type - without store ---');
+  console.log(
+    await withoutStore.getObject({
+      objectName: 'node--ds_example',
+      all: true,
+    })
+  );
+
+  console.log(
+    '--- Fetch an object by path where path needs to be translated - without store ---'
+  );
+  console.log(
+    await withoutStore.getObjectByPath({
+      objectName: 'node--recipe',
+      path: '/recipes/deep-mediterranean-quiche',
+    })
+  );
 }
 
 await main();

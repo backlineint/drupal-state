@@ -67,3 +67,13 @@ const recipeByPath = await store.getObjectByPath({
   path: '/recipes/fiery-chili-sauce',
 });
 ```
+
+Use `noStore` to force data fetching with each request and disable the use of a
+local store:
+
+```js
+const withoutStore = new DrupalState({
+  apiBase: 'https://dev-ds-demo.pantheonsite.io',
+  noStore: true, // optional
+});
+```

@@ -60,6 +60,7 @@ class DrupalState {
   private dataFormatter: Jsona;
   // Custom error handler
   onError: (err: Error) => void;
+  noStore: boolean;
 
   constructor({
     apiBase,
@@ -70,6 +71,7 @@ class DrupalState {
     fetchAdapter = defaultFetch,
     debug = false,
     onError,
+    noStore = false,
   }: DrupalStateConfig) {
     this.apiBase = apiBase;
     this.apiPrefix = apiPrefix;
@@ -82,6 +84,7 @@ class DrupalState {
     this.fetchAdapter = fetchAdapter;
     this.debug = debug;
     this.dataFormatter = new Jsona();
+    this.noStore = noStore;
 
     !this.debug || console.log('Debug mode:', debug);
 
@@ -321,7 +324,7 @@ class DrupalState {
     }
     const currentState = this.getState() as DsState;
     const dsPathTranslations = currentState.dsPathTranslations as GenericIndex;
-    if (refresh || !dsPathTranslations?.[`${path}`]) {
+    if (refresh || !dsPathTranslations?.[`${path}`] || this.noStore) {
       !this.debug ||
         console.log(
           `No match for ${path} in dsPathTranslations - calling translatePath.`
@@ -447,6 +450,14 @@ class DrupalState {
       );
       return;
     }
+
+    const apiErr = new Error(
+      `Unable to fetch the API Index.\nCheck that ${this.apiRoot} is a valid jsonapi index`
+    );
+    const objNameErr = new Error(
+      `Invalid objectName.\nCheck that ${objectName} is a valid node in your Drupal instance`
+    );
+
     const state = this.getState() as DsState;
     const paramString =
       typeof params === 'string' ? params : params?.getQueryString();
@@ -458,9 +469,37 @@ class DrupalState {
     // Check for collection in the store
     const collectionState = state[collectionKey] as TJsonApiBodyDataRequired;
 
+    if (this.noStore && !all) {
+      !this.debug || console.log(`Fetch Resource ${objectName}`);
+      const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
+      if (!dsApiIndex) {
+        this.onError(apiErr);
+        return;
+      }
+
+      if (!dsApiIndex[objectName]) {
+        this.onError(objNameErr);
+        return;
+      }
+      const endpoint = this.assembleEndpoint(
+        (dsApiIndex[objectName] as GenericIndex).href as string,
+        id,
+        params
+      );
+
+      const resourceData = (await this.fetchData(
+        endpoint,
+        res,
+        anon
+      )) as keyedResources;
+
+      return this.dataFormatter.deserialize(resourceData);
+    }
+
     // If an id is provided, find and return a resource
     if (id) {
       const resourceId = paramString ? `${id}-${paramString}` : id;
+
       const resourceState = !refresh
         ? (state[resourceKey] as keyedResources)
         : false;
@@ -491,24 +530,17 @@ class DrupalState {
           return this.dataFormatter.deserialize(serializedState);
         }
       }
+
       // Resource isn't in state, so fetch it from Drupal
       !this.debug || console.log(`Fetch Resource ${id} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
       if (!dsApiIndex) {
-        this.onError(
-          new Error(
-            `Unable to fetch the API Index.\nCheck that ${this.apiRoot} is a valid jsonapi index`
-          )
-        );
+        this.onError(apiErr);
         return;
       }
 
       if (!dsApiIndex[objectName]) {
-        this.onError(
-          new Error(
-            `Invalid objectName.\nCheck that ${objectName} is a valid node in your Drupal instance`
-          )
-        );
+        this.onError(objNameErr);
         return;
       }
       const endpoint = this.assembleEndpoint(
@@ -549,27 +581,21 @@ class DrupalState {
     if (
       refresh ||
       !collectionState ||
-      (collectionState.links?.next && !collectionState.links?.last && all)
+      (collectionState.links?.next && !collectionState.links?.last && all) ||
+      this.noStore
     ) {
-      !this.debug ||
+      this.debug &&
+        !this.noStore &&
         console.log(`Fetch Collection ${objectName} and add to state`);
       const dsApiIndex = (await this.getApiIndex()) as GenericIndex;
 
       if (!dsApiIndex) {
-        this.onError(
-          new Error(
-            `Unable to fetch the API Index.\nCheck that ${this.apiRoot} is a valid jsonapi index`
-          )
-        );
+        this.onError(apiErr);
         return;
       }
 
       if (!dsApiIndex[objectName]) {
-        this.onError(
-          new Error(
-            `Invalid objectName.\nCheck that ${objectName} is a valid node in your Drupal instance or local store`
-          )
-        );
+        this.onError(objNameErr);
         return;
       }
       const endpoint = this.assembleEndpoint(
@@ -584,10 +610,14 @@ class DrupalState {
         anon
       )) as keyedResources;
 
+      this.debug &&
+        !this.noStore &&
+        console.log(`Add Collection ${objectName} to state`);
       const fetchedCollectionState = {} as CollectionState;
       fetchedCollectionState[collectionKey] = collectionData;
 
       this.setState(fetchedCollectionState);
+
       // if the all flag is present
       // and if there is a next page
       // aka >50 items available,
@@ -651,14 +681,18 @@ class DrupalState {
             const nextLink = normalizeNextLink(currentLinks);
             nextPageEndpoint = nextLink;
           } while (links.next);
+          const allPagesCollectionData = results[collectionKey];
 
-          return this.dataFormatter.deserialize(results[collectionKey]);
+          if (this.noStore) {
+            delete results[collectionKey];
+          }
+          return this.dataFormatter.deserialize(allPagesCollectionData);
         }
       }
+
       return this.dataFormatter.deserialize(collectionData);
     } else {
       !this.debug || console.log(`Matched collection ${objectName} in state`);
-
       return this.dataFormatter.deserialize(collectionState);
     }
   }

@@ -194,4 +194,25 @@ describe('getObjectByPath', () => {
     ).toEqual(recipesResourceByPath);
     expect(getAuthHeaderSpy).toBeCalledTimes(0);
   });
+  test('Fetch an object by path where noStore is set to true', async () => {
+    const store: DrupalState = new DrupalState({
+      ...dsConfig,
+      noStore: true,
+    });
+    store.setState({ dsApiIndex: demoApiIndex.links });
+
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(
+      await store.getObjectByPath({
+        objectName: 'node--recipe',
+        path: '/recipes/fiery-chili-sauce',
+      })
+    ).toEqual(recipesResourceByPath);
+    expect(fetchMock).toBeCalledTimes(4);
+  });
 });

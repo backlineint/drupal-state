@@ -607,4 +607,85 @@ describe('drupalState', () => {
     expect(recipes).toEqual(recipesResourceObject1);
     expect(log).toBeCalledTimes(1);
   });
+
+  test('Fetch resource and ignore local store', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      debug: true,
+      noStore: true,
+    });
+    store.setState({ 'node--recipe': recipes });
+    expect(
+      await store.getObject({
+        objectName: 'node--recipe',
+        id: '33386d32-a87c-44b9-b66b-3dd0bfc38dca',
+      })
+    ).toEqual(recipesResourceObject1);
+    expect(fetchMock).toBeCalledTimes(2);
+  });
+
+  test('Fetch collection and ignore local store', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io',
+      apiPrefix: 'jsonapi',
+      debug: true,
+      noStore: true,
+    });
+    store.setState({ 'node--recipe': recipes });
+    expect(await store.getObject({ objectName: 'node--recipe' })).toEqual(
+      recipesCollectionObject1
+    );
+    expect(fetchMock).toBeCalledTimes(2);
+  });
+  test('Fetch all Objects of a specific type and ignore local store', async () => {
+    const store: DrupalState = new DrupalState({
+      apiBase: 'https://dev-ds-demo.pantheonsite.io/',
+      apiPrefix: 'jsonapi',
+      debug: true,
+      noStore: true,
+    });
+    store.setState({ dsApiIndex: indexResponse.links });
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example',
+      {
+        status: 200,
+        body: multiPageFetch1,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?page%5Boffset%5D=50&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: multiPageFetch2,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?page%5Boffset%5D=100&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: multiPageFetch3,
+      },
+      { overwriteRoutes: true }
+    );
+    fetchMock.mock(
+      'https://dev-ds-demo.pantheonsite.io/en/jsonapi/node/ds_example?page%5Boffset%5D=150&page%5Blimit%5D=50',
+      {
+        status: 200,
+        body: multiPageFetch4,
+      },
+      { overwriteRoutes: true }
+    );
+    expect(
+      await store.getObject({
+        objectName: 'node--ds_example',
+        all: true,
+      })
+    ).toEqual(multiPageFetchResults);
+    const state: any = await store.getState();
+    expect(state['node--ds_example']).toBeFalsy();
+    expect(fetchMock).toBeCalledTimes(4);
+  });
 });

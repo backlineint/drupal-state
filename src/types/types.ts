@@ -60,6 +60,7 @@ export interface DrupalStateConfig {
   fetchAdapter?: fetchAdapter;
   debug?: boolean;
   onError?: (err: Error) => void;
+  noStore?: boolean;
 }
 
 /**
